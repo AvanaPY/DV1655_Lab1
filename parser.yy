@@ -50,12 +50,17 @@ Goal                : MainClass ClassDeclaration END
 MainClass           : CLASS Identifier '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' Identifier ')' '{' Statement '}' '}'
                     ;
 
-ClassDeclaration    : CLASS Identifier '{' VarDeclaration MethodDeclaration  '}'
-                    | CLASS Identifier EXTENDS Identifier '{' VarDeclaration MethodDeclaration '}'
+ClassDeclaration    : CLASS Identifier '{' ClassBodyDeclaration '}'
+                    | CLASS Identifier EXTENDS Identifier '{' ClassBodyDeclaration '}'
                     ;
+
+ClassBodyDeclaration : VarDeclaration MethodDeclaration
+                     |
+                     ;
 
 VarDeclaration      : VarDeclaration Type Identifier ';'
                     | Type Identifier ';'
+                    |
                     ;
 
 MethodDeclaration   : MethodDeclaration PUBLIC Type Identifier '(' MethodArgumentDeclaration ')' '{' MethodVarDeclaration MethodStatementDeclaration RETURN Expression ';' '}'
@@ -69,12 +74,10 @@ MethodArgumentDeclaration   : Type Identifier
 
 MethodVarDeclaration        : MethodVarDeclaration VarDeclaration
                             | VarDeclaration
-                            |
                             ;
 
 MethodStatementDeclaration  : MethodStatementDeclaration Statement
                             | Statement
-                            |
                             ;
 
 Type                : T_Int '[' ']'

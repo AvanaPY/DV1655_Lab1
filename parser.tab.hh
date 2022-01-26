@@ -597,13 +597,13 @@ switch (yytype)
       symbol_type (int tok)
         : super_type(token_type (tok))
       {
-        YY_ASSERT (tok == 0 || tok == token::INTEGER_LITERAL || tok == token::END || tok == token::CLASS || tok == token::PUBLIC || tok == token::STATIC || tok == token::VOID || tok == token::MAIN || tok == token::EXTENDS || tok == token::STRING || tok == token::RETURN || tok == token::LENGTH || tok == token::IF || tok == token::ELSE || tok == token::WHILE || tok == token::SYS_PRINTLN || tok == token::T_Int || tok == token::T_Bool || tok == token::T_True || tok == token::T_False || tok == token::PLUSOP || tok == token::MINOP || tok == token::MULOP || tok == token::DIVOP || tok == token::AND || tok == token::OR || tok == token::EQ || tok == token::LT || tok == token::GT || tok == token::THIS || tok == token::NEW || tok == 123 || tok == 40 || tok == 289 || tok == 91 || tok == 93 || tok == 41 || tok == 125 || tok == 59 || tok == 44 || tok == 61 || tok == 46 || tok == 33);
+        YY_ASSERT (tok == 0 || tok == token::INTEGER_LITERAL || tok == token::END || tok == token::CLASS || tok == token::PUBLIC || tok == token::STATIC || tok == token::VOID || tok == token::MAIN || tok == token::EXTENDS || tok == token::STRING || tok == token::RETURN || tok == token::LENGTH || tok == token::IF || tok == token::ELSE || tok == token::WHILE || tok == token::SYS_PRINTLN || tok == token::T_Int || tok == token::T_Bool || tok == token::T_True || tok == token::T_False || tok == token::PLUSOP || tok == token::MINOP || tok == token::MULOP || tok == token::DIVOP || tok == token::AND || tok == token::OR || tok == token::EQ || tok == token::LT || tok == token::GT || tok == token::THIS || tok == token::NEW || tok == 123 || tok == 40 || tok == 91 || tok == 93 || tok == 41 || tok == 125 || tok == 59 || tok == 44 || tok == 61 || tok == 46 || tok == 33);
       }
 #else
       symbol_type (int tok)
         : super_type(token_type (tok))
       {
-        YY_ASSERT (tok == 0 || tok == token::INTEGER_LITERAL || tok == token::END || tok == token::CLASS || tok == token::PUBLIC || tok == token::STATIC || tok == token::VOID || tok == token::MAIN || tok == token::EXTENDS || tok == token::STRING || tok == token::RETURN || tok == token::LENGTH || tok == token::IF || tok == token::ELSE || tok == token::WHILE || tok == token::SYS_PRINTLN || tok == token::T_Int || tok == token::T_Bool || tok == token::T_True || tok == token::T_False || tok == token::PLUSOP || tok == token::MINOP || tok == token::MULOP || tok == token::DIVOP || tok == token::AND || tok == token::OR || tok == token::EQ || tok == token::LT || tok == token::GT || tok == token::THIS || tok == token::NEW || tok == 123 || tok == 40 || tok == 289 || tok == 91 || tok == 93 || tok == 41 || tok == 125 || tok == 59 || tok == 44 || tok == 61 || tok == 46 || tok == 33);
+        YY_ASSERT (tok == 0 || tok == token::INTEGER_LITERAL || tok == token::END || tok == token::CLASS || tok == token::PUBLIC || tok == token::STATIC || tok == token::VOID || tok == token::MAIN || tok == token::EXTENDS || tok == token::STRING || tok == token::RETURN || tok == token::LENGTH || tok == token::IF || tok == token::ELSE || tok == token::WHILE || tok == token::SYS_PRINTLN || tok == token::T_Int || tok == token::T_Bool || tok == token::T_True || tok == token::T_False || tok == token::PLUSOP || tok == token::MINOP || tok == token::MULOP || tok == token::DIVOP || tok == token::AND || tok == token::OR || tok == token::EQ || tok == token::LT || tok == token::GT || tok == token::THIS || tok == token::NEW || tok == 123 || tok == 40 || tok == 91 || tok == 93 || tok == 41 || tok == 125 || tok == 59 || tok == 44 || tok == 61 || tok == 46 || tok == 33);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
@@ -1176,7 +1176,7 @@ switch (yytype)
     // YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
     // positive, shift that token.  If negative, reduce the rule whose
     // number is the opposite.  If YYTABLE_NINF, syntax error.
-    static const unsigned char yytable_[];
+    static const short yytable_[];
 
     static const short yycheck_[];
 
@@ -1426,10 +1426,10 @@ switch (yytype)
     enum
     {
       yyeof_ = 0,
-      yylast_ = 403,     ///< Last index in yytable_.
-      yynnts_ = 14,  ///< Number of nonterminal symbols.
+      yylast_ = 388,     ///< Last index in yytable_.
+      yynnts_ = 15,  ///< Number of nonterminal symbols.
       yyfinal_ = 6, ///< Termination state number.
-      yyntokens_ = 46  ///< Number of tokens.
+      yyntokens_ = 45  ///< Number of tokens.
     };
 
 
@@ -1448,16 +1448,16 @@ switch (yytype)
        0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,    45,     2,     2,     2,     2,     2,     2,
-      35,    39,     2,     2,    42,     2,    44,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,    41,
-       2,    43,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,    44,     2,     2,     2,     2,     2,     2,
+      35,    38,     2,     2,    41,     2,    43,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,    40,
+       2,    42,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,    37,     2,    38,     2,     2,     2,     2,     2,     2,
+       2,    36,     2,    37,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,    34,     2,    40,     2,     2,     2,     2,
+       2,     2,     2,    34,     2,    39,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -1473,9 +1473,9 @@ switch (yytype)
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-      25,    26,    27,    28,    29,    30,    31,    32,    33,    36
+      25,    26,    27,    28,    29,    30,    31,    32,    33
     };
-    const int user_token_number_max_ = 289;
+    const int user_token_number_max_ = 288;
 
     if (t <= 0)
       return yyeof_;
