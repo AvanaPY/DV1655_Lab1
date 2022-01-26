@@ -1,14 +1,21 @@
-%{
-    #include <string>
-    #include "Node.h"
+%skeleton "lalr1.cc" 
+%defines
+%define parse.error verbose
+%define api.value.type variant
+%define api.token.constructor
+
+%code requires{
+  #include <string>
+  #include "Node.h"
+}
+%code{
+  #define YY_DECL yy::parser::symbol_type yylex()
+
+  YY_DECL;
   
-    int yylex();
-    void yyerror(char* c); 
-
-    #define YY_DECL yy::parser::symbol_type yylex()
-    Node* root;
-%}
-
+  Node* root;
+  
+}
 // definition of set of tokens. All tokens are of type string
 %token INTEGER_LITERAL IDENTIFIER END
 
