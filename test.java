@@ -1,13 +1,17 @@
 class Main {
-   public static void main(String [] args) {
-      if(a == 2){
-         System.out.println(1);
-      } else {
-         System.out.println(2);  // abc
+   public static void main(String[] args ){
+      while(a == 0){
+         System.out.println(notyeet)
       }
+      return null;
    }
 }
 
-class MainTwo {
+class Abcyeee {
    int[] a;
+   public void yeet(float name){
+      while(a == b){
+         System.out.println(yeet)
+      };
+   }
 }

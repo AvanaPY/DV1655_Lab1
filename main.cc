@@ -3,10 +3,11 @@
 
 extern Node* root;
 extern FILE* yyin;
+int lineno=1;
 
 void yy::parser::error(std::string const&err)
 {
-  std::cout << "Cannot generate a syntax tree for this input: " << err << std::endl;
+  std::cout << "\nCannot generate a syntax tree for this input: " << err << "\n   Line no: " << lineno << std::endl;
 }
 
 int main(int argc, char **argv)

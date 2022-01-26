@@ -21,7 +21,7 @@
 %token END 0 "end of file"
 
 // definition of the production rules. All production rules are of type Node
-%type <Node *> expression  addExpression multExpression factor
+%type <Node *> expression addExpression multExpression factor
 
 %%
 expression: addExpression 

@@ -46,8 +46,8 @@
 // "%code requires" blocks.
 #line 7 "parser.yy"
 
-  #include <string>
-  #include "Node.h"
+    #include <string>
+    #include "Node.h"
 
 #line 53 "parser.tab.hh"
 
@@ -365,9 +365,29 @@ namespace yy {
     /// An auxiliary type to compute the largest semantic type.
     union union_type
     {
+      // Goal
+      // MainClass
+      // ClassDeclaration
+      // VarDeclaration
+      // MethodDeclaration
+      // MethodBodyDeclaration
+      // MethodArgumentDeclaration
+      // MethodVarDeclaration
+      // MethodStatementDeclaration
+      // Type
+      // Statement
+      // Expression
+      // FunctionCallDeclaration
+      // Identifier
+      char dummy1[sizeof (Node *)];
+
       // INTEGER_LITERAL
       // IDENTIFIER
-      char dummy1[sizeof (std::string)];
+      // T_Int
+      // T_Bool
+      // T_True
+      // T_False
+      char dummy2[sizeof (std::string)];
     };
 
     /// The size of the largest semantic type.
@@ -487,6 +507,17 @@ namespace yy {
       {}
 #endif
 #if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t, Node *&& v)
+        : Base (t)
+        , value (std::move (v))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const Node *& v)
+        : Base (t)
+        , value (v)
+      {}
+#endif
+#if 201103L <= YY_CPLUSPLUS
       basic_symbol (typename Base::kind_type t, std::string&& v)
         : Base (t)
         , value (std::move (v))
@@ -520,8 +551,29 @@ namespace yy {
         // Type destructor.
 switch (yytype)
     {
+      case 45: // Goal
+      case 46: // MainClass
+      case 47: // ClassDeclaration
+      case 48: // VarDeclaration
+      case 49: // MethodDeclaration
+      case 50: // MethodBodyDeclaration
+      case 51: // MethodArgumentDeclaration
+      case 52: // MethodVarDeclaration
+      case 53: // MethodStatementDeclaration
+      case 54: // Type
+      case 55: // Statement
+      case 56: // Expression
+      case 57: // FunctionCallDeclaration
+      case 58: // Identifier
+        value.template destroy< Node * > ();
+        break;
+
       case 3: // INTEGER_LITERAL
       case 4: // IDENTIFIER
+      case 18: // T_Int
+      case 19: // T_Bool
+      case 20: // T_True
+      case 21: // T_False
         value.template destroy< std::string > ();
         break;
 
@@ -598,26 +650,26 @@ switch (yytype)
       symbol_type (int tok)
         : super_type(token_type (tok))
       {
-        YY_ASSERT (tok == 0 || tok == token::CLASS || tok == token::PUBLIC || tok == token::STATIC || tok == token::VOID || tok == token::MAIN || tok == token::EXTENDS || tok == token::STRING || tok == token::RETURN || tok == token::LENGTH || tok == token::IF || tok == token::ELSE || tok == token::WHILE || tok == token::SYS_PRINTLN || tok == token::T_Int || tok == token::T_Bool || tok == token::T_True || tok == token::T_False || tok == token::PLUSOP || tok == token::MINOP || tok == token::MULOP || tok == token::DIVOP || tok == token::AND || tok == token::OR || tok == token::EQ || tok == token::LT || tok == token::GT || tok == token::THIS || tok == token::NEW || tok == 123 || tok == 40 || tok == 91 || tok == 93 || tok == 41 || tok == 125 || tok == 59 || tok == 44 || tok == 61 || tok == 46 || tok == 33);
+        YY_ASSERT (tok == 0 || tok == token::CLASS || tok == token::PUBLIC || tok == token::STATIC || tok == token::VOID || tok == token::MAIN || tok == token::EXTENDS || tok == token::STRING || tok == token::RETURN || tok == token::LENGTH || tok == token::IF || tok == token::ELSE || tok == token::WHILE || tok == token::SYS_PRINTLN || tok == token::PLUSOP || tok == token::MINOP || tok == token::MULOP || tok == token::DIVOP || tok == token::AND || tok == token::OR || tok == token::EQ || tok == token::LT || tok == token::GT || tok == token::THIS || tok == token::NEW || tok == 123 || tok == 40 || tok == 91 || tok == 93 || tok == 41 || tok == 125 || tok == 59 || tok == 44 || tok == 61 || tok == 46 || tok == 33);
       }
 #else
       symbol_type (int tok)
         : super_type(token_type (tok))
       {
-        YY_ASSERT (tok == 0 || tok == token::CLASS || tok == token::PUBLIC || tok == token::STATIC || tok == token::VOID || tok == token::MAIN || tok == token::EXTENDS || tok == token::STRING || tok == token::RETURN || tok == token::LENGTH || tok == token::IF || tok == token::ELSE || tok == token::WHILE || tok == token::SYS_PRINTLN || tok == token::T_Int || tok == token::T_Bool || tok == token::T_True || tok == token::T_False || tok == token::PLUSOP || tok == token::MINOP || tok == token::MULOP || tok == token::DIVOP || tok == token::AND || tok == token::OR || tok == token::EQ || tok == token::LT || tok == token::GT || tok == token::THIS || tok == token::NEW || tok == 123 || tok == 40 || tok == 91 || tok == 93 || tok == 41 || tok == 125 || tok == 59 || tok == 44 || tok == 61 || tok == 46 || tok == 33);
+        YY_ASSERT (tok == 0 || tok == token::CLASS || tok == token::PUBLIC || tok == token::STATIC || tok == token::VOID || tok == token::MAIN || tok == token::EXTENDS || tok == token::STRING || tok == token::RETURN || tok == token::LENGTH || tok == token::IF || tok == token::ELSE || tok == token::WHILE || tok == token::SYS_PRINTLN || tok == token::PLUSOP || tok == token::MINOP || tok == token::MULOP || tok == token::DIVOP || tok == token::AND || tok == token::OR || tok == token::EQ || tok == token::LT || tok == token::GT || tok == token::THIS || tok == token::NEW || tok == 123 || tok == 40 || tok == 91 || tok == 93 || tok == 41 || tok == 125 || tok == 59 || tok == 44 || tok == 61 || tok == 46 || tok == 33);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       symbol_type (int tok, std::string v)
         : super_type(token_type (tok), std::move (v))
       {
-        YY_ASSERT (tok == token::INTEGER_LITERAL || tok == token::IDENTIFIER);
+        YY_ASSERT (tok == token::INTEGER_LITERAL || tok == token::IDENTIFIER || tok == token::T_Int || tok == token::T_Bool || tok == token::T_True || tok == token::T_False);
       }
 #else
       symbol_type (int tok, const std::string& v)
         : super_type(token_type (tok), v)
       {
-        YY_ASSERT (tok == token::INTEGER_LITERAL || tok == token::IDENTIFIER);
+        YY_ASSERT (tok == token::INTEGER_LITERAL || tok == token::IDENTIFIER || tok == token::T_Int || tok == token::T_Bool || tok == token::T_True || tok == token::T_False);
       }
 #endif
     };
@@ -884,61 +936,61 @@ switch (yytype)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_T_Int ()
+      make_T_Int (std::string v)
       {
-        return symbol_type (token::T_Int);
+        return symbol_type (token::T_Int, std::move (v));
       }
 #else
       static
       symbol_type
-      make_T_Int ()
+      make_T_Int (const std::string& v)
       {
-        return symbol_type (token::T_Int);
+        return symbol_type (token::T_Int, v);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_T_Bool ()
+      make_T_Bool (std::string v)
       {
-        return symbol_type (token::T_Bool);
+        return symbol_type (token::T_Bool, std::move (v));
       }
 #else
       static
       symbol_type
-      make_T_Bool ()
+      make_T_Bool (const std::string& v)
       {
-        return symbol_type (token::T_Bool);
+        return symbol_type (token::T_Bool, v);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_T_True ()
+      make_T_True (std::string v)
       {
-        return symbol_type (token::T_True);
+        return symbol_type (token::T_True, std::move (v));
       }
 #else
       static
       symbol_type
-      make_T_True ()
+      make_T_True (const std::string& v)
       {
-        return symbol_type (token::T_True);
+        return symbol_type (token::T_True, v);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_T_False ()
+      make_T_False (std::string v)
       {
-        return symbol_type (token::T_False);
+        return symbol_type (token::T_False, std::move (v));
       }
 #else
       static
       symbol_type
-      make_T_False ()
+      make_T_False (const std::string& v)
       {
-        return symbol_type (token::T_False);
+        return symbol_type (token::T_False, v);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
@@ -1185,7 +1237,7 @@ switch (yytype)
     static const char* const yytname_[];
 #if YYDEBUG
     // YYRLINE[YYN] -- Source line where rule number YYN was defined.
-    static const signed char yyrline_[];
+    static const short yyrline_[];
     /// Report on the debug stream that the rule \a r is going to be reduced.
     virtual void yy_reduce_print_ (int r);
     /// Print the state stack on the debug stream.
@@ -1412,9 +1464,9 @@ switch (yytype)
     enum
     {
       yyeof_ = 0,
-      yylast_ = 426,     ///< Last index in yytable_.
+      yylast_ = 447,     ///< Last index in yytable_.
       yynnts_ = 15,  ///< Number of nonterminal symbols.
-      yyfinal_ = 6, ///< Termination state number.
+      yyfinal_ = 7, ///< Termination state number.
       yyntokens_ = 44  ///< Number of tokens.
     };
 
@@ -1480,8 +1532,29 @@ switch (yytype)
   {
     switch (this->type_get ())
     {
+      case 45: // Goal
+      case 46: // MainClass
+      case 47: // ClassDeclaration
+      case 48: // VarDeclaration
+      case 49: // MethodDeclaration
+      case 50: // MethodBodyDeclaration
+      case 51: // MethodArgumentDeclaration
+      case 52: // MethodVarDeclaration
+      case 53: // MethodStatementDeclaration
+      case 54: // Type
+      case 55: // Statement
+      case 56: // Expression
+      case 57: // FunctionCallDeclaration
+      case 58: // Identifier
+        value.move< Node * > (std::move (that.value));
+        break;
+
       case 3: // INTEGER_LITERAL
       case 4: // IDENTIFIER
+      case 18: // T_Int
+      case 19: // T_Bool
+      case 20: // T_True
+      case 21: // T_False
         value.move< std::string > (std::move (that.value));
         break;
 
@@ -1499,8 +1572,29 @@ switch (yytype)
   {
     switch (this->type_get ())
     {
+      case 45: // Goal
+      case 46: // MainClass
+      case 47: // ClassDeclaration
+      case 48: // VarDeclaration
+      case 49: // MethodDeclaration
+      case 50: // MethodBodyDeclaration
+      case 51: // MethodArgumentDeclaration
+      case 52: // MethodVarDeclaration
+      case 53: // MethodStatementDeclaration
+      case 54: // Type
+      case 55: // Statement
+      case 56: // Expression
+      case 57: // FunctionCallDeclaration
+      case 58: // Identifier
+        value.copy< Node * > (YY_MOVE (that.value));
+        break;
+
       case 3: // INTEGER_LITERAL
       case 4: // IDENTIFIER
+      case 18: // T_Int
+      case 19: // T_Bool
+      case 20: // T_True
+      case 21: // T_False
         value.copy< std::string > (YY_MOVE (that.value));
         break;
 
@@ -1526,8 +1620,29 @@ switch (yytype)
     super_type::move (s);
     switch (this->type_get ())
     {
+      case 45: // Goal
+      case 46: // MainClass
+      case 47: // ClassDeclaration
+      case 48: // VarDeclaration
+      case 49: // MethodDeclaration
+      case 50: // MethodBodyDeclaration
+      case 51: // MethodArgumentDeclaration
+      case 52: // MethodVarDeclaration
+      case 53: // MethodStatementDeclaration
+      case 54: // Type
+      case 55: // Statement
+      case 56: // Expression
+      case 57: // FunctionCallDeclaration
+      case 58: // Identifier
+        value.move< Node * > (YY_MOVE (s.value));
+        break;
+
       case 3: // INTEGER_LITERAL
       case 4: // IDENTIFIER
+      case 18: // T_Int
+      case 19: // T_Bool
+      case 20: // T_True
+      case 21: // T_False
         value.move< std::string > (YY_MOVE (s.value));
         break;
 
@@ -1585,7 +1700,7 @@ switch (yytype)
   }
 
 } // yy
-#line 1589 "parser.tab.hh"
+#line 1704 "parser.tab.hh"
 
 
 
