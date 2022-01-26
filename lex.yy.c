@@ -807,7 +807,7 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 9 "lexer.l"
-{ return INTEGER_LITERAL; }
+{ return yy::parser::make_INTEGER_LITERAL(); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
