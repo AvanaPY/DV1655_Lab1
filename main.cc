@@ -1,5 +1,5 @@
 #include<iostream>
-#include "y.tab.h"
+#include "parser.tab.hh"
 
 extern Node* root;
 extern FILE* yyin;
