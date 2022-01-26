@@ -1,20 +1,51 @@
 %top{
-#include "parser.tab.hh"
-#define YY_DECL yy::parser::symbol_type yylex()
-#include "Node.h"
+    #include "y.tab.h"
+    #define YY_DECL yy::parser::symbol_type yylex()
+    #include "Node.h"
 }
 %option noyywrap nounput batch noinput stack
 %%
 
-"+"                     {return yy::parser::make_PLUSOP(yytext);}
-"*"                     {return yy::parser::make_MULTOP(yytext);}
-"("                     {return yy::parser::make_LP(yytext);}
-")"                     {return yy::parser::make_RP(yytext);}
+0|[1-9][0-9]*    { return INTEGER_LITERAL; }
+[{}()[,.;]]      { return yytext[0]; }
+\/\/.+\n         {}
+[ \t]+           {}
 
-0|[1-9][0-9]*           {return yy::parser::make_INT(yytext);}
+"class"             { return CLASS; }
+"public"            { return PUBLIC; }
+"static"            { return STATIC; }
+"void"              { return VOID; }
+"main"              { return MAIN; }
+"string"            { return STRING; }
+"return"            { return RETURN; }
+"length"            { return LENGTH; }
 
+"int"               { return T_Int; }
+"boolean"           { return T_Bool; }
+"true"              { return T_True; }
+"false"             { return T_False; }
 
-[ \t\n]+                  {}
+"if"                { return IF; }
+"else"              { return ELSE; }
+"while"             { return WHILE; }
 
-<<EOF>>                 return yy::parser::make_END();
+"this"              { return THIS; }
+"new"               { return NEW; }
+
+"System.out.println" { return SYS_PRINTLN; }
+
+"+"                 { return PLUSOP; }
+"-"                 { return MINOP; }
+"*"                 { return MULOP; }
+"/"                 { return DIVOP; }
+
+"&&"                { return AND; }
+"||"                { return OR; }
+"=="                { return EQ; }
+"<"                 { return LT; }
+">"                 { return GT; }
+
+[a-zA-Z\-]+               { return IDENTIFIER; }
+"\n"             {}
+<<EOF>>          return EOF;
 %%
