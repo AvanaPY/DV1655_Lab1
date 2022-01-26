@@ -20,7 +20,6 @@
 // definition of set of tokens. All tokens are of type string
 %token <std::string>  INTEGER_LITERAL 
 %token <std::string> IDENTIFIER 
-%token END 0 "end of file"
 
 %token CLASS  
 %token PUBLIC  
