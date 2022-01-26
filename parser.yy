@@ -17,7 +17,9 @@
   
 }
 // definition of set of tokens. All tokens are of type string
-%token INTEGER_LITERAL IDENTIFIER END
+%token INTEGER_LITERAL 
+%token <std::string> IDENTIFIER 
+%token END
 
 %token CLASS  
 %token PUBLIC  
