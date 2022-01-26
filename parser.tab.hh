@@ -364,7 +364,10 @@ namespace yy {
 
     /// An auxiliary type to compute the largest semantic type.
     union union_type
-    {    };
+    {
+      // IDENTIFIER
+      char dummy1[sizeof (std::string)];
+    };
 
     /// The size of the largest semantic type.
     enum { size = sizeof (union_type) };
@@ -483,6 +486,17 @@ namespace yy {
         : Base (t)
       {}
 #endif
+#if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t, std::string&& v)
+        : Base (t)
+        , value (std::move (v))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const std::string& v)
+        : Base (t)
+        , value (v)
+      {}
+#endif
 
       /// Destroy the symbol.
       ~basic_symbol ()
@@ -506,6 +520,10 @@ namespace yy {
         // Type destructor.
 switch (yytype)
     {
+      case 4: // IDENTIFIER
+        value.template destroy< std::string > ();
+        break;
+
       default:
         break;
     }
@@ -579,13 +597,26 @@ switch (yytype)
       symbol_type (int tok)
         : super_type(token_type (tok))
       {
-        YY_ASSERT (tok == 0 || tok == token::INTEGER_LITERAL || tok == token::IDENTIFIER || tok == token::END || tok == token::CLASS || tok == token::PUBLIC || tok == token::STATIC || tok == token::VOID || tok == token::MAIN || tok == token::EXTENDS || tok == token::STRING || tok == token::RETURN || tok == token::LENGTH || tok == token::IF || tok == token::ELSE || tok == token::WHILE || tok == token::SYS_PRINTLN || tok == token::T_Int || tok == token::T_Bool || tok == token::T_True || tok == token::T_False || tok == token::PLUSOP || tok == token::MINOP || tok == token::MULOP || tok == token::DIVOP || tok == token::AND || tok == token::OR || tok == token::EQ || tok == token::LT || tok == token::GT || tok == token::THIS || tok == token::NEW || tok == 123 || tok == 40 || tok == 91 || tok == 93 || tok == 41 || tok == 125 || tok == 59 || tok == 44 || tok == 61 || tok == 46 || tok == 33);
+        YY_ASSERT (tok == 0 || tok == token::INTEGER_LITERAL || tok == token::END || tok == token::CLASS || tok == token::PUBLIC || tok == token::STATIC || tok == token::VOID || tok == token::MAIN || tok == token::EXTENDS || tok == token::STRING || tok == token::RETURN || tok == token::LENGTH || tok == token::IF || tok == token::ELSE || tok == token::WHILE || tok == token::SYS_PRINTLN || tok == token::T_Int || tok == token::T_Bool || tok == token::T_True || tok == token::T_False || tok == token::PLUSOP || tok == token::MINOP || tok == token::MULOP || tok == token::DIVOP || tok == token::AND || tok == token::OR || tok == token::EQ || tok == token::LT || tok == token::GT || tok == token::THIS || tok == token::NEW || tok == 123 || tok == 40 || tok == 289 || tok == 91 || tok == 93 || tok == 41 || tok == 125 || tok == 59 || tok == 44 || tok == 61 || tok == 46 || tok == 33);
       }
 #else
       symbol_type (int tok)
         : super_type(token_type (tok))
       {
-        YY_ASSERT (tok == 0 || tok == token::INTEGER_LITERAL || tok == token::IDENTIFIER || tok == token::END || tok == token::CLASS || tok == token::PUBLIC || tok == token::STATIC || tok == token::VOID || tok == token::MAIN || tok == token::EXTENDS || tok == token::STRING || tok == token::RETURN || tok == token::LENGTH || tok == token::IF || tok == token::ELSE || tok == token::WHILE || tok == token::SYS_PRINTLN || tok == token::T_Int || tok == token::T_Bool || tok == token::T_True || tok == token::T_False || tok == token::PLUSOP || tok == token::MINOP || tok == token::MULOP || tok == token::DIVOP || tok == token::AND || tok == token::OR || tok == token::EQ || tok == token::LT || tok == token::GT || tok == token::THIS || tok == token::NEW || tok == 123 || tok == 40 || tok == 91 || tok == 93 || tok == 41 || tok == 125 || tok == 59 || tok == 44 || tok == 61 || tok == 46 || tok == 33);
+        YY_ASSERT (tok == 0 || tok == token::INTEGER_LITERAL || tok == token::END || tok == token::CLASS || tok == token::PUBLIC || tok == token::STATIC || tok == token::VOID || tok == token::MAIN || tok == token::EXTENDS || tok == token::STRING || tok == token::RETURN || tok == token::LENGTH || tok == token::IF || tok == token::ELSE || tok == token::WHILE || tok == token::SYS_PRINTLN || tok == token::T_Int || tok == token::T_Bool || tok == token::T_True || tok == token::T_False || tok == token::PLUSOP || tok == token::MINOP || tok == token::MULOP || tok == token::DIVOP || tok == token::AND || tok == token::OR || tok == token::EQ || tok == token::LT || tok == token::GT || tok == token::THIS || tok == token::NEW || tok == 123 || tok == 40 || tok == 289 || tok == 91 || tok == 93 || tok == 41 || tok == 125 || tok == 59 || tok == 44 || tok == 61 || tok == 46 || tok == 33);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      symbol_type (int tok, std::string v)
+        : super_type(token_type (tok), std::move (v))
+      {
+        YY_ASSERT (tok == token::IDENTIFIER);
+      }
+#else
+      symbol_type (int tok, const std::string& v)
+        : super_type(token_type (tok), v)
+      {
+        YY_ASSERT (tok == token::IDENTIFIER);
       }
 #endif
     };
@@ -642,16 +673,16 @@ switch (yytype)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_IDENTIFIER ()
+      make_IDENTIFIER (std::string v)
       {
-        return symbol_type (token::IDENTIFIER);
+        return symbol_type (token::IDENTIFIER, std::move (v));
       }
 #else
       static
       symbol_type
-      make_IDENTIFIER ()
+      make_IDENTIFIER (const std::string& v)
       {
-        return symbol_type (token::IDENTIFIER);
+        return symbol_type (token::IDENTIFIER, v);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
@@ -1395,10 +1426,10 @@ switch (yytype)
     enum
     {
       yyeof_ = 0,
-      yylast_ = 388,     ///< Last index in yytable_.
+      yylast_ = 403,     ///< Last index in yytable_.
       yynnts_ = 14,  ///< Number of nonterminal symbols.
       yyfinal_ = 6, ///< Termination state number.
-      yyntokens_ = 45  ///< Number of tokens.
+      yyntokens_ = 46  ///< Number of tokens.
     };
 
 
@@ -1417,16 +1448,16 @@ switch (yytype)
        0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,    44,     2,     2,     2,     2,     2,     2,
-      35,    38,     2,     2,    41,     2,    43,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,    40,
-       2,    42,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,    45,     2,     2,     2,     2,     2,     2,
+      35,    39,     2,     2,    42,     2,    44,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,    41,
+       2,    43,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,    36,     2,    37,     2,     2,     2,     2,     2,     2,
+       2,    37,     2,    38,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,    34,     2,    39,     2,     2,     2,     2,
+       2,     2,     2,    34,     2,    40,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -1442,9 +1473,9 @@ switch (yytype)
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-      25,    26,    27,    28,    29,    30,    31,    32,    33
+      25,    26,    27,    28,    29,    30,    31,    32,    33,    36
     };
-    const int user_token_number_max_ = 288;
+    const int user_token_number_max_ = 289;
 
     if (t <= 0)
       return yyeof_;
@@ -1463,6 +1494,10 @@ switch (yytype)
   {
     switch (this->type_get ())
     {
+      case 4: // IDENTIFIER
+        value.move< std::string > (std::move (that.value));
+        break;
+
       default:
         break;
     }
@@ -1477,6 +1512,10 @@ switch (yytype)
   {
     switch (this->type_get ())
     {
+      case 4: // IDENTIFIER
+        value.copy< std::string > (YY_MOVE (that.value));
+        break;
+
       default:
         break;
     }
@@ -1499,6 +1538,10 @@ switch (yytype)
     super_type::move (s);
     switch (this->type_get ())
     {
+      case 4: // IDENTIFIER
+        value.move< std::string > (YY_MOVE (s.value));
+        break;
+
       default:
         break;
     }
@@ -1553,7 +1596,7 @@ switch (yytype)
   }
 
 } // yy
-#line 1557 "parser.tab.hh"
+#line 1600 "parser.tab.hh"
 
 
 
