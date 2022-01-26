@@ -1,15 +1,16 @@
 %top{
     #include "parser.tab.hh"
     #define YY_DECL yy::parser::symbol_type yylex()
+    #define yyterminate() return token::END
     #include "Node.h"
 }
 %option noyywrap nounput batch noinput stack
 %%
 
-0|[1-9][0-9]*       { return yy::parser::make_INTEGER_LITERAL(); }
-[\{\}\(\)\[\]\,\.\;] {  return yytext[0]; }
-\/\/.+\n            {}
-[ \t]+              {}
+0|[1-9][0-9]*        { return yy::parser::make_INTEGER_LITERAL(yytext); }
+[\{\}\(\)\[\]\,\.\;] { return yytext[0]; }
+\/\/.+\n             {}
+[ \t\n]+             {}
 
 "class"             { return yy::parser::make_CLASS(); }
 "public"            { return yy::parser::make_PUBLIC(); }
@@ -19,7 +20,7 @@
 "String"            { return yy::parser::make_STRING(); }
 "return"            { return yy::parser::make_RETURN(); }
 "length"            { return yy::parser::make_LENGTH(); }
-
+"extends"           { return yy::parser::make_EXTENDS(); }
 "int"               { return yy::parser::make_T_Int(); }
 "boolean"           { return yy::parser::make_T_Bool(); }
 "true"              { return yy::parser::make_T_True(); }
@@ -47,6 +48,5 @@
 ">"                 { return yy::parser::make_GT(); }
 
 [a-zA-Z_]+          { return yy::parser::make_IDENTIFIER(yytext); }
-"\n"                {}
-<<EOF>>          return EOF;
+<<EOF>>             return EOF;
 %%
