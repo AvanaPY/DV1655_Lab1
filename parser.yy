@@ -17,9 +17,9 @@
   
 }
 // definition of set of tokens. All tokens are of type string
-%token INTEGER_LITERAL 
+%token <std::string>  INTEGER_LITERAL 
 %token <std::string> IDENTIFIER 
-%token END
+%token END 0 "end of file"
 
 %token CLASS  
 %token PUBLIC  
@@ -40,6 +40,7 @@
 %token AND OR EQ LT GT 
 
 %token THIS NEW
+
 // definition of the production rules. All production rules are of type Node
 // %type <Node *> expression  addExpression multExpression factor
 
@@ -47,20 +48,19 @@
 Goal                : MainClass ClassDeclaration END
                     ;
 
-MainClass           : CLASS Identifier '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' Identifier ')' '{' Statement '}' '}'
+MainClass           : CLASS Identifier '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' Identifier ')' '{' MainClassBody '}' '}'
                     ;
 
-ClassDeclaration    : CLASS Identifier '{' ClassBodyDeclaration '}'
-                    | CLASS Identifier EXTENDS Identifier '{' ClassBodyDeclaration '}'
+MainClassBody       : MainClassBody Statement
+                    | Statement
                     ;
 
-ClassBodyDeclaration : VarDeclaration MethodDeclaration
-                     |
-                     ;
+ClassDeclaration    : CLASS Identifier '{' VarDeclaration MethodDeclaration '}'
+                    | CLASS Identifier EXTENDS Identifier '{' VarDeclaration MethodDeclaration '}'
+                    ;
 
 VarDeclaration      : VarDeclaration Type Identifier ';'
                     | Type Identifier ';'
-                    |
                     ;
 
 MethodDeclaration   : MethodDeclaration PUBLIC Type Identifier '(' MethodArgumentDeclaration ')' '{' MethodVarDeclaration MethodStatementDeclaration RETURN Expression ';' '}'
