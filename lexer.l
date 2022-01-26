@@ -2,7 +2,9 @@
     #include "parser.tab.hh"
     #define YY_DECL yy::parser::symbol_type yylex()
     #include "Node.h"
+    extern int lineno;
 }
+
 %option noyywrap nounput batch noinput
 %%
 
@@ -16,10 +18,11 @@
 "return"            { return yy::parser::make_RETURN(); }
 "length"            { return yy::parser::make_LENGTH(); }
 "extends"           { return yy::parser::make_EXTENDS(); }
-"int"               { return yy::parser::make_T_Int(); }
-"boolean"           { return yy::parser::make_T_Bool(); }
-"true"              { return yy::parser::make_T_True(); }
-"false"             { return yy::parser::make_T_False(); }
+
+"int"               { return yy::parser::make_T_Int(yytext); }
+"boolean"           { return yy::parser::make_T_Bool(yytext); }
+"true"              { return yy::parser::make_T_True(yytext); }
+"false"             { return yy::parser::make_T_False(yytext); }
 
 "if"                { return yy::parser::make_IF(); }
 "else"              { return yy::parser::make_ELSE(); }
@@ -43,7 +46,8 @@
 ">"                 { return yy::parser::make_GT(); }
 
 [\{\}\(\)\[\]\,\.\;] { return yytext[0]; }
-[ \t\n]+|\/\/.+\n    {}
+[ \t]+|\/\/.+\n    {}
+"\n"                 { lineno++;}
 [a-zA-Z_]+           { return yy::parser::make_IDENTIFIER(yytext); }
 0|[1-9][0-9]*        { return yy::parser::make_INTEGER_LITERAL(yytext); }
 
