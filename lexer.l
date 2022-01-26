@@ -7,10 +7,6 @@
 %option noyywrap nounput batch noinput stack
 %%
 
-0|[1-9][0-9]*        { return yy::parser::make_INTEGER_LITERAL(yytext); }
-[\{\}\(\)\[\]\,\.\;] { return yytext[0]; }
-\/\/.+\n             {}
-[ \t\n]+             {}
 
 "class"             { return yy::parser::make_CLASS(); }
 "public"            { return yy::parser::make_PUBLIC(); }
@@ -47,6 +43,10 @@
 "<"                 { return yy::parser::make_LT(); }
 ">"                 { return yy::parser::make_GT(); }
 
-[a-zA-Z_]+          { return yy::parser::make_IDENTIFIER(yytext); }
-<<EOF>>             return EOF;
+[\{\}\(\)\[\]\,\.\;] { return yytext[0]; }
+\/\/.+\n             {}
+[ \t\n]+             {}
+[a-zA-Z_]+           { return yy::parser::make_IDENTIFIER(yytext); }
+0|[1-9][0-9]*        { return yy::parser::make_INTEGER_LITERAL(yytext); }
+<<EOF>>             return yy::parser::make_END();
 %%
