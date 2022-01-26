@@ -7,3 +7,7 @@ class Main {
       }
    }
 }
+
+class MainTwo {
+   int[] a;
+}

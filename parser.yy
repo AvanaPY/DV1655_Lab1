@@ -16,6 +16,7 @@
   Node* root;
   
 }
+
 // definition of set of tokens. All tokens are of type string
 %token <std::string>  INTEGER_LITERAL 
 %token <std::string> IDENTIFIER 
@@ -45,7 +46,7 @@
 // %type <Node *> expression  addExpression multExpression factor
 
 %%
-Goal                : MainClass ClassDeclaration END
+Goal                : MainClass ClassDeclaration
                     ;
 
 MainClass           : CLASS Identifier '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' Identifier ')' '{' MainClassBody '}' '}'
@@ -106,14 +107,14 @@ Expression          : Expression AND Expression
                     | Expression DIVOP Expression
                     | Expression '[' Expression ']'
                     | Expression '.' LENGTH
-                    | Expression '.' Identifier '(' ')'
+                    | Expression '.' Identifier '(' FunctionCallDeclaration ')'
                     | INTEGER_LITERAL
                     | T_True
                     | T_False
                     | Identifier
                     | THIS
                     | NEW T_Int '[' Expression ']'
-                    | NEW Identifier '(' FunctionCallDeclaration ')'
+                    | NEW Identifier '(' ')'
                     | '!' Expression 
                     | '(' Expression ')'
                     ;
