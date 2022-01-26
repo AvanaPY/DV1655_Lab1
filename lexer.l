@@ -1,7 +1,7 @@
 %top{
-#include "parser.tab.hh"
-#define YY_DECL yy::parser::symbol_type yylex()
-#include "Node.h"
+    #include "parser.tab.hh"
+    #define YY_DECL yy::parser::symbol_type yylex()
+    #include "Node.h"
 }
 %option noyywrap nounput batch noinput stack
 %%
