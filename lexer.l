@@ -6,7 +6,7 @@
 %option noyywrap nounput batch noinput stack
 %%
 
-0|[1-9][0-9]*    { return INTEGER_LITERAL; }
+0|[1-9][0-9]*    { return yy::parser::make_INTEGER_LITERAL(); }
 [{}()[,.;]]      { return yytext[0]; }
 \/\/.+\n         {}
 [ \t]+           {}
