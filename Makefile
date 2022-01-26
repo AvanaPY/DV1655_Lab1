@@ -1,13 +1,13 @@
-compiler: lex.yy.c y.tab.o main.cc
-		g++ -g -w -ocompiler y.tab.o lex.yy.c main.cc -std=c++14
-y.tab.o: y.tab.c
-		g++ -g -w -c y.tab.c -std=c++14
-y.tab.c: parser.yy
-		bison -vdty parser.yy
-lex.yy.c: lexer.l y.tab.c
+compiler: lex.yy.c parser.tab.o main.cc
+		g++ -g -w -ocompiler parser.tab.o lex.yy.c main.cc -std=c++14
+parser.tab.o: parser.tab.cc
+		g++ -g -w -c parser.tab.cc -std=c++14
+parser.tab.cc: parser.yy
+		bison parser.yy
+lex.yy.c: lexer.l parser.tab.cc
 		flex lexer.l
 tree: 
 		 dot -Tpdf tree.dot -otree.pdf
 clean:
-		rm -f y.tab.* lex.yy.c* compiler stack.hh tree.dot tree.pdf *.output
-		rm -fR compiler.dSYM
+		rm -f parser.tab.* lex.yy.c* compiler stack.hh tree.dot tree.pdf
+		rm -R compiler.dSYM
