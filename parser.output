@@ -14,7 +14,7 @@ State 128 conflicts: 11 shift/reduce
 
 Grammar
 
-    0 $accept: Goal "end of file"
+    0 $accept: Goal $end
 
     1 Goal: MainClass ClassDeclaration
 
@@ -86,7 +86,7 @@ Grammar
 
 Terminals, with rules where they appear
 
-    "end of file" (0) 0
+    $end (0) 0
     '!' (33) 48
     '(' (40) 2 9 24 25 26 40 47 49
     ')' (41) 2 9 24 25 26 40 47 49
@@ -181,7 +181,7 @@ Nonterminals, with rules where they appear
 
 State 0
 
-    0 $accept: . Goal "end of file"
+    0 $accept: . Goal $end
 
     CLASS  shift, and go to state 1
 
@@ -200,9 +200,9 @@ State 1
 
 State 2
 
-    0 $accept: Goal . "end of file"
+    0 $accept: Goal . $end
 
-    "end of file"  shift, and go to state 6
+    $end  shift, and go to state 6
 
 
 State 3
@@ -230,7 +230,7 @@ State 5
 
 State 6
 
-    0 $accept: Goal "end of file" .
+    0 $accept: Goal $end .
 
     $default  accept
 

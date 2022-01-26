@@ -1,10 +1,9 @@
 %top{
     #include "parser.tab.hh"
     #define YY_DECL yy::parser::symbol_type yylex()
-    #define yyterminate() return token::END
     #include "Node.h"
 }
-%option noyywrap nounput batch noinput stack
+%option noyywrap nounput batch noinput
 %%
 
 
@@ -44,9 +43,8 @@
 ">"                 { return yy::parser::make_GT(); }
 
 [\{\}\(\)\[\]\,\.\;] { return yytext[0]; }
-\/\/.+\n             {}
-[ \t\n]+             {}
+[ \t\n]+|\/\/.+\n    {}
 [a-zA-Z_]+           { return yy::parser::make_IDENTIFIER(yytext); }
 0|[1-9][0-9]*        { return yy::parser::make_INTEGER_LITERAL(yytext); }
-<<EOF>>             return yy::parser::make_END();
+
 %%

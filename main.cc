@@ -11,20 +11,23 @@ void yy::parser::error(std::string const&err)
 
 int main(int argc, char **argv)
 {
-  //Reads from file if a file name is passed as an argument. Otherwise, reads from stdin.
-  if(argc > 1) {
-    if(!(yyin = fopen(argv[1], "r"))) {
-      perror(argv[1]);
-      return 1;
+    //Reads from file if a file name is passed as an argument. Otherwise, reads from stdin.
+    if(argc > 1) {
+        if(!(yyin = fopen(argv[1], "r"))) {
+          perror(argv[1]);
+          printf("Error could not open file");
+          return 1;
+        }
     }
-  }
 
-  yy::parser parser;
-	  
-  if(!parser.parse()) {
-    root->print_tree();
-    root->generate_tree();
-  }
+    yy::parser parser;
+      
+    printf("Parsing...\n");
+    if(!parser.parse()) {
+        printf("Parsed\n");
+        root->print_tree();
+        root->generate_tree();
+    }
   
   return 0;
 }

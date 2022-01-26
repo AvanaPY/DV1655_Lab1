@@ -1032,28 +1032,28 @@ namespace yy {
   const char*
   const parser::yytname_[] =
   {
-  "\"end of file\"", "error", "$undefined", "INTEGER_LITERAL",
-  "IDENTIFIER", "CLASS", "PUBLIC", "STATIC", "VOID", "MAIN", "EXTENDS",
-  "STRING", "RETURN", "LENGTH", "IF", "ELSE", "WHILE", "SYS_PRINTLN",
-  "T_Int", "T_Bool", "T_True", "T_False", "PLUSOP", "MINOP", "MULOP",
-  "DIVOP", "AND", "OR", "EQ", "LT", "GT", "THIS", "NEW", "'{'", "'('",
-  "'['", "']'", "')'", "'}'", "';'", "','", "'='", "'.'", "'!'", "$accept",
-  "Goal", "MainClass", "MainClassBody", "ClassDeclaration",
-  "VarDeclaration", "MethodDeclaration", "MethodArgumentDeclaration",
-  "MethodVarDeclaration", "MethodStatementDeclaration", "Type",
-  "Statement", "Expression", "FunctionCallDeclaration", "Identifier", YY_NULLPTR
+  "$end", "error", "$undefined", "INTEGER_LITERAL", "IDENTIFIER", "CLASS",
+  "PUBLIC", "STATIC", "VOID", "MAIN", "EXTENDS", "STRING", "RETURN",
+  "LENGTH", "IF", "ELSE", "WHILE", "SYS_PRINTLN", "T_Int", "T_Bool",
+  "T_True", "T_False", "PLUSOP", "MINOP", "MULOP", "DIVOP", "AND", "OR",
+  "EQ", "LT", "GT", "THIS", "NEW", "'{'", "'('", "'['", "']'", "')'",
+  "'}'", "';'", "','", "'='", "'.'", "'!'", "$accept", "Goal", "MainClass",
+  "MainClassBody", "ClassDeclaration", "VarDeclaration",
+  "MethodDeclaration", "MethodArgumentDeclaration", "MethodVarDeclaration",
+  "MethodStatementDeclaration", "Type", "Statement", "Expression",
+  "FunctionCallDeclaration", "Identifier", YY_NULLPTR
   };
 
 #if YYDEBUG
   const signed char
   parser::yyrline_[] =
   {
-       0,    49,    49,    52,    55,    56,    59,    60,    63,    64,
-      67,    68,    71,    72,    73,    76,    77,    80,    81,    84,
-      85,    86,    87,    90,    91,    92,    93,    94,    95,    96,
-      99,   100,   101,   102,   103,   104,   105,   106,   107,   108,
-     109,   110,   111,   112,   113,   114,   115,   116,   117,   118,
-     119,   122,   123,   124,   127
+       0,    48,    48,    51,    54,    55,    58,    59,    62,    63,
+      66,    67,    70,    71,    72,    75,    76,    79,    80,    83,
+      84,    85,    86,    89,    90,    91,    92,    93,    94,    95,
+      98,    99,   100,   101,   102,   103,   104,   105,   106,   107,
+     108,   109,   110,   111,   112,   113,   114,   115,   116,   117,
+     118,   121,   122,   123,   126
   };
 
   // Print the state stack on the debug stream.

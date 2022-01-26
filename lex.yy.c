@@ -1,9 +1,8 @@
     #include "parser.tab.hh"
     #define YY_DECL yy::parser::symbol_type yylex()
-    #define yyterminate() return token::END
     #include "Node.h"
 
-#line 7 "lex.yy.c"
+#line 6 "lex.yy.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -358,8 +357,8 @@ static void yynoreturn yy_fatal_error ( const char* msg  );
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
-#define YY_NUM_RULES 35
-#define YY_END_OF_BUFFER 36
+#define YY_NUM_RULES 34
+#define YY_END_OF_BUFFER 35
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -369,18 +368,18 @@ struct yy_trans_info
 	};
 static const flex_int16_t yy_accept[130] =
     {   0,
-        0,    0,   36,   35,   32,   35,   30,   22,   20,   21,
-       23,   34,   34,   28,   24,   29,   33,   33,   33,   33,
-       33,   33,   33,   33,   33,   33,   33,   33,   33,   33,
-       33,   33,   35,   32,   25,    0,   34,   27,   33,   33,
-       33,   33,   33,   33,   33,   33,   14,   33,   33,   33,
-       33,   33,   33,   33,   33,   33,   33,   33,   26,    0,
-       33,   33,   33,   33,   33,   33,   33,   10,   33,   33,
-       18,   33,   33,   33,   33,   33,   33,   33,   31,   33,
-       33,   33,   33,   15,   33,   33,   33,    5,   33,   33,
-       33,   17,   12,    4,   33,   33,   33,   33,    1,   33,
+        0,    0,   35,   34,   31,   34,   30,   22,   20,   21,
+       23,   33,   33,   28,   24,   29,   32,   32,   32,   32,
+       32,   32,   32,   32,   32,   32,   32,   32,   32,   32,
+       32,   32,   34,   31,   25,    0,   33,   27,   32,   32,
+       32,   32,   32,   32,   32,   32,   14,   32,   32,   32,
+       32,   32,   32,   32,   32,   32,   32,   32,   26,    0,
+       32,   32,   32,   32,   32,   32,   32,   10,   32,   32,
+       18,   32,   32,   32,   32,   32,   32,   32,   31,   32,
+       32,   32,   32,   15,   32,   32,   32,    5,   32,   32,
+       32,   17,   12,    4,   32,   32,   32,   32,    1,   32,
 
-       13,   33,   33,   33,   33,   16,    6,   33,   33,   33,
+       13,   32,   32,   32,   32,   16,    6,   32,   32,   32,
         8,    2,    7,    3,    0,   11,    9,    0,    0,    0,
         0,    0,    0,    0,    0,    0,    0,   19,    0
     } ;
@@ -528,7 +527,7 @@ char *yytext;
 #line 1 "lexer.l"
 
 #define YY_NO_INPUT 1
-#line 532 "lex.yy.c"
+#line 531 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -608,16 +607,6 @@ static int input ( void );
 
 #endif
 
-        static int yy_start_stack_ptr = 0;
-        static int yy_start_stack_depth = 0;
-        static int *yy_start_stack = NULL;
-    
-    static void yy_push_state ( int _new_state );
-    
-    static void yy_pop_state ( void );
-    
-    static int yy_top_state ( void );
-    
 /* Amount of stuff to slurp up with each read. */
 #ifndef YY_READ_BUF_SIZE
 #ifdef __ia64__
@@ -753,11 +742,11 @@ YY_DECL
 		}
 
 	{
-#line 8 "lexer.l"
+#line 7 "lexer.l"
 
 
 
-#line 761 "lex.yy.c"
+#line 750 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -812,186 +801,178 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 11 "lexer.l"
+#line 10 "lexer.l"
 { return yy::parser::make_CLASS(); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 12 "lexer.l"
+#line 11 "lexer.l"
 { return yy::parser::make_PUBLIC(); }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 13 "lexer.l"
+#line 12 "lexer.l"
 { return yy::parser::make_STATIC(); }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 14 "lexer.l"
+#line 13 "lexer.l"
 { return yy::parser::make_VOID(); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 15 "lexer.l"
+#line 14 "lexer.l"
 { return yy::parser::make_MAIN(); }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 16 "lexer.l"
+#line 15 "lexer.l"
 { return yy::parser::make_STRING(); }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 17 "lexer.l"
+#line 16 "lexer.l"
 { return yy::parser::make_RETURN(); }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 18 "lexer.l"
+#line 17 "lexer.l"
 { return yy::parser::make_LENGTH(); }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 19 "lexer.l"
+#line 18 "lexer.l"
 { return yy::parser::make_EXTENDS(); }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 20 "lexer.l"
+#line 19 "lexer.l"
 { return yy::parser::make_T_Int(); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 21 "lexer.l"
+#line 20 "lexer.l"
 { return yy::parser::make_T_Bool(); }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 22 "lexer.l"
+#line 21 "lexer.l"
 { return yy::parser::make_T_True(); }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 23 "lexer.l"
+#line 22 "lexer.l"
 { return yy::parser::make_T_False(); }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 25 "lexer.l"
+#line 24 "lexer.l"
 { return yy::parser::make_IF(); }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 26 "lexer.l"
+#line 25 "lexer.l"
 { return yy::parser::make_ELSE(); }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 27 "lexer.l"
+#line 26 "lexer.l"
 { return yy::parser::make_WHILE(); }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 29 "lexer.l"
+#line 28 "lexer.l"
 { return yy::parser::make_THIS(); }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 30 "lexer.l"
+#line 29 "lexer.l"
 { return yy::parser::make_NEW(); }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 32 "lexer.l"
+#line 31 "lexer.l"
 { return yy::parser::make_SYS_PRINTLN(); }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 34 "lexer.l"
+#line 33 "lexer.l"
 { return yy::parser::make_PLUSOP(); }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 35 "lexer.l"
+#line 34 "lexer.l"
 { return yy::parser::make_MINOP(); }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 36 "lexer.l"
+#line 35 "lexer.l"
 { return yy::parser::make_MULOP(); }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 37 "lexer.l"
+#line 36 "lexer.l"
 { return yy::parser::make_DIVOP(); }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 38 "lexer.l"
+#line 37 "lexer.l"
 { return yytext[0]; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 40 "lexer.l"
+#line 39 "lexer.l"
 { return yy::parser::make_AND(); }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 41 "lexer.l"
+#line 40 "lexer.l"
 { return yy::parser::make_OR(); }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 42 "lexer.l"
+#line 41 "lexer.l"
 { return yy::parser::make_EQ(); }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 43 "lexer.l"
+#line 42 "lexer.l"
 { return yy::parser::make_LT(); }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 44 "lexer.l"
+#line 43 "lexer.l"
 { return yy::parser::make_GT(); }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 46 "lexer.l"
+#line 45 "lexer.l"
 { return yytext[0]; }
 	YY_BREAK
 case 31:
 /* rule 31 can match eol */
 YY_RULE_SETUP
-#line 47 "lexer.l"
+#line 46 "lexer.l"
 {}
 	YY_BREAK
 case 32:
-/* rule 32 can match eol */
 YY_RULE_SETUP
-#line 48 "lexer.l"
-{}
+#line 47 "lexer.l"
+{ return yy::parser::make_IDENTIFIER(yytext); }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 49 "lexer.l"
-{ return yy::parser::make_IDENTIFIER(yytext); }
+#line 48 "lexer.l"
+{ return yy::parser::make_INTEGER_LITERAL(yytext); }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
 #line 50 "lexer.l"
-{ return yy::parser::make_INTEGER_LITERAL(yytext); }
-	YY_BREAK
-case YY_STATE_EOF(INITIAL):
-#line 51 "lexer.l"
-return yy::parser::make_END();
-	YY_BREAK
-case 35:
-YY_RULE_SETUP
-#line 52 "lexer.l"
 ECHO;
 	YY_BREAK
-#line 995 "lex.yy.c"
+#line 974 "lex.yy.c"
+case YY_STATE_EOF(INITIAL):
+	yyterminate();
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1751,44 +1732,6 @@ YY_BUFFER_STATE yy_scan_bytes  (const char * yybytes, int  _yybytes_len )
 	return b;
 }
 
-    static void yy_push_state (int  _new_state )
-{
-    	if ( (yy_start_stack_ptr) >= (yy_start_stack_depth) )
-		{
-		yy_size_t new_size;
-
-		(yy_start_stack_depth) += YY_START_STACK_INCR;
-		new_size = (yy_size_t) (yy_start_stack_depth) * sizeof( int );
-
-		if ( ! (yy_start_stack) )
-			(yy_start_stack) = (int *) yyalloc( new_size  );
-
-		else
-			(yy_start_stack) = (int *) yyrealloc(
-					(void *) (yy_start_stack), new_size  );
-
-		if ( ! (yy_start_stack) )
-			YY_FATAL_ERROR( "out of memory expanding start-condition stack" );
-		}
-
-	(yy_start_stack)[(yy_start_stack_ptr)++] = YY_START;
-
-	BEGIN(_new_state);
-}
-
-    static void yy_pop_state  (void)
-{
-    	if ( --(yy_start_stack_ptr) < 0 )
-		YY_FATAL_ERROR( "start-condition stack underflow" );
-
-	BEGIN((yy_start_stack)[(yy_start_stack_ptr)]);
-}
-
-    static int yy_top_state  (void)
-{
-    	return (yy_start_stack)[(yy_start_stack_ptr) - 1];
-}
-
 #ifndef YY_EXIT_FAILURE
 #define YY_EXIT_FAILURE 2
 #endif
@@ -1909,10 +1852,6 @@ static int yy_init_globals (void)
     (yy_init) = 0;
     (yy_start) = 0;
 
-    (yy_start_stack_ptr) = 0;
-    (yy_start_stack_depth) = 0;
-    (yy_start_stack) =  NULL;
-
 /* Defined in main.c */
 #ifdef YY_STDINIT
     yyin = stdin;
@@ -1942,10 +1881,6 @@ int yylex_destroy  (void)
 	/* Destroy the stack itself. */
 	yyfree((yy_buffer_stack) );
 	(yy_buffer_stack) = NULL;
-
-    /* Destroy the start condition stack. */
-        yyfree( (yy_start_stack)  );
-        (yy_start_stack) = NULL;
 
     /* Reset the globals. This is important in a non-reentrant scanner so the next time
      * yylex() is called, initialization will occur. */
@@ -2004,5 +1939,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 52 "lexer.l"
+#line 50 "lexer.l"
 

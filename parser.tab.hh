@@ -406,7 +406,6 @@ namespace yy {
     {
       enum yytokentype
       {
-        END = 0,
         INTEGER_LITERAL = 258,
         IDENTIFIER = 259,
         CLASS = 260,
@@ -599,13 +598,13 @@ switch (yytype)
       symbol_type (int tok)
         : super_type(token_type (tok))
       {
-        YY_ASSERT (tok == token::END || tok == token::CLASS || tok == token::PUBLIC || tok == token::STATIC || tok == token::VOID || tok == token::MAIN || tok == token::EXTENDS || tok == token::STRING || tok == token::RETURN || tok == token::LENGTH || tok == token::IF || tok == token::ELSE || tok == token::WHILE || tok == token::SYS_PRINTLN || tok == token::T_Int || tok == token::T_Bool || tok == token::T_True || tok == token::T_False || tok == token::PLUSOP || tok == token::MINOP || tok == token::MULOP || tok == token::DIVOP || tok == token::AND || tok == token::OR || tok == token::EQ || tok == token::LT || tok == token::GT || tok == token::THIS || tok == token::NEW || tok == 123 || tok == 40 || tok == 91 || tok == 93 || tok == 41 || tok == 125 || tok == 59 || tok == 44 || tok == 61 || tok == 46 || tok == 33);
+        YY_ASSERT (tok == 0 || tok == token::CLASS || tok == token::PUBLIC || tok == token::STATIC || tok == token::VOID || tok == token::MAIN || tok == token::EXTENDS || tok == token::STRING || tok == token::RETURN || tok == token::LENGTH || tok == token::IF || tok == token::ELSE || tok == token::WHILE || tok == token::SYS_PRINTLN || tok == token::T_Int || tok == token::T_Bool || tok == token::T_True || tok == token::T_False || tok == token::PLUSOP || tok == token::MINOP || tok == token::MULOP || tok == token::DIVOP || tok == token::AND || tok == token::OR || tok == token::EQ || tok == token::LT || tok == token::GT || tok == token::THIS || tok == token::NEW || tok == 123 || tok == 40 || tok == 91 || tok == 93 || tok == 41 || tok == 125 || tok == 59 || tok == 44 || tok == 61 || tok == 46 || tok == 33);
       }
 #else
       symbol_type (int tok)
         : super_type(token_type (tok))
       {
-        YY_ASSERT (tok == token::END || tok == token::CLASS || tok == token::PUBLIC || tok == token::STATIC || tok == token::VOID || tok == token::MAIN || tok == token::EXTENDS || tok == token::STRING || tok == token::RETURN || tok == token::LENGTH || tok == token::IF || tok == token::ELSE || tok == token::WHILE || tok == token::SYS_PRINTLN || tok == token::T_Int || tok == token::T_Bool || tok == token::T_True || tok == token::T_False || tok == token::PLUSOP || tok == token::MINOP || tok == token::MULOP || tok == token::DIVOP || tok == token::AND || tok == token::OR || tok == token::EQ || tok == token::LT || tok == token::GT || tok == token::THIS || tok == token::NEW || tok == 123 || tok == 40 || tok == 91 || tok == 93 || tok == 41 || tok == 125 || tok == 59 || tok == 44 || tok == 61 || tok == 46 || tok == 33);
+        YY_ASSERT (tok == 0 || tok == token::CLASS || tok == token::PUBLIC || tok == token::STATIC || tok == token::VOID || tok == token::MAIN || tok == token::EXTENDS || tok == token::STRING || tok == token::RETURN || tok == token::LENGTH || tok == token::IF || tok == token::ELSE || tok == token::WHILE || tok == token::SYS_PRINTLN || tok == token::T_Int || tok == token::T_Bool || tok == token::T_True || tok == token::T_False || tok == token::PLUSOP || tok == token::MINOP || tok == token::MULOP || tok == token::DIVOP || tok == token::AND || tok == token::OR || tok == token::EQ || tok == token::LT || tok == token::GT || tok == token::THIS || tok == token::NEW || tok == 123 || tok == 40 || tok == 91 || tok == 93 || tok == 41 || tok == 125 || tok == 59 || tok == 44 || tok == 61 || tok == 46 || tok == 33);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
@@ -657,21 +656,6 @@ switch (yytype)
     void error (const syntax_error& err);
 
     // Implementation of make_symbol for each symbol type.
-#if 201103L <= YY_CPLUSPLUS
-      static
-      symbol_type
-      make_END ()
-      {
-        return symbol_type (token::END);
-      }
-#else
-      static
-      symbol_type
-      make_END ()
-      {
-        return symbol_type (token::END);
-      }
-#endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
@@ -1601,7 +1585,7 @@ switch (yytype)
   }
 
 } // yy
-#line 1605 "parser.tab.hh"
+#line 1589 "parser.tab.hh"
 
 
 
