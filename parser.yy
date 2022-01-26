@@ -1,66 +1,115 @@
-%skeleton "lalr1.cc" 
-%defines
-%define parse.error verbose
-%define api.value.type variant
-%define api.token.constructor
-
-%code requires{
-  #include <string>
-  #include "Node.h"
-}
-%code{
-  #define YY_DECL yy::parser::symbol_type yylex()
-
-  YY_DECL;
+%{
+    #include <string>
+    #include "Node.h"
   
-  Node* root;
-  
-}
+    int yylex();
+    void yyerror(char* c); 
+
+    #define YY_DECL yy::parser::symbol_type yylex()
+    Node* root;
+%}
+
 // definition of set of tokens. All tokens are of type string
-%token <std::string> PLUSOP MINUSOP MULTOP INT LP RP 
-%token END 0 "end of file"
+%token INTEGER_LITERAL IDENTIFIER END
 
+%token CLASS  
+%token PUBLIC  
+%token STATIC  
+%token VOID    
+%token MAIN    
+%token EXTENDS
+%token STRING
+%token RETURN
+%token LENGTH
+
+%token IF ELSE WHILE
+%token SYS_PRINTLN
+
+%token T_Int T_Bool T_True T_False
+
+%token PLUSOP MINOP MULOP DIVOP 
+%token AND OR EQ LT GT 
+
+%token THIS NEW
 // definition of the production rules. All production rules are of type Node
-%type <Node *> expression  addExpression multExpression factor
+// %type <Node *> expression  addExpression multExpression factor
 
 %%
-expression: addExpression 
-                          { /*  
-                                Here we create the root node (named Expression), then we add the content of addExpression (accessed through $1) as a child of the root node. 
-                                The "root" is a reference to the root node. 
-                            */
-                            $$ = new Node("Expression", "");
-                            $$->children.push_back($1);
-                            root = $$;
-                            printf("r1 ");
-                          };
+Goal                : MainClass ClassDeclaration END
+                    ;
 
-addExpression: multExpression { $$ = $1; printf("r2 "); /*simply return the content of multExpression*/}
-             | addExpression PLUSOP multExpression {  /*
-                                                  Create a subtree that corresponds to the AddExpressions
-                                                  The root of the subtree is AddExpression
-                                                  The childs of the AddExpression subtree are the left hand side (addExpression accessed through $1) and right hand side of the expression (multExpression accessed through $3)
-                                                */
-                            $$ = new Node("AddExpression", "");
-                            $$->children.push_back($1);
-                            $$->children.push_back($3);
-                            printf("r3 ");
-                          }
-      ;
+MainClass           : CLASS Identifier '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' Identifier ')' '{' Statement '}' '}'
+                    ;
 
-multExpression: factor { $$ = $1; printf("r4 "); /*simply return the content of multExpression*/}
-              | multExpression MULTOP factor { /*
-                                                  Create a subtree that corresponds to the MultExpression
-                                                  The root of the subtree is MultExpression
-                                                  The childs of the MultExpression subtree are the left hand side (multExpression accessed through $1) and right hand side of the expression (factor accessed through $3)
-                                                */
-                            $$ = new Node("MultExpression", ""); 
-                            $$->children.push_back($1);
-                            $$->children.push_back($3);
-                            printf("r5 ");
-                      }
-        ;
+ClassDeclaration    : CLASS Identifier '{' VarDeclaration MethodDeclaration  '}'
+                    | CLASS Identifier EXTENDS Identifier '{' VarDeclaration MethodDeclaration '}'
+                    ;
 
-factor: INT  {  $$ = new Node("Int", $1); printf("r6 "); /* Here we create a leaf node Int. The value of the leaf node is $1 */}
-    | LP expression RP { $$ = $2; printf("r7 "); /* simply return the expression */}
-    ;
+VarDeclaration      : VarDeclaration Type Identifier ';'
+                    | Type Identifier ';'
+                    ;
+
+MethodDeclaration   : MethodDeclaration PUBLIC Type Identifier '(' MethodArgumentDeclaration ')' '{' MethodVarDeclaration MethodStatementDeclaration RETURN Expression ';' '}'
+                    | 
+                    ;
+
+MethodArgumentDeclaration   : Type Identifier
+                            | MethodArgumentDeclaration ',' Type Identifier
+                            |
+                            ;
+
+MethodVarDeclaration        : MethodVarDeclaration VarDeclaration
+                            | VarDeclaration
+                            |
+                            ;
+
+MethodStatementDeclaration  : MethodStatementDeclaration Statement
+                            | Statement
+                            |
+                            ;
+
+Type                : T_Int '[' ']'
+                    | T_Bool
+                    | T_Int
+                    | Identifier
+                    ;
+                    
+Statement           : '{' Statement Statement '}'
+                    | '{' Statement '}'
+                    | IF '(' Expression ')' Statement ELSE Statement
+                    | WHILE '(' Expression ')' Statement
+                    | SYS_PRINTLN '(' Expression ')' ';'
+                    | Identifier '=' Expression ';'
+                    | Identifier '[' Expression ']' '=' Expression ';'
+                    ;
+
+Expression          : Expression AND Expression
+                    | Expression OR Expression
+                    | Expression LT Expression
+                    | Expression GT Expression
+                    | Expression EQ Expression
+                    | Expression PLUSOP Expression
+                    | Expression MINOP Expression
+                    | Expression MULOP Expression
+                    | Expression DIVOP Expression
+                    | Expression '[' Expression ']'
+                    | Expression '.' LENGTH
+                    | Expression '.' Identifier '(' ')'
+                    | INTEGER_LITERAL
+                    | T_True
+                    | T_False
+                    | Identifier
+                    | THIS
+                    | NEW T_Int '[' Expression ']'
+                    | NEW Identifier '(' FunctionCallDeclaration ')'
+                    | '!' Expression 
+                    | '(' Expression ')'
+                    ;
+
+FunctionCallDeclaration : FunctionCallDeclaration ',' Expression
+                        | Expression
+                        |
+                        ;
+                        
+Identifier          : IDENTIFIER
+                    ;
