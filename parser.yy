@@ -54,23 +54,24 @@ Goal                : MainClass ClassDeclaration {
                     ;
 
 MainClass           : CLASS Identifier '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' Identifier ')' '{' Statement '}' '}' {
-                                                                    $$ = new Node("MainClass", "");
-                                                                    $$->children.push_back($2);
-                                                                    $$->children.push_back($15);
+                                                                    $$ = new Node("MainClass", $2->type);
+                                                                    Node* n = new Node("Method", "Main");
+                                                                    n->children.push_back($15);
+                                                                    $$->children.push_back(n);
                                                                     printf("r2 ");
                                                                 }
                     ;
 
 ClassDeclaration    : CLASS Identifier '{' VarDeclaration MethodDeclaration '}' {
-                                            $$ = new Node("Class", "");
-                                            $$->children.push_back($2);
+                                            $$ = new Node("Class", $2->type);
                                             $$->children.push_back($4);
                                             $$->children.push_back($5);
                                             printf("r5 ");
                                         }
                     | CLASS Identifier EXTENDS Identifier '{' VarDeclaration MethodDeclaration '}'{
-                                            $$ = new Node("Class Extends", $4->type);
-                                            $$->children.push_back($2);
+                                            $$ = new Node("Class", $2->type);
+
+                                            $$->children.push_back(new Node("Class Extends", $4->type));
                                             $$->children.push_back($6);
                                             $$->children.push_back($7);
                                             printf("r6 ");
@@ -78,14 +79,14 @@ ClassDeclaration    : CLASS Identifier '{' VarDeclaration MethodDeclaration '}' 
                     ;
 
 VarDeclaration      : VarDeclaration Type Identifier ';' {
-                                            $$ = new Node("Var declaration", "");
+                                            $$ = new Node("Variable", "");
                                             $$->children.push_back($2);
                                             $$->children.push_back($3);
                                             $$->children.push_back($1);
                                             printf("r7 ");
                                         }
                     | Type Identifier ';' {
-                                            $$ = new Node("Var declaration", "");
+                                            $$ = new Node("Variable", "");
                                             $$->children.push_back($2);
                                             $$->children.push_back($1);
                                             printf("r8 ");
@@ -94,13 +95,13 @@ VarDeclaration      : VarDeclaration Type Identifier ';' {
                     ;
 
 MethodDeclaration   : MethodDeclaration PUBLIC Type Identifier '(' MethodArgumentDeclaration ')' '{' MethodBodyDeclaration '}' {
-                                $$ = new Node("Type Method Declaration", $4->type);
+                                $$ = new Node("Method", $4->type);
                                 $$->children.push_back($6);
                                 $$->children.push_back($9);
                                 printf("r9 ");
                             }
                     | PUBLIC Type Identifier '(' MethodArgumentDeclaration ')' '{' MethodBodyDeclaration '}' {
-                                $$ = new Node("Type Method Declaration", "");
+                                $$ = new Node("Method", "");
                                 $$->children.push_back($3);
                                 $$->children.push_back($5);
                                 $$->children.push_back($8);
@@ -110,24 +111,24 @@ MethodDeclaration   : MethodDeclaration PUBLIC Type Identifier '(' MethodArgumen
                     ;
 
 MethodBodyDeclaration       : MethodBodyDeclaration MethodVarDeclaration {
-                                $$ = new Node("Method Body-Var Declaration", "");
+                                $$ = new Node("Variable", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($2);
                                 printf("r10 ");
                             }
                             | MethodBodyDeclaration MethodStatementDeclaration   {
-                                $$ = new Node("Method Body-Var Declaration", "");
+                                $$ = new Node("Statement", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($2);
                                 printf("r11 ");
                             }
                             | MethodVarDeclaration{
-                                $$ = new Node("Method Body-Var Declaration", "");
+                                $$ = new Node("Variable", "");
                                 $$->children.push_back($1);
                                 printf("r12 ");
                             }
                             | MethodStatementDeclaration {
-                                $$ = new Node("Method Body-Statement Declaration", "");
+                                $$ = new Node("Statement", "");
                                 $$->children.push_back($1);
                                 printf("r14 ");
                             }
@@ -135,7 +136,7 @@ MethodBodyDeclaration       : MethodBodyDeclaration MethodVarDeclaration {
 
 MethodArgumentDeclaration   : MethodArgumentDeclaration ',' Type Identifier
                             | Type Identifier{
-                                            $$ = new Node("Method Arg Declaration", "");
+                                            $$ = new Node("Argument", "");
                                             $$->children.push_back($1);
                                             $$->children.push_back($2);
                                             printf("r16 ");
@@ -144,7 +145,7 @@ MethodArgumentDeclaration   : MethodArgumentDeclaration ',' Type Identifier
 
 MethodVarDeclaration        : MethodVarDeclaration VarDeclaration
                             | VarDeclaration {
-                                            $$ = new Node("Method Var Declaration", "");
+                                            $$ = new Node("Variable", "");
                                             $$->children.push_back($1);
                                             printf("r19 ");
                                         }
@@ -181,26 +182,32 @@ Type                : T_Int {
                             }
                     ;
                     
-Statement           : Statement {
+Statement           : Statement Statement ';' {
+                                    $$ = new Node("Statement", "");
+                                    $$->children.push_back($1);
+                                    $$->children.push_back($2);
+                                    printf("r27 ");
+                                    }
+                    | Statement ';' {
                                 $$ = new Node("Statement", "");
                                 $$->children.push_back($1);
-                                printf("r27 ");
+                                printf("r28 ");
                             }
-                    | IF '(' Expression ')' '{' Statement ';' '}' ELSE '{' Statement ';' '}' {
+                    | IF '(' Expression ')' '{' Statement '}' ELSE '{' Statement '}' {
                                 $$ = new Node("IF", "");
                                 $$->children.push_back($3);
-                                $$->children.push_back($11);
+                                $$->children.push_back($6);
+                                $$->children.push_back($10);
                                 printf("r29 ");
                             }
-                    | WHILE '(' Expression ')'  '{' Statement ';' '}' {
+                    | WHILE '(' Expression ')'  '{' Statement '}' {
                                 $$ = new Node("While", "");
                                 $$->children.push_back($3);
                                 $$->children.push_back($6);
                                 printf("r30 ");
                             }
                     | SYS_PRINTLN '(' Expression ')' {
-                                $$ = new Node("SYS_PRINTLN", "");
-                                $$->children.push_back($3);
+                                $$ = new Node("SYS_PRINTLN", $3->value);
                                 printf("r31 ");
                             }
                     | Identifier '=' Expression {
@@ -210,7 +217,7 @@ Statement           : Statement {
                                 printf("r32 ");
                             }
                     | Identifier '[' Expression ']' '=' Expression{
-                                $$ = new Node("Assign []", "");
+                                $$ = new Node("Assign[]", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($3);
                                 $$->children.push_back($6);

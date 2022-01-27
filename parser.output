@@ -8,8 +8,6 @@ Rules useless in parser due to conflicts
    11 MethodBodyDeclaration: MethodBodyDeclaration MethodVarDeclaration
    13                      | MethodVarDeclaration
 
-   26 Statement: Statement
-
 
 State 14 conflicts: 5 shift/reduce
 State 20 conflicts: 1 shift/reduce
@@ -20,27 +18,24 @@ State 64 conflicts: 5 shift/reduce
 State 65 conflicts: 9 shift/reduce
 State 66 conflicts: 5 shift/reduce, 9 reduce/reduce
 State 67 conflicts: 5 shift/reduce
-State 68 conflicts: 9 reduce/reduce
+State 68 conflicts: 5 shift/reduce
 State 71 conflicts: 8 shift/reduce
 State 77 conflicts: 5 shift/reduce, 9 reduce/reduce
 State 78 conflicts: 5 shift/reduce
 State 79 conflicts: 5 shift/reduce
-State 80 conflicts: 9 reduce/reduce
-State 84 conflicts: 9 shift/reduce
-State 85 conflicts: 1 shift/reduce
-State 104 conflicts: 11 shift/reduce
-State 124 conflicts: 7 shift/reduce
-State 125 conflicts: 7 shift/reduce
-State 126 conflicts: 7 shift/reduce
+State 80 conflicts: 5 shift/reduce
+State 86 conflicts: 9 shift/reduce
+State 99 conflicts: 6 reduce/reduce
+State 107 conflicts: 11 shift/reduce
 State 127 conflicts: 7 shift/reduce
-State 128 conflicts: 11 shift/reduce
-State 129 conflicts: 11 shift/reduce
-State 130 conflicts: 11 shift/reduce
+State 128 conflicts: 7 shift/reduce
+State 129 conflicts: 7 shift/reduce
+State 130 conflicts: 7 shift/reduce
 State 131 conflicts: 11 shift/reduce
 State 132 conflicts: 11 shift/reduce
-State 142 conflicts: 1 shift/reduce
-State 144 conflicts: 1 shift/reduce
-State 158 conflicts: 1 shift/reduce
+State 133 conflicts: 11 shift/reduce
+State 134 conflicts: 11 shift/reduce
+State 135 conflicts: 11 shift/reduce
 
 
 Grammar
@@ -82,87 +77,88 @@ Grammar
    24     | VOID
    25     | Identifier
 
-   26 Statement: Statement
-   27          | IF '(' Expression ')' '{' Statement ';' '}' ELSE '{' Statement ';' '}'
-   28          | WHILE '(' Expression ')' '{' Statement ';' '}'
-   29          | SYS_PRINTLN '(' Expression ')'
-   30          | Identifier '=' Expression
-   31          | Identifier '[' Expression ']' '=' Expression
+   26 Statement: Statement Statement ';'
+   27          | Statement ';'
+   28          | IF '(' Expression ')' '{' Statement '}' ELSE '{' Statement '}'
+   29          | WHILE '(' Expression ')' '{' Statement '}'
+   30          | SYS_PRINTLN '(' Expression ')'
+   31          | Identifier '=' Expression
+   32          | Identifier '[' Expression ']' '=' Expression
 
-   32 Expression: Expression AND Expression
-   33           | Expression OR Expression
-   34           | Expression LT Expression
-   35           | Expression GT Expression
-   36           | Expression EQ Expression
-   37           | Expression PLUSOP Expression
-   38           | Expression MINOP Expression
-   39           | Expression MULOP Expression
-   40           | Expression DIVOP Expression
-   41           | Expression '[' Expression ']'
-   42           | Expression '.' LENGTH
-   43           | Expression '.' Identifier '(' FunctionCallDeclaration ')'
-   44           | INTEGER_LITERAL
-   45           | T_True
-   46           | T_False
-   47           | Identifier
-   48           | THIS
-   49           | NEW T_Int '[' Expression ']'
-   50           | NEW Identifier '(' ')'
-   51           | '!' Expression
-   52           | '(' Expression ')'
+   33 Expression: Expression AND Expression
+   34           | Expression OR Expression
+   35           | Expression LT Expression
+   36           | Expression GT Expression
+   37           | Expression EQ Expression
+   38           | Expression PLUSOP Expression
+   39           | Expression MINOP Expression
+   40           | Expression MULOP Expression
+   41           | Expression DIVOP Expression
+   42           | Expression '[' Expression ']'
+   43           | Expression '.' LENGTH
+   44           | Expression '.' Identifier '(' FunctionCallDeclaration ')'
+   45           | INTEGER_LITERAL
+   46           | T_True
+   47           | T_False
+   48           | Identifier
+   49           | THIS
+   50           | NEW T_Int '[' Expression ']'
+   51           | NEW Identifier '(' ')'
+   52           | '!' Expression
+   53           | '(' Expression ')'
 
-   53 FunctionCallDeclaration: FunctionCallDeclaration ',' Expression
-   54                        | Expression
+   54 FunctionCallDeclaration: FunctionCallDeclaration ',' Expression
+   55                        | Expression
 
-   55 Identifier: IDENTIFIER
-   56           | MAIN
+   56 Identifier: IDENTIFIER
+   57           | MAIN
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
-    '!' (33) 51
-    '(' (40) 2 8 9 27 28 29 43 50 52
-    ')' (41) 2 8 9 27 28 29 43 50 52
-    ',' (44) 15 53
-    '.' (46) 42 43
-    ';' (59) 5 6 27 28
-    '=' (61) 30 31
-    '[' (91) 2 22 31 41 49
-    ']' (93) 2 22 31 41 49
-    '{' (123) 2 3 4 8 9 27 28
-    '}' (125) 2 3 4 8 9 27 28
+    '!' (33) 52
+    '(' (40) 2 8 9 28 29 30 44 51 53
+    ')' (41) 2 8 9 28 29 30 44 51 53
+    ',' (44) 15 54
+    '.' (46) 43 44
+    ';' (59) 5 6 26 27
+    '=' (61) 31 32
+    '[' (91) 2 22 32 42 50
+    ']' (93) 2 22 32 42 50
+    '{' (123) 2 3 4 8 9 28 29
+    '}' (125) 2 3 4 8 9 28 29
     error (256)
-    INTEGER_LITERAL <std::string> (258) 44
-    IDENTIFIER <std::string> (259) 55
+    INTEGER_LITERAL <std::string> (258) 45
+    IDENTIFIER <std::string> (259) 56
     CLASS (260) 2 3 4
     PUBLIC (261) 2 8 9
     STATIC (262) 2
     VOID (263) 2 24
-    MAIN (264) 2 56
+    MAIN (264) 2 57
     EXTENDS (265) 4
     STRING (266) 2
     RETURN (267)
-    LENGTH (268) 42
-    IF (269) 27
-    ELSE (270) 27
-    WHILE (271) 28
-    SYS_PRINTLN (272) 29
-    T_Int <std::string> (273) 21 22 49
+    LENGTH (268) 43
+    IF (269) 28
+    ELSE (270) 28
+    WHILE (271) 29
+    SYS_PRINTLN (272) 30
+    T_Int <std::string> (273) 21 22 50
     T_Bool <std::string> (274) 23
-    T_True <std::string> (275) 45
-    T_False <std::string> (276) 46
-    PLUSOP (277) 37
-    MINOP (278) 38
-    MULOP (279) 39
-    DIVOP (280) 40
-    THIS (281) 48
-    NEW (282) 49 50
-    AND (283) 32
-    OR (284) 33
-    EQ (285) 36
-    LT (286) 34
-    GT (287) 35
+    T_True <std::string> (275) 46
+    T_False <std::string> (276) 47
+    PLUSOP (277) 38
+    MINOP (278) 39
+    MULOP (279) 40
+    DIVOP (280) 41
+    THIS (281) 49
+    NEW (282) 50 51
+    AND (283) 33
+    OR (284) 34
+    EQ (285) 37
+    LT (286) 35
+    GT (287) 36
 
 
 Nonterminals, with rules where they appear
@@ -200,17 +196,17 @@ Nonterminals, with rules where they appear
         on left: 21 22 23 24 25
         on right: 5 6 8 9 15 16
     Statement <Node *> (55)
-        on left: 26 27 28 29 30 31
-        on right: 2 19 20 26 27 28
+        on left: 26 27 28 29 30 31 32
+        on right: 2 19 20 26 27 28 29
     Expression <Node *> (56)
-        on left: 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52
-        on right: 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 49 51 52 53 54
+        on left: 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53
+        on right: 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 50 52 53 54 55
     FunctionCallDeclaration <Node *> (57)
-        on left: 53 54
-        on right: 43 53
+        on left: 54 55
+        on right: 44 54
     Identifier <Node *> (58)
-        on left: 55 56
-        on right: 2 3 4 5 6 8 9 15 16 25 30 31 43 47 50
+        on left: 56 57
+        on right: 2 3 4 5 6 8 9 15 16 25 31 32 44 48 51
 
 
 State 0
@@ -251,16 +247,16 @@ State 3
 
 State 4
 
-   55 Identifier: IDENTIFIER .
+   56 Identifier: IDENTIFIER .
 
-    $default  reduce using rule 55 (Identifier)
+    $default  reduce using rule 56 (Identifier)
 
 
 State 5
 
-   56 Identifier: MAIN .
+   57 Identifier: MAIN .
 
-    $default  reduce using rule 56 (Identifier)
+    $default  reduce using rule 57 (Identifier)
 
 
 State 6
@@ -809,21 +805,21 @@ State 60
 
 State 61
 
-   27 Statement: IF . '(' Expression ')' '{' Statement ';' '}' ELSE '{' Statement ';' '}'
+   28 Statement: IF . '(' Expression ')' '{' Statement '}' ELSE '{' Statement '}'
 
     '('  shift, and go to state 73
 
 
 State 62
 
-   28 Statement: WHILE . '(' Expression ')' '{' Statement ';' '}'
+   29 Statement: WHILE . '(' Expression ')' '{' Statement '}'
 
     '('  shift, and go to state 74
 
 
 State 63
 
-   29 Statement: SYS_PRINTLN . '(' Expression ')'
+   30 Statement: SYS_PRINTLN . '(' Expression ')'
 
     '('  shift, and go to state 75
 
@@ -945,37 +941,35 @@ State 67
 State 68
 
    20 MethodStatementDeclaration: Statement .
-   26 Statement: Statement .
+   26 Statement: Statement . Statement ';'
+   27          | Statement . ';'
 
-    IDENTIFIER   reduce using rule 20 (MethodStatementDeclaration)
-    IDENTIFIER   [reduce using rule 26 (Statement)]
-    VOID         reduce using rule 20 (MethodStatementDeclaration)
-    VOID         [reduce using rule 26 (Statement)]
-    MAIN         reduce using rule 20 (MethodStatementDeclaration)
-    MAIN         [reduce using rule 26 (Statement)]
-    IF           reduce using rule 20 (MethodStatementDeclaration)
-    IF           [reduce using rule 26 (Statement)]
-    WHILE        reduce using rule 20 (MethodStatementDeclaration)
-    WHILE        [reduce using rule 26 (Statement)]
-    SYS_PRINTLN  reduce using rule 20 (MethodStatementDeclaration)
-    SYS_PRINTLN  [reduce using rule 26 (Statement)]
-    T_Int        reduce using rule 20 (MethodStatementDeclaration)
-    T_Int        [reduce using rule 26 (Statement)]
-    T_Bool       reduce using rule 20 (MethodStatementDeclaration)
-    T_Bool       [reduce using rule 26 (Statement)]
-    '}'          reduce using rule 20 (MethodStatementDeclaration)
-    '}'          [reduce using rule 26 (Statement)]
+    IDENTIFIER   shift, and go to state 4
+    MAIN         shift, and go to state 5
+    IF           shift, and go to state 61
+    WHILE        shift, and go to state 62
+    SYS_PRINTLN  shift, and go to state 63
+    ';'          shift, and go to state 82
+
+    IDENTIFIER   [reduce using rule 20 (MethodStatementDeclaration)]
+    MAIN         [reduce using rule 20 (MethodStatementDeclaration)]
+    IF           [reduce using rule 20 (MethodStatementDeclaration)]
+    WHILE        [reduce using rule 20 (MethodStatementDeclaration)]
+    SYS_PRINTLN  [reduce using rule 20 (MethodStatementDeclaration)]
     $default     reduce using rule 20 (MethodStatementDeclaration)
+
+    Statement   go to state 83
+    Identifier  go to state 81
 
 
 State 69
 
    25 Type: Identifier .
-   30 Statement: Identifier . '=' Expression
-   31          | Identifier . '[' Expression ']' '=' Expression
+   31 Statement: Identifier . '=' Expression
+   32          | Identifier . '[' Expression ']' '=' Expression
 
-    '['  shift, and go to state 82
-    '='  shift, and go to state 83
+    '['  shift, and go to state 84
+    '='  shift, and go to state 85
 
     $default  reduce using rule 25 (Type)
 
@@ -1011,7 +1005,7 @@ State 71
     $default     reduce using rule 7 (VarDeclaration)
 
     VarDeclaration              go to state 64
-    MethodBodyDeclaration       go to state 84
+    MethodBodyDeclaration       go to state 86
     MethodVarDeclaration        go to state 66
     MethodStatementDeclaration  go to state 67
     Type                        go to state 21
@@ -1029,62 +1023,62 @@ State 72
     WHILE        shift, and go to state 62
     SYS_PRINTLN  shift, and go to state 63
 
-    Statement   go to state 85
+    Statement   go to state 87
     Identifier  go to state 81
 
 
 State 73
 
-   27 Statement: IF '(' . Expression ')' '{' Statement ';' '}' ELSE '{' Statement ';' '}'
+   28 Statement: IF '(' . Expression ')' '{' Statement '}' ELSE '{' Statement '}'
 
-    INTEGER_LITERAL  shift, and go to state 86
+    INTEGER_LITERAL  shift, and go to state 88
     IDENTIFIER       shift, and go to state 4
     MAIN             shift, and go to state 5
-    T_True           shift, and go to state 87
-    T_False          shift, and go to state 88
-    THIS             shift, and go to state 89
-    NEW              shift, and go to state 90
-    '('              shift, and go to state 91
-    '!'              shift, and go to state 92
+    T_True           shift, and go to state 89
+    T_False          shift, and go to state 90
+    THIS             shift, and go to state 91
+    NEW              shift, and go to state 92
+    '('              shift, and go to state 93
+    '!'              shift, and go to state 94
 
-    Expression  go to state 93
-    Identifier  go to state 94
+    Expression  go to state 95
+    Identifier  go to state 96
 
 
 State 74
 
-   28 Statement: WHILE '(' . Expression ')' '{' Statement ';' '}'
+   29 Statement: WHILE '(' . Expression ')' '{' Statement '}'
 
-    INTEGER_LITERAL  shift, and go to state 86
+    INTEGER_LITERAL  shift, and go to state 88
     IDENTIFIER       shift, and go to state 4
     MAIN             shift, and go to state 5
-    T_True           shift, and go to state 87
-    T_False          shift, and go to state 88
-    THIS             shift, and go to state 89
-    NEW              shift, and go to state 90
-    '('              shift, and go to state 91
-    '!'              shift, and go to state 92
+    T_True           shift, and go to state 89
+    T_False          shift, and go to state 90
+    THIS             shift, and go to state 91
+    NEW              shift, and go to state 92
+    '('              shift, and go to state 93
+    '!'              shift, and go to state 94
 
-    Expression  go to state 95
-    Identifier  go to state 94
+    Expression  go to state 97
+    Identifier  go to state 96
 
 
 State 75
 
-   29 Statement: SYS_PRINTLN '(' . Expression ')'
+   30 Statement: SYS_PRINTLN '(' . Expression ')'
 
-    INTEGER_LITERAL  shift, and go to state 86
+    INTEGER_LITERAL  shift, and go to state 88
     IDENTIFIER       shift, and go to state 4
     MAIN             shift, and go to state 5
-    T_True           shift, and go to state 87
-    T_False          shift, and go to state 88
-    THIS             shift, and go to state 89
-    NEW              shift, and go to state 90
-    '('              shift, and go to state 91
-    '!'              shift, and go to state 92
+    T_True           shift, and go to state 89
+    T_False          shift, and go to state 90
+    THIS             shift, and go to state 91
+    NEW              shift, and go to state 92
+    '('              shift, and go to state 93
+    '!'              shift, and go to state 94
 
-    Expression  go to state 96
-    Identifier  go to state 94
+    Expression  go to state 98
+    Identifier  go to state 96
 
 
 State 76
@@ -1177,75 +1171,97 @@ State 79
 State 80
 
    19 MethodStatementDeclaration: MethodStatementDeclaration Statement .
-   26 Statement: Statement .
+   26 Statement: Statement . Statement ';'
+   27          | Statement . ';'
 
-    IDENTIFIER   reduce using rule 19 (MethodStatementDeclaration)
-    IDENTIFIER   [reduce using rule 26 (Statement)]
-    VOID         reduce using rule 19 (MethodStatementDeclaration)
-    VOID         [reduce using rule 26 (Statement)]
-    MAIN         reduce using rule 19 (MethodStatementDeclaration)
-    MAIN         [reduce using rule 26 (Statement)]
-    IF           reduce using rule 19 (MethodStatementDeclaration)
-    IF           [reduce using rule 26 (Statement)]
-    WHILE        reduce using rule 19 (MethodStatementDeclaration)
-    WHILE        [reduce using rule 26 (Statement)]
-    SYS_PRINTLN  reduce using rule 19 (MethodStatementDeclaration)
-    SYS_PRINTLN  [reduce using rule 26 (Statement)]
-    T_Int        reduce using rule 19 (MethodStatementDeclaration)
-    T_Int        [reduce using rule 26 (Statement)]
-    T_Bool       reduce using rule 19 (MethodStatementDeclaration)
-    T_Bool       [reduce using rule 26 (Statement)]
-    '}'          reduce using rule 19 (MethodStatementDeclaration)
-    '}'          [reduce using rule 26 (Statement)]
+    IDENTIFIER   shift, and go to state 4
+    MAIN         shift, and go to state 5
+    IF           shift, and go to state 61
+    WHILE        shift, and go to state 62
+    SYS_PRINTLN  shift, and go to state 63
+    ';'          shift, and go to state 82
+
+    IDENTIFIER   [reduce using rule 19 (MethodStatementDeclaration)]
+    MAIN         [reduce using rule 19 (MethodStatementDeclaration)]
+    IF           [reduce using rule 19 (MethodStatementDeclaration)]
+    WHILE        [reduce using rule 19 (MethodStatementDeclaration)]
+    SYS_PRINTLN  [reduce using rule 19 (MethodStatementDeclaration)]
     $default     reduce using rule 19 (MethodStatementDeclaration)
+
+    Statement   go to state 83
+    Identifier  go to state 81
 
 
 State 81
 
-   30 Statement: Identifier . '=' Expression
-   31          | Identifier . '[' Expression ']' '=' Expression
+   31 Statement: Identifier . '=' Expression
+   32          | Identifier . '[' Expression ']' '=' Expression
 
-    '['  shift, and go to state 82
-    '='  shift, and go to state 83
+    '['  shift, and go to state 84
+    '='  shift, and go to state 85
 
 
 State 82
 
-   31 Statement: Identifier '[' . Expression ']' '=' Expression
+   27 Statement: Statement ';' .
 
-    INTEGER_LITERAL  shift, and go to state 86
-    IDENTIFIER       shift, and go to state 4
-    MAIN             shift, and go to state 5
-    T_True           shift, and go to state 87
-    T_False          shift, and go to state 88
-    THIS             shift, and go to state 89
-    NEW              shift, and go to state 90
-    '('              shift, and go to state 91
-    '!'              shift, and go to state 92
-
-    Expression  go to state 97
-    Identifier  go to state 94
+    $default  reduce using rule 27 (Statement)
 
 
 State 83
 
-   30 Statement: Identifier '=' . Expression
+   26 Statement: Statement . Statement ';'
+   26          | Statement Statement . ';'
+   27          | Statement . ';'
 
-    INTEGER_LITERAL  shift, and go to state 86
-    IDENTIFIER       shift, and go to state 4
-    MAIN             shift, and go to state 5
-    T_True           shift, and go to state 87
-    T_False          shift, and go to state 88
-    THIS             shift, and go to state 89
-    NEW              shift, and go to state 90
-    '('              shift, and go to state 91
-    '!'              shift, and go to state 92
+    IDENTIFIER   shift, and go to state 4
+    MAIN         shift, and go to state 5
+    IF           shift, and go to state 61
+    WHILE        shift, and go to state 62
+    SYS_PRINTLN  shift, and go to state 63
+    ';'          shift, and go to state 99
 
-    Expression  go to state 98
-    Identifier  go to state 94
+    Statement   go to state 83
+    Identifier  go to state 81
 
 
 State 84
+
+   32 Statement: Identifier '[' . Expression ']' '=' Expression
+
+    INTEGER_LITERAL  shift, and go to state 88
+    IDENTIFIER       shift, and go to state 4
+    MAIN             shift, and go to state 5
+    T_True           shift, and go to state 89
+    T_False          shift, and go to state 90
+    THIS             shift, and go to state 91
+    NEW              shift, and go to state 92
+    '('              shift, and go to state 93
+    '!'              shift, and go to state 94
+
+    Expression  go to state 100
+    Identifier  go to state 96
+
+
+State 85
+
+   31 Statement: Identifier '=' . Expression
+
+    INTEGER_LITERAL  shift, and go to state 88
+    IDENTIFIER       shift, and go to state 4
+    MAIN             shift, and go to state 5
+    T_True           shift, and go to state 89
+    T_False          shift, and go to state 90
+    THIS             shift, and go to state 91
+    NEW              shift, and go to state 92
+    '('              shift, and go to state 93
+    '!'              shift, and go to state 94
+
+    Expression  go to state 101
+    Identifier  go to state 96
+
+
+State 86
 
     8 MethodDeclaration: MethodDeclaration PUBLIC Type Identifier '(' MethodArgumentDeclaration ')' '{' MethodBodyDeclaration . '}'
    11 MethodBodyDeclaration: MethodBodyDeclaration . MethodVarDeclaration
@@ -1259,7 +1275,7 @@ State 84
     SYS_PRINTLN  shift, and go to state 63
     T_Int        shift, and go to state 18
     T_Bool       shift, and go to state 19
-    '}'          shift, and go to state 99
+    '}'          shift, and go to state 102
 
     IDENTIFIER   [reduce using rule 7 (VarDeclaration)]
     VOID         [reduce using rule 7 (VarDeclaration)]
@@ -1279,671 +1295,663 @@ State 84
     Identifier                  go to state 69
 
 
-State 85
-
-    2 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' Identifier ')' '{' Statement . '}' '}'
-   26 Statement: Statement .
-
-    '}'  shift, and go to state 100
-
-    '}'  [reduce using rule 26 (Statement)]
-
-
-State 86
-
-   44 Expression: INTEGER_LITERAL .
-
-    $default  reduce using rule 44 (Expression)
-
-
 State 87
 
-   45 Expression: T_True .
+    2 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' Identifier ')' '{' Statement . '}' '}'
+   26 Statement: Statement . Statement ';'
+   27          | Statement . ';'
 
-    $default  reduce using rule 45 (Expression)
+    IDENTIFIER   shift, and go to state 4
+    MAIN         shift, and go to state 5
+    IF           shift, and go to state 61
+    WHILE        shift, and go to state 62
+    SYS_PRINTLN  shift, and go to state 63
+    '}'          shift, and go to state 103
+    ';'          shift, and go to state 82
+
+    Statement   go to state 83
+    Identifier  go to state 81
 
 
 State 88
 
-   46 Expression: T_False .
+   45 Expression: INTEGER_LITERAL .
 
-    $default  reduce using rule 46 (Expression)
+    $default  reduce using rule 45 (Expression)
 
 
 State 89
 
-   48 Expression: THIS .
+   46 Expression: T_True .
 
-    $default  reduce using rule 48 (Expression)
+    $default  reduce using rule 46 (Expression)
 
 
 State 90
 
-   49 Expression: NEW . T_Int '[' Expression ']'
-   50           | NEW . Identifier '(' ')'
-
-    IDENTIFIER  shift, and go to state 4
-    MAIN        shift, and go to state 5
-    T_Int       shift, and go to state 101
-
-    Identifier  go to state 102
-
-
-State 91
-
-   52 Expression: '(' . Expression ')'
-
-    INTEGER_LITERAL  shift, and go to state 86
-    IDENTIFIER       shift, and go to state 4
-    MAIN             shift, and go to state 5
-    T_True           shift, and go to state 87
-    T_False          shift, and go to state 88
-    THIS             shift, and go to state 89
-    NEW              shift, and go to state 90
-    '('              shift, and go to state 91
-    '!'              shift, and go to state 92
-
-    Expression  go to state 103
-    Identifier  go to state 94
-
-
-State 92
-
-   51 Expression: '!' . Expression
-
-    INTEGER_LITERAL  shift, and go to state 86
-    IDENTIFIER       shift, and go to state 4
-    MAIN             shift, and go to state 5
-    T_True           shift, and go to state 87
-    T_False          shift, and go to state 88
-    THIS             shift, and go to state 89
-    NEW              shift, and go to state 90
-    '('              shift, and go to state 91
-    '!'              shift, and go to state 92
-
-    Expression  go to state 104
-    Identifier  go to state 94
-
-
-State 93
-
-   27 Statement: IF '(' Expression . ')' '{' Statement ';' '}' ELSE '{' Statement ';' '}'
-   32 Expression: Expression . AND Expression
-   33           | Expression . OR Expression
-   34           | Expression . LT Expression
-   35           | Expression . GT Expression
-   36           | Expression . EQ Expression
-   37           | Expression . PLUSOP Expression
-   38           | Expression . MINOP Expression
-   39           | Expression . MULOP Expression
-   40           | Expression . DIVOP Expression
-   41           | Expression . '[' Expression ']'
-   42           | Expression . '.' LENGTH
-   43           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
-
-    PLUSOP  shift, and go to state 105
-    MINOP   shift, and go to state 106
-    MULOP   shift, and go to state 107
-    DIVOP   shift, and go to state 108
-    AND     shift, and go to state 109
-    OR      shift, and go to state 110
-    EQ      shift, and go to state 111
-    LT      shift, and go to state 112
-    GT      shift, and go to state 113
-    '['     shift, and go to state 114
-    ')'     shift, and go to state 115
-    '.'     shift, and go to state 116
-
-
-State 94
-
-   47 Expression: Identifier .
+   47 Expression: T_False .
 
     $default  reduce using rule 47 (Expression)
 
 
+State 91
+
+   49 Expression: THIS .
+
+    $default  reduce using rule 49 (Expression)
+
+
+State 92
+
+   50 Expression: NEW . T_Int '[' Expression ']'
+   51           | NEW . Identifier '(' ')'
+
+    IDENTIFIER  shift, and go to state 4
+    MAIN        shift, and go to state 5
+    T_Int       shift, and go to state 104
+
+    Identifier  go to state 105
+
+
+State 93
+
+   53 Expression: '(' . Expression ')'
+
+    INTEGER_LITERAL  shift, and go to state 88
+    IDENTIFIER       shift, and go to state 4
+    MAIN             shift, and go to state 5
+    T_True           shift, and go to state 89
+    T_False          shift, and go to state 90
+    THIS             shift, and go to state 91
+    NEW              shift, and go to state 92
+    '('              shift, and go to state 93
+    '!'              shift, and go to state 94
+
+    Expression  go to state 106
+    Identifier  go to state 96
+
+
+State 94
+
+   52 Expression: '!' . Expression
+
+    INTEGER_LITERAL  shift, and go to state 88
+    IDENTIFIER       shift, and go to state 4
+    MAIN             shift, and go to state 5
+    T_True           shift, and go to state 89
+    T_False          shift, and go to state 90
+    THIS             shift, and go to state 91
+    NEW              shift, and go to state 92
+    '('              shift, and go to state 93
+    '!'              shift, and go to state 94
+
+    Expression  go to state 107
+    Identifier  go to state 96
+
+
 State 95
 
-   28 Statement: WHILE '(' Expression . ')' '{' Statement ';' '}'
-   32 Expression: Expression . AND Expression
-   33           | Expression . OR Expression
-   34           | Expression . LT Expression
-   35           | Expression . GT Expression
-   36           | Expression . EQ Expression
-   37           | Expression . PLUSOP Expression
-   38           | Expression . MINOP Expression
-   39           | Expression . MULOP Expression
-   40           | Expression . DIVOP Expression
-   41           | Expression . '[' Expression ']'
-   42           | Expression . '.' LENGTH
-   43           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
+   28 Statement: IF '(' Expression . ')' '{' Statement '}' ELSE '{' Statement '}'
+   33 Expression: Expression . AND Expression
+   34           | Expression . OR Expression
+   35           | Expression . LT Expression
+   36           | Expression . GT Expression
+   37           | Expression . EQ Expression
+   38           | Expression . PLUSOP Expression
+   39           | Expression . MINOP Expression
+   40           | Expression . MULOP Expression
+   41           | Expression . DIVOP Expression
+   42           | Expression . '[' Expression ']'
+   43           | Expression . '.' LENGTH
+   44           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
 
-    PLUSOP  shift, and go to state 105
-    MINOP   shift, and go to state 106
-    MULOP   shift, and go to state 107
-    DIVOP   shift, and go to state 108
-    AND     shift, and go to state 109
-    OR      shift, and go to state 110
-    EQ      shift, and go to state 111
-    LT      shift, and go to state 112
-    GT      shift, and go to state 113
-    '['     shift, and go to state 114
-    ')'     shift, and go to state 117
-    '.'     shift, and go to state 116
+    PLUSOP  shift, and go to state 108
+    MINOP   shift, and go to state 109
+    MULOP   shift, and go to state 110
+    DIVOP   shift, and go to state 111
+    AND     shift, and go to state 112
+    OR      shift, and go to state 113
+    EQ      shift, and go to state 114
+    LT      shift, and go to state 115
+    GT      shift, and go to state 116
+    '['     shift, and go to state 117
+    ')'     shift, and go to state 118
+    '.'     shift, and go to state 119
 
 
 State 96
 
-   29 Statement: SYS_PRINTLN '(' Expression . ')'
-   32 Expression: Expression . AND Expression
-   33           | Expression . OR Expression
-   34           | Expression . LT Expression
-   35           | Expression . GT Expression
-   36           | Expression . EQ Expression
-   37           | Expression . PLUSOP Expression
-   38           | Expression . MINOP Expression
-   39           | Expression . MULOP Expression
-   40           | Expression . DIVOP Expression
-   41           | Expression . '[' Expression ']'
-   42           | Expression . '.' LENGTH
-   43           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
+   48 Expression: Identifier .
 
-    PLUSOP  shift, and go to state 105
-    MINOP   shift, and go to state 106
-    MULOP   shift, and go to state 107
-    DIVOP   shift, and go to state 108
-    AND     shift, and go to state 109
-    OR      shift, and go to state 110
-    EQ      shift, and go to state 111
-    LT      shift, and go to state 112
-    GT      shift, and go to state 113
-    '['     shift, and go to state 114
-    ')'     shift, and go to state 118
-    '.'     shift, and go to state 116
+    $default  reduce using rule 48 (Expression)
 
 
 State 97
 
-   31 Statement: Identifier '[' Expression . ']' '=' Expression
-   32 Expression: Expression . AND Expression
-   33           | Expression . OR Expression
-   34           | Expression . LT Expression
-   35           | Expression . GT Expression
-   36           | Expression . EQ Expression
-   37           | Expression . PLUSOP Expression
-   38           | Expression . MINOP Expression
-   39           | Expression . MULOP Expression
-   40           | Expression . DIVOP Expression
-   41           | Expression . '[' Expression ']'
-   42           | Expression . '.' LENGTH
-   43           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
+   29 Statement: WHILE '(' Expression . ')' '{' Statement '}'
+   33 Expression: Expression . AND Expression
+   34           | Expression . OR Expression
+   35           | Expression . LT Expression
+   36           | Expression . GT Expression
+   37           | Expression . EQ Expression
+   38           | Expression . PLUSOP Expression
+   39           | Expression . MINOP Expression
+   40           | Expression . MULOP Expression
+   41           | Expression . DIVOP Expression
+   42           | Expression . '[' Expression ']'
+   43           | Expression . '.' LENGTH
+   44           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
 
-    PLUSOP  shift, and go to state 105
-    MINOP   shift, and go to state 106
-    MULOP   shift, and go to state 107
-    DIVOP   shift, and go to state 108
-    AND     shift, and go to state 109
-    OR      shift, and go to state 110
-    EQ      shift, and go to state 111
-    LT      shift, and go to state 112
-    GT      shift, and go to state 113
-    '['     shift, and go to state 114
-    ']'     shift, and go to state 119
-    '.'     shift, and go to state 116
+    PLUSOP  shift, and go to state 108
+    MINOP   shift, and go to state 109
+    MULOP   shift, and go to state 110
+    DIVOP   shift, and go to state 111
+    AND     shift, and go to state 112
+    OR      shift, and go to state 113
+    EQ      shift, and go to state 114
+    LT      shift, and go to state 115
+    GT      shift, and go to state 116
+    '['     shift, and go to state 117
+    ')'     shift, and go to state 120
+    '.'     shift, and go to state 119
 
 
 State 98
 
-   30 Statement: Identifier '=' Expression .
-   32 Expression: Expression . AND Expression
-   33           | Expression . OR Expression
-   34           | Expression . LT Expression
-   35           | Expression . GT Expression
-   36           | Expression . EQ Expression
-   37           | Expression . PLUSOP Expression
-   38           | Expression . MINOP Expression
-   39           | Expression . MULOP Expression
-   40           | Expression . DIVOP Expression
-   41           | Expression . '[' Expression ']'
-   42           | Expression . '.' LENGTH
-   43           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
+   30 Statement: SYS_PRINTLN '(' Expression . ')'
+   33 Expression: Expression . AND Expression
+   34           | Expression . OR Expression
+   35           | Expression . LT Expression
+   36           | Expression . GT Expression
+   37           | Expression . EQ Expression
+   38           | Expression . PLUSOP Expression
+   39           | Expression . MINOP Expression
+   40           | Expression . MULOP Expression
+   41           | Expression . DIVOP Expression
+   42           | Expression . '[' Expression ']'
+   43           | Expression . '.' LENGTH
+   44           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
 
-    PLUSOP  shift, and go to state 105
-    MINOP   shift, and go to state 106
-    MULOP   shift, and go to state 107
-    DIVOP   shift, and go to state 108
-    AND     shift, and go to state 109
-    OR      shift, and go to state 110
-    EQ      shift, and go to state 111
-    LT      shift, and go to state 112
-    GT      shift, and go to state 113
-    '['     shift, and go to state 114
-    '.'     shift, and go to state 116
-
-    $default  reduce using rule 30 (Statement)
+    PLUSOP  shift, and go to state 108
+    MINOP   shift, and go to state 109
+    MULOP   shift, and go to state 110
+    DIVOP   shift, and go to state 111
+    AND     shift, and go to state 112
+    OR      shift, and go to state 113
+    EQ      shift, and go to state 114
+    LT      shift, and go to state 115
+    GT      shift, and go to state 116
+    '['     shift, and go to state 117
+    ')'     shift, and go to state 121
+    '.'     shift, and go to state 119
 
 
 State 99
+
+   26 Statement: Statement Statement ';' .
+   27          | Statement ';' .
+
+    IDENTIFIER   reduce using rule 26 (Statement)
+    IDENTIFIER   [reduce using rule 27 (Statement)]
+    MAIN         reduce using rule 26 (Statement)
+    MAIN         [reduce using rule 27 (Statement)]
+    IF           reduce using rule 26 (Statement)
+    IF           [reduce using rule 27 (Statement)]
+    WHILE        reduce using rule 26 (Statement)
+    WHILE        [reduce using rule 27 (Statement)]
+    SYS_PRINTLN  reduce using rule 26 (Statement)
+    SYS_PRINTLN  [reduce using rule 27 (Statement)]
+    ';'          reduce using rule 26 (Statement)
+    ';'          [reduce using rule 27 (Statement)]
+    $default     reduce using rule 26 (Statement)
+
+
+State 100
+
+   32 Statement: Identifier '[' Expression . ']' '=' Expression
+   33 Expression: Expression . AND Expression
+   34           | Expression . OR Expression
+   35           | Expression . LT Expression
+   36           | Expression . GT Expression
+   37           | Expression . EQ Expression
+   38           | Expression . PLUSOP Expression
+   39           | Expression . MINOP Expression
+   40           | Expression . MULOP Expression
+   41           | Expression . DIVOP Expression
+   42           | Expression . '[' Expression ']'
+   43           | Expression . '.' LENGTH
+   44           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
+
+    PLUSOP  shift, and go to state 108
+    MINOP   shift, and go to state 109
+    MULOP   shift, and go to state 110
+    DIVOP   shift, and go to state 111
+    AND     shift, and go to state 112
+    OR      shift, and go to state 113
+    EQ      shift, and go to state 114
+    LT      shift, and go to state 115
+    GT      shift, and go to state 116
+    '['     shift, and go to state 117
+    ']'     shift, and go to state 122
+    '.'     shift, and go to state 119
+
+
+State 101
+
+   31 Statement: Identifier '=' Expression .
+   33 Expression: Expression . AND Expression
+   34           | Expression . OR Expression
+   35           | Expression . LT Expression
+   36           | Expression . GT Expression
+   37           | Expression . EQ Expression
+   38           | Expression . PLUSOP Expression
+   39           | Expression . MINOP Expression
+   40           | Expression . MULOP Expression
+   41           | Expression . DIVOP Expression
+   42           | Expression . '[' Expression ']'
+   43           | Expression . '.' LENGTH
+   44           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
+
+    PLUSOP  shift, and go to state 108
+    MINOP   shift, and go to state 109
+    MULOP   shift, and go to state 110
+    DIVOP   shift, and go to state 111
+    AND     shift, and go to state 112
+    OR      shift, and go to state 113
+    EQ      shift, and go to state 114
+    LT      shift, and go to state 115
+    GT      shift, and go to state 116
+    '['     shift, and go to state 117
+    '.'     shift, and go to state 119
+
+    $default  reduce using rule 31 (Statement)
+
+
+State 102
 
     8 MethodDeclaration: MethodDeclaration PUBLIC Type Identifier '(' MethodArgumentDeclaration ')' '{' MethodBodyDeclaration '}' .
 
     $default  reduce using rule 8 (MethodDeclaration)
 
 
-State 100
+State 103
 
     2 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' Identifier ')' '{' Statement '}' . '}'
 
-    '}'  shift, and go to state 120
-
-
-State 101
-
-   49 Expression: NEW T_Int . '[' Expression ']'
-
-    '['  shift, and go to state 121
-
-
-State 102
-
-   50 Expression: NEW Identifier . '(' ')'
-
-    '('  shift, and go to state 122
-
-
-State 103
-
-   32 Expression: Expression . AND Expression
-   33           | Expression . OR Expression
-   34           | Expression . LT Expression
-   35           | Expression . GT Expression
-   36           | Expression . EQ Expression
-   37           | Expression . PLUSOP Expression
-   38           | Expression . MINOP Expression
-   39           | Expression . MULOP Expression
-   40           | Expression . DIVOP Expression
-   41           | Expression . '[' Expression ']'
-   42           | Expression . '.' LENGTH
-   43           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
-   52           | '(' Expression . ')'
-
-    PLUSOP  shift, and go to state 105
-    MINOP   shift, and go to state 106
-    MULOP   shift, and go to state 107
-    DIVOP   shift, and go to state 108
-    AND     shift, and go to state 109
-    OR      shift, and go to state 110
-    EQ      shift, and go to state 111
-    LT      shift, and go to state 112
-    GT      shift, and go to state 113
-    '['     shift, and go to state 114
-    ')'     shift, and go to state 123
-    '.'     shift, and go to state 116
+    '}'  shift, and go to state 123
 
 
 State 104
 
-   32 Expression: Expression . AND Expression
-   33           | Expression . OR Expression
-   34           | Expression . LT Expression
-   35           | Expression . GT Expression
-   36           | Expression . EQ Expression
-   37           | Expression . PLUSOP Expression
-   38           | Expression . MINOP Expression
-   39           | Expression . MULOP Expression
-   40           | Expression . DIVOP Expression
-   41           | Expression . '[' Expression ']'
-   42           | Expression . '.' LENGTH
-   43           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
-   51           | '!' Expression .
+   50 Expression: NEW T_Int . '[' Expression ']'
 
-    PLUSOP  shift, and go to state 105
-    MINOP   shift, and go to state 106
-    MULOP   shift, and go to state 107
-    DIVOP   shift, and go to state 108
-    AND     shift, and go to state 109
-    OR      shift, and go to state 110
-    EQ      shift, and go to state 111
-    LT      shift, and go to state 112
-    GT      shift, and go to state 113
-    '['     shift, and go to state 114
-    '.'     shift, and go to state 116
-
-    PLUSOP    [reduce using rule 51 (Expression)]
-    MINOP     [reduce using rule 51 (Expression)]
-    MULOP     [reduce using rule 51 (Expression)]
-    DIVOP     [reduce using rule 51 (Expression)]
-    AND       [reduce using rule 51 (Expression)]
-    OR        [reduce using rule 51 (Expression)]
-    EQ        [reduce using rule 51 (Expression)]
-    LT        [reduce using rule 51 (Expression)]
-    GT        [reduce using rule 51 (Expression)]
-    '['       [reduce using rule 51 (Expression)]
-    '.'       [reduce using rule 51 (Expression)]
-    $default  reduce using rule 51 (Expression)
+    '['  shift, and go to state 124
 
 
 State 105
 
-   37 Expression: Expression PLUSOP . Expression
+   51 Expression: NEW Identifier . '(' ')'
 
-    INTEGER_LITERAL  shift, and go to state 86
-    IDENTIFIER       shift, and go to state 4
-    MAIN             shift, and go to state 5
-    T_True           shift, and go to state 87
-    T_False          shift, and go to state 88
-    THIS             shift, and go to state 89
-    NEW              shift, and go to state 90
-    '('              shift, and go to state 91
-    '!'              shift, and go to state 92
-
-    Expression  go to state 124
-    Identifier  go to state 94
+    '('  shift, and go to state 125
 
 
 State 106
 
-   38 Expression: Expression MINOP . Expression
+   33 Expression: Expression . AND Expression
+   34           | Expression . OR Expression
+   35           | Expression . LT Expression
+   36           | Expression . GT Expression
+   37           | Expression . EQ Expression
+   38           | Expression . PLUSOP Expression
+   39           | Expression . MINOP Expression
+   40           | Expression . MULOP Expression
+   41           | Expression . DIVOP Expression
+   42           | Expression . '[' Expression ']'
+   43           | Expression . '.' LENGTH
+   44           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
+   53           | '(' Expression . ')'
 
-    INTEGER_LITERAL  shift, and go to state 86
-    IDENTIFIER       shift, and go to state 4
-    MAIN             shift, and go to state 5
-    T_True           shift, and go to state 87
-    T_False          shift, and go to state 88
-    THIS             shift, and go to state 89
-    NEW              shift, and go to state 90
-    '('              shift, and go to state 91
-    '!'              shift, and go to state 92
-
-    Expression  go to state 125
-    Identifier  go to state 94
+    PLUSOP  shift, and go to state 108
+    MINOP   shift, and go to state 109
+    MULOP   shift, and go to state 110
+    DIVOP   shift, and go to state 111
+    AND     shift, and go to state 112
+    OR      shift, and go to state 113
+    EQ      shift, and go to state 114
+    LT      shift, and go to state 115
+    GT      shift, and go to state 116
+    '['     shift, and go to state 117
+    ')'     shift, and go to state 126
+    '.'     shift, and go to state 119
 
 
 State 107
 
-   39 Expression: Expression MULOP . Expression
+   33 Expression: Expression . AND Expression
+   34           | Expression . OR Expression
+   35           | Expression . LT Expression
+   36           | Expression . GT Expression
+   37           | Expression . EQ Expression
+   38           | Expression . PLUSOP Expression
+   39           | Expression . MINOP Expression
+   40           | Expression . MULOP Expression
+   41           | Expression . DIVOP Expression
+   42           | Expression . '[' Expression ']'
+   43           | Expression . '.' LENGTH
+   44           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
+   52           | '!' Expression .
 
-    INTEGER_LITERAL  shift, and go to state 86
-    IDENTIFIER       shift, and go to state 4
-    MAIN             shift, and go to state 5
-    T_True           shift, and go to state 87
-    T_False          shift, and go to state 88
-    THIS             shift, and go to state 89
-    NEW              shift, and go to state 90
-    '('              shift, and go to state 91
-    '!'              shift, and go to state 92
+    PLUSOP  shift, and go to state 108
+    MINOP   shift, and go to state 109
+    MULOP   shift, and go to state 110
+    DIVOP   shift, and go to state 111
+    AND     shift, and go to state 112
+    OR      shift, and go to state 113
+    EQ      shift, and go to state 114
+    LT      shift, and go to state 115
+    GT      shift, and go to state 116
+    '['     shift, and go to state 117
+    '.'     shift, and go to state 119
 
-    Expression  go to state 126
-    Identifier  go to state 94
+    PLUSOP    [reduce using rule 52 (Expression)]
+    MINOP     [reduce using rule 52 (Expression)]
+    MULOP     [reduce using rule 52 (Expression)]
+    DIVOP     [reduce using rule 52 (Expression)]
+    AND       [reduce using rule 52 (Expression)]
+    OR        [reduce using rule 52 (Expression)]
+    EQ        [reduce using rule 52 (Expression)]
+    LT        [reduce using rule 52 (Expression)]
+    GT        [reduce using rule 52 (Expression)]
+    '['       [reduce using rule 52 (Expression)]
+    '.'       [reduce using rule 52 (Expression)]
+    $default  reduce using rule 52 (Expression)
 
 
 State 108
 
-   40 Expression: Expression DIVOP . Expression
+   38 Expression: Expression PLUSOP . Expression
 
-    INTEGER_LITERAL  shift, and go to state 86
+    INTEGER_LITERAL  shift, and go to state 88
     IDENTIFIER       shift, and go to state 4
     MAIN             shift, and go to state 5
-    T_True           shift, and go to state 87
-    T_False          shift, and go to state 88
-    THIS             shift, and go to state 89
-    NEW              shift, and go to state 90
-    '('              shift, and go to state 91
-    '!'              shift, and go to state 92
+    T_True           shift, and go to state 89
+    T_False          shift, and go to state 90
+    THIS             shift, and go to state 91
+    NEW              shift, and go to state 92
+    '('              shift, and go to state 93
+    '!'              shift, and go to state 94
 
     Expression  go to state 127
-    Identifier  go to state 94
+    Identifier  go to state 96
 
 
 State 109
 
-   32 Expression: Expression AND . Expression
+   39 Expression: Expression MINOP . Expression
 
-    INTEGER_LITERAL  shift, and go to state 86
+    INTEGER_LITERAL  shift, and go to state 88
     IDENTIFIER       shift, and go to state 4
     MAIN             shift, and go to state 5
-    T_True           shift, and go to state 87
-    T_False          shift, and go to state 88
-    THIS             shift, and go to state 89
-    NEW              shift, and go to state 90
-    '('              shift, and go to state 91
-    '!'              shift, and go to state 92
+    T_True           shift, and go to state 89
+    T_False          shift, and go to state 90
+    THIS             shift, and go to state 91
+    NEW              shift, and go to state 92
+    '('              shift, and go to state 93
+    '!'              shift, and go to state 94
 
     Expression  go to state 128
-    Identifier  go to state 94
+    Identifier  go to state 96
 
 
 State 110
 
-   33 Expression: Expression OR . Expression
+   40 Expression: Expression MULOP . Expression
 
-    INTEGER_LITERAL  shift, and go to state 86
+    INTEGER_LITERAL  shift, and go to state 88
     IDENTIFIER       shift, and go to state 4
     MAIN             shift, and go to state 5
-    T_True           shift, and go to state 87
-    T_False          shift, and go to state 88
-    THIS             shift, and go to state 89
-    NEW              shift, and go to state 90
-    '('              shift, and go to state 91
-    '!'              shift, and go to state 92
+    T_True           shift, and go to state 89
+    T_False          shift, and go to state 90
+    THIS             shift, and go to state 91
+    NEW              shift, and go to state 92
+    '('              shift, and go to state 93
+    '!'              shift, and go to state 94
 
     Expression  go to state 129
-    Identifier  go to state 94
+    Identifier  go to state 96
 
 
 State 111
 
-   36 Expression: Expression EQ . Expression
+   41 Expression: Expression DIVOP . Expression
 
-    INTEGER_LITERAL  shift, and go to state 86
+    INTEGER_LITERAL  shift, and go to state 88
     IDENTIFIER       shift, and go to state 4
     MAIN             shift, and go to state 5
-    T_True           shift, and go to state 87
-    T_False          shift, and go to state 88
-    THIS             shift, and go to state 89
-    NEW              shift, and go to state 90
-    '('              shift, and go to state 91
-    '!'              shift, and go to state 92
+    T_True           shift, and go to state 89
+    T_False          shift, and go to state 90
+    THIS             shift, and go to state 91
+    NEW              shift, and go to state 92
+    '('              shift, and go to state 93
+    '!'              shift, and go to state 94
 
     Expression  go to state 130
-    Identifier  go to state 94
+    Identifier  go to state 96
 
 
 State 112
 
-   34 Expression: Expression LT . Expression
+   33 Expression: Expression AND . Expression
 
-    INTEGER_LITERAL  shift, and go to state 86
+    INTEGER_LITERAL  shift, and go to state 88
     IDENTIFIER       shift, and go to state 4
     MAIN             shift, and go to state 5
-    T_True           shift, and go to state 87
-    T_False          shift, and go to state 88
-    THIS             shift, and go to state 89
-    NEW              shift, and go to state 90
-    '('              shift, and go to state 91
-    '!'              shift, and go to state 92
+    T_True           shift, and go to state 89
+    T_False          shift, and go to state 90
+    THIS             shift, and go to state 91
+    NEW              shift, and go to state 92
+    '('              shift, and go to state 93
+    '!'              shift, and go to state 94
 
     Expression  go to state 131
-    Identifier  go to state 94
+    Identifier  go to state 96
 
 
 State 113
 
-   35 Expression: Expression GT . Expression
+   34 Expression: Expression OR . Expression
 
-    INTEGER_LITERAL  shift, and go to state 86
+    INTEGER_LITERAL  shift, and go to state 88
     IDENTIFIER       shift, and go to state 4
     MAIN             shift, and go to state 5
-    T_True           shift, and go to state 87
-    T_False          shift, and go to state 88
-    THIS             shift, and go to state 89
-    NEW              shift, and go to state 90
-    '('              shift, and go to state 91
-    '!'              shift, and go to state 92
+    T_True           shift, and go to state 89
+    T_False          shift, and go to state 90
+    THIS             shift, and go to state 91
+    NEW              shift, and go to state 92
+    '('              shift, and go to state 93
+    '!'              shift, and go to state 94
 
     Expression  go to state 132
-    Identifier  go to state 94
+    Identifier  go to state 96
 
 
 State 114
 
-   41 Expression: Expression '[' . Expression ']'
+   37 Expression: Expression EQ . Expression
 
-    INTEGER_LITERAL  shift, and go to state 86
+    INTEGER_LITERAL  shift, and go to state 88
     IDENTIFIER       shift, and go to state 4
     MAIN             shift, and go to state 5
-    T_True           shift, and go to state 87
-    T_False          shift, and go to state 88
-    THIS             shift, and go to state 89
-    NEW              shift, and go to state 90
-    '('              shift, and go to state 91
-    '!'              shift, and go to state 92
+    T_True           shift, and go to state 89
+    T_False          shift, and go to state 90
+    THIS             shift, and go to state 91
+    NEW              shift, and go to state 92
+    '('              shift, and go to state 93
+    '!'              shift, and go to state 94
 
     Expression  go to state 133
-    Identifier  go to state 94
+    Identifier  go to state 96
 
 
 State 115
 
-   27 Statement: IF '(' Expression ')' . '{' Statement ';' '}' ELSE '{' Statement ';' '}'
+   35 Expression: Expression LT . Expression
 
-    '{'  shift, and go to state 134
+    INTEGER_LITERAL  shift, and go to state 88
+    IDENTIFIER       shift, and go to state 4
+    MAIN             shift, and go to state 5
+    T_True           shift, and go to state 89
+    T_False          shift, and go to state 90
+    THIS             shift, and go to state 91
+    NEW              shift, and go to state 92
+    '('              shift, and go to state 93
+    '!'              shift, and go to state 94
+
+    Expression  go to state 134
+    Identifier  go to state 96
 
 
 State 116
 
-   42 Expression: Expression '.' . LENGTH
-   43           | Expression '.' . Identifier '(' FunctionCallDeclaration ')'
+   36 Expression: Expression GT . Expression
 
-    IDENTIFIER  shift, and go to state 4
-    MAIN        shift, and go to state 5
-    LENGTH      shift, and go to state 135
+    INTEGER_LITERAL  shift, and go to state 88
+    IDENTIFIER       shift, and go to state 4
+    MAIN             shift, and go to state 5
+    T_True           shift, and go to state 89
+    T_False          shift, and go to state 90
+    THIS             shift, and go to state 91
+    NEW              shift, and go to state 92
+    '('              shift, and go to state 93
+    '!'              shift, and go to state 94
 
-    Identifier  go to state 136
+    Expression  go to state 135
+    Identifier  go to state 96
 
 
 State 117
 
-   28 Statement: WHILE '(' Expression ')' . '{' Statement ';' '}'
+   42 Expression: Expression '[' . Expression ']'
 
-    '{'  shift, and go to state 137
+    INTEGER_LITERAL  shift, and go to state 88
+    IDENTIFIER       shift, and go to state 4
+    MAIN             shift, and go to state 5
+    T_True           shift, and go to state 89
+    T_False          shift, and go to state 90
+    THIS             shift, and go to state 91
+    NEW              shift, and go to state 92
+    '('              shift, and go to state 93
+    '!'              shift, and go to state 94
+
+    Expression  go to state 136
+    Identifier  go to state 96
 
 
 State 118
 
-   29 Statement: SYS_PRINTLN '(' Expression ')' .
+   28 Statement: IF '(' Expression ')' . '{' Statement '}' ELSE '{' Statement '}'
 
-    $default  reduce using rule 29 (Statement)
+    '{'  shift, and go to state 137
 
 
 State 119
 
-   31 Statement: Identifier '[' Expression ']' . '=' Expression
+   43 Expression: Expression '.' . LENGTH
+   44           | Expression '.' . Identifier '(' FunctionCallDeclaration ')'
 
-    '='  shift, and go to state 138
+    IDENTIFIER  shift, and go to state 4
+    MAIN        shift, and go to state 5
+    LENGTH      shift, and go to state 138
+
+    Identifier  go to state 139
 
 
 State 120
+
+   29 Statement: WHILE '(' Expression ')' . '{' Statement '}'
+
+    '{'  shift, and go to state 140
+
+
+State 121
+
+   30 Statement: SYS_PRINTLN '(' Expression ')' .
+
+    $default  reduce using rule 30 (Statement)
+
+
+State 122
+
+   32 Statement: Identifier '[' Expression ']' . '=' Expression
+
+    '='  shift, and go to state 141
+
+
+State 123
 
     2 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' Identifier ')' '{' Statement '}' '}' .
 
     $default  reduce using rule 2 (MainClass)
 
 
-State 121
-
-   49 Expression: NEW T_Int '[' . Expression ']'
-
-    INTEGER_LITERAL  shift, and go to state 86
-    IDENTIFIER       shift, and go to state 4
-    MAIN             shift, and go to state 5
-    T_True           shift, and go to state 87
-    T_False          shift, and go to state 88
-    THIS             shift, and go to state 89
-    NEW              shift, and go to state 90
-    '('              shift, and go to state 91
-    '!'              shift, and go to state 92
-
-    Expression  go to state 139
-    Identifier  go to state 94
-
-
-State 122
-
-   50 Expression: NEW Identifier '(' . ')'
-
-    ')'  shift, and go to state 140
-
-
-State 123
-
-   52 Expression: '(' Expression ')' .
-
-    $default  reduce using rule 52 (Expression)
-
-
 State 124
 
-   32 Expression: Expression . AND Expression
-   33           | Expression . OR Expression
-   34           | Expression . LT Expression
-   35           | Expression . GT Expression
-   36           | Expression . EQ Expression
-   37           | Expression . PLUSOP Expression
-   37           | Expression PLUSOP Expression .
-   38           | Expression . MINOP Expression
-   39           | Expression . MULOP Expression
-   40           | Expression . DIVOP Expression
-   41           | Expression . '[' Expression ']'
-   42           | Expression . '.' LENGTH
-   43           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
+   50 Expression: NEW T_Int '[' . Expression ']'
 
-    MINOP  shift, and go to state 106
-    MULOP  shift, and go to state 107
-    DIVOP  shift, and go to state 108
-    AND    shift, and go to state 109
-    OR     shift, and go to state 110
-    EQ     shift, and go to state 111
-    LT     shift, and go to state 112
-    GT     shift, and go to state 113
-    '['    shift, and go to state 114
-    '.'    shift, and go to state 116
+    INTEGER_LITERAL  shift, and go to state 88
+    IDENTIFIER       shift, and go to state 4
+    MAIN             shift, and go to state 5
+    T_True           shift, and go to state 89
+    T_False          shift, and go to state 90
+    THIS             shift, and go to state 91
+    NEW              shift, and go to state 92
+    '('              shift, and go to state 93
+    '!'              shift, and go to state 94
 
-    AND       [reduce using rule 37 (Expression)]
-    OR        [reduce using rule 37 (Expression)]
-    EQ        [reduce using rule 37 (Expression)]
-    LT        [reduce using rule 37 (Expression)]
-    GT        [reduce using rule 37 (Expression)]
-    '['       [reduce using rule 37 (Expression)]
-    '.'       [reduce using rule 37 (Expression)]
-    $default  reduce using rule 37 (Expression)
+    Expression  go to state 142
+    Identifier  go to state 96
 
 
 State 125
 
-   32 Expression: Expression . AND Expression
-   33           | Expression . OR Expression
-   34           | Expression . LT Expression
-   35           | Expression . GT Expression
-   36           | Expression . EQ Expression
-   37           | Expression . PLUSOP Expression
-   38           | Expression . MINOP Expression
-   38           | Expression MINOP Expression .
-   39           | Expression . MULOP Expression
-   40           | Expression . DIVOP Expression
-   41           | Expression . '[' Expression ']'
-   42           | Expression . '.' LENGTH
-   43           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
+   51 Expression: NEW Identifier '(' . ')'
 
-    MULOP  shift, and go to state 107
-    DIVOP  shift, and go to state 108
-    AND    shift, and go to state 109
-    OR     shift, and go to state 110
-    EQ     shift, and go to state 111
-    LT     shift, and go to state 112
-    GT     shift, and go to state 113
-    '['    shift, and go to state 114
-    '.'    shift, and go to state 116
+    ')'  shift, and go to state 143
+
+
+State 126
+
+   53 Expression: '(' Expression ')' .
+
+    $default  reduce using rule 53 (Expression)
+
+
+State 127
+
+   33 Expression: Expression . AND Expression
+   34           | Expression . OR Expression
+   35           | Expression . LT Expression
+   36           | Expression . GT Expression
+   37           | Expression . EQ Expression
+   38           | Expression . PLUSOP Expression
+   38           | Expression PLUSOP Expression .
+   39           | Expression . MINOP Expression
+   40           | Expression . MULOP Expression
+   41           | Expression . DIVOP Expression
+   42           | Expression . '[' Expression ']'
+   43           | Expression . '.' LENGTH
+   44           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
+
+    MINOP  shift, and go to state 109
+    MULOP  shift, and go to state 110
+    DIVOP  shift, and go to state 111
+    AND    shift, and go to state 112
+    OR     shift, and go to state 113
+    EQ     shift, and go to state 114
+    LT     shift, and go to state 115
+    GT     shift, and go to state 116
+    '['    shift, and go to state 117
+    '.'    shift, and go to state 119
 
     AND       [reduce using rule 38 (Expression)]
     OR        [reduce using rule 38 (Expression)]
@@ -1955,30 +1963,31 @@ State 125
     $default  reduce using rule 38 (Expression)
 
 
-State 126
+State 128
 
-   32 Expression: Expression . AND Expression
-   33           | Expression . OR Expression
-   34           | Expression . LT Expression
-   35           | Expression . GT Expression
-   36           | Expression . EQ Expression
-   37           | Expression . PLUSOP Expression
-   38           | Expression . MINOP Expression
-   39           | Expression . MULOP Expression
-   39           | Expression MULOP Expression .
-   40           | Expression . DIVOP Expression
-   41           | Expression . '[' Expression ']'
-   42           | Expression . '.' LENGTH
-   43           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
+   33 Expression: Expression . AND Expression
+   34           | Expression . OR Expression
+   35           | Expression . LT Expression
+   36           | Expression . GT Expression
+   37           | Expression . EQ Expression
+   38           | Expression . PLUSOP Expression
+   39           | Expression . MINOP Expression
+   39           | Expression MINOP Expression .
+   40           | Expression . MULOP Expression
+   41           | Expression . DIVOP Expression
+   42           | Expression . '[' Expression ']'
+   43           | Expression . '.' LENGTH
+   44           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
 
-    DIVOP  shift, and go to state 108
-    AND    shift, and go to state 109
-    OR     shift, and go to state 110
-    EQ     shift, and go to state 111
-    LT     shift, and go to state 112
-    GT     shift, and go to state 113
-    '['    shift, and go to state 114
-    '.'    shift, and go to state 116
+    MULOP  shift, and go to state 110
+    DIVOP  shift, and go to state 111
+    AND    shift, and go to state 112
+    OR     shift, and go to state 113
+    EQ     shift, and go to state 114
+    LT     shift, and go to state 115
+    GT     shift, and go to state 116
+    '['    shift, and go to state 117
+    '.'    shift, and go to state 119
 
     AND       [reduce using rule 39 (Expression)]
     OR        [reduce using rule 39 (Expression)]
@@ -1990,29 +1999,30 @@ State 126
     $default  reduce using rule 39 (Expression)
 
 
-State 127
+State 129
 
-   32 Expression: Expression . AND Expression
-   33           | Expression . OR Expression
-   34           | Expression . LT Expression
-   35           | Expression . GT Expression
-   36           | Expression . EQ Expression
-   37           | Expression . PLUSOP Expression
-   38           | Expression . MINOP Expression
-   39           | Expression . MULOP Expression
-   40           | Expression . DIVOP Expression
-   40           | Expression DIVOP Expression .
-   41           | Expression . '[' Expression ']'
-   42           | Expression . '.' LENGTH
-   43           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
+   33 Expression: Expression . AND Expression
+   34           | Expression . OR Expression
+   35           | Expression . LT Expression
+   36           | Expression . GT Expression
+   37           | Expression . EQ Expression
+   38           | Expression . PLUSOP Expression
+   39           | Expression . MINOP Expression
+   40           | Expression . MULOP Expression
+   40           | Expression MULOP Expression .
+   41           | Expression . DIVOP Expression
+   42           | Expression . '[' Expression ']'
+   43           | Expression . '.' LENGTH
+   44           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
 
-    AND  shift, and go to state 109
-    OR   shift, and go to state 110
-    EQ   shift, and go to state 111
-    LT   shift, and go to state 112
-    GT   shift, and go to state 113
-    '['  shift, and go to state 114
-    '.'  shift, and go to state 116
+    DIVOP  shift, and go to state 111
+    AND    shift, and go to state 112
+    OR     shift, and go to state 113
+    EQ     shift, and go to state 114
+    LT     shift, and go to state 115
+    GT     shift, and go to state 116
+    '['    shift, and go to state 117
+    '.'    shift, and go to state 119
 
     AND       [reduce using rule 40 (Expression)]
     OR        [reduce using rule 40 (Expression)]
@@ -2024,75 +2034,67 @@ State 127
     $default  reduce using rule 40 (Expression)
 
 
-State 128
+State 130
 
-   32 Expression: Expression . AND Expression
-   32           | Expression AND Expression .
-   33           | Expression . OR Expression
-   34           | Expression . LT Expression
-   35           | Expression . GT Expression
-   36           | Expression . EQ Expression
-   37           | Expression . PLUSOP Expression
-   38           | Expression . MINOP Expression
-   39           | Expression . MULOP Expression
-   40           | Expression . DIVOP Expression
-   41           | Expression . '[' Expression ']'
-   42           | Expression . '.' LENGTH
-   43           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
+   33 Expression: Expression . AND Expression
+   34           | Expression . OR Expression
+   35           | Expression . LT Expression
+   36           | Expression . GT Expression
+   37           | Expression . EQ Expression
+   38           | Expression . PLUSOP Expression
+   39           | Expression . MINOP Expression
+   40           | Expression . MULOP Expression
+   41           | Expression . DIVOP Expression
+   41           | Expression DIVOP Expression .
+   42           | Expression . '[' Expression ']'
+   43           | Expression . '.' LENGTH
+   44           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
 
-    PLUSOP  shift, and go to state 105
-    MINOP   shift, and go to state 106
-    MULOP   shift, and go to state 107
-    DIVOP   shift, and go to state 108
-    AND     shift, and go to state 109
-    OR      shift, and go to state 110
-    EQ      shift, and go to state 111
-    LT      shift, and go to state 112
-    GT      shift, and go to state 113
-    '['     shift, and go to state 114
-    '.'     shift, and go to state 116
+    AND  shift, and go to state 112
+    OR   shift, and go to state 113
+    EQ   shift, and go to state 114
+    LT   shift, and go to state 115
+    GT   shift, and go to state 116
+    '['  shift, and go to state 117
+    '.'  shift, and go to state 119
 
-    PLUSOP    [reduce using rule 32 (Expression)]
-    MINOP     [reduce using rule 32 (Expression)]
-    MULOP     [reduce using rule 32 (Expression)]
-    DIVOP     [reduce using rule 32 (Expression)]
-    AND       [reduce using rule 32 (Expression)]
-    OR        [reduce using rule 32 (Expression)]
-    EQ        [reduce using rule 32 (Expression)]
-    LT        [reduce using rule 32 (Expression)]
-    GT        [reduce using rule 32 (Expression)]
-    '['       [reduce using rule 32 (Expression)]
-    '.'       [reduce using rule 32 (Expression)]
-    $default  reduce using rule 32 (Expression)
+    AND       [reduce using rule 41 (Expression)]
+    OR        [reduce using rule 41 (Expression)]
+    EQ        [reduce using rule 41 (Expression)]
+    LT        [reduce using rule 41 (Expression)]
+    GT        [reduce using rule 41 (Expression)]
+    '['       [reduce using rule 41 (Expression)]
+    '.'       [reduce using rule 41 (Expression)]
+    $default  reduce using rule 41 (Expression)
 
 
-State 129
+State 131
 
-   32 Expression: Expression . AND Expression
-   33           | Expression . OR Expression
-   33           | Expression OR Expression .
-   34           | Expression . LT Expression
-   35           | Expression . GT Expression
-   36           | Expression . EQ Expression
-   37           | Expression . PLUSOP Expression
-   38           | Expression . MINOP Expression
-   39           | Expression . MULOP Expression
-   40           | Expression . DIVOP Expression
-   41           | Expression . '[' Expression ']'
-   42           | Expression . '.' LENGTH
-   43           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
+   33 Expression: Expression . AND Expression
+   33           | Expression AND Expression .
+   34           | Expression . OR Expression
+   35           | Expression . LT Expression
+   36           | Expression . GT Expression
+   37           | Expression . EQ Expression
+   38           | Expression . PLUSOP Expression
+   39           | Expression . MINOP Expression
+   40           | Expression . MULOP Expression
+   41           | Expression . DIVOP Expression
+   42           | Expression . '[' Expression ']'
+   43           | Expression . '.' LENGTH
+   44           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
 
-    PLUSOP  shift, and go to state 105
-    MINOP   shift, and go to state 106
-    MULOP   shift, and go to state 107
-    DIVOP   shift, and go to state 108
-    AND     shift, and go to state 109
-    OR      shift, and go to state 110
-    EQ      shift, and go to state 111
-    LT      shift, and go to state 112
-    GT      shift, and go to state 113
-    '['     shift, and go to state 114
-    '.'     shift, and go to state 116
+    PLUSOP  shift, and go to state 108
+    MINOP   shift, and go to state 109
+    MULOP   shift, and go to state 110
+    DIVOP   shift, and go to state 111
+    AND     shift, and go to state 112
+    OR      shift, and go to state 113
+    EQ      shift, and go to state 114
+    LT      shift, and go to state 115
+    GT      shift, and go to state 116
+    '['     shift, and go to state 117
+    '.'     shift, and go to state 119
 
     PLUSOP    [reduce using rule 33 (Expression)]
     MINOP     [reduce using rule 33 (Expression)]
@@ -2108,75 +2110,33 @@ State 129
     $default  reduce using rule 33 (Expression)
 
 
-State 130
+State 132
 
-   32 Expression: Expression . AND Expression
-   33           | Expression . OR Expression
-   34           | Expression . LT Expression
-   35           | Expression . GT Expression
-   36           | Expression . EQ Expression
-   36           | Expression EQ Expression .
-   37           | Expression . PLUSOP Expression
-   38           | Expression . MINOP Expression
-   39           | Expression . MULOP Expression
-   40           | Expression . DIVOP Expression
-   41           | Expression . '[' Expression ']'
-   42           | Expression . '.' LENGTH
-   43           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
+   33 Expression: Expression . AND Expression
+   34           | Expression . OR Expression
+   34           | Expression OR Expression .
+   35           | Expression . LT Expression
+   36           | Expression . GT Expression
+   37           | Expression . EQ Expression
+   38           | Expression . PLUSOP Expression
+   39           | Expression . MINOP Expression
+   40           | Expression . MULOP Expression
+   41           | Expression . DIVOP Expression
+   42           | Expression . '[' Expression ']'
+   43           | Expression . '.' LENGTH
+   44           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
 
-    PLUSOP  shift, and go to state 105
-    MINOP   shift, and go to state 106
-    MULOP   shift, and go to state 107
-    DIVOP   shift, and go to state 108
-    AND     shift, and go to state 109
-    OR      shift, and go to state 110
-    EQ      shift, and go to state 111
-    LT      shift, and go to state 112
-    GT      shift, and go to state 113
-    '['     shift, and go to state 114
-    '.'     shift, and go to state 116
-
-    PLUSOP    [reduce using rule 36 (Expression)]
-    MINOP     [reduce using rule 36 (Expression)]
-    MULOP     [reduce using rule 36 (Expression)]
-    DIVOP     [reduce using rule 36 (Expression)]
-    AND       [reduce using rule 36 (Expression)]
-    OR        [reduce using rule 36 (Expression)]
-    EQ        [reduce using rule 36 (Expression)]
-    LT        [reduce using rule 36 (Expression)]
-    GT        [reduce using rule 36 (Expression)]
-    '['       [reduce using rule 36 (Expression)]
-    '.'       [reduce using rule 36 (Expression)]
-    $default  reduce using rule 36 (Expression)
-
-
-State 131
-
-   32 Expression: Expression . AND Expression
-   33           | Expression . OR Expression
-   34           | Expression . LT Expression
-   34           | Expression LT Expression .
-   35           | Expression . GT Expression
-   36           | Expression . EQ Expression
-   37           | Expression . PLUSOP Expression
-   38           | Expression . MINOP Expression
-   39           | Expression . MULOP Expression
-   40           | Expression . DIVOP Expression
-   41           | Expression . '[' Expression ']'
-   42           | Expression . '.' LENGTH
-   43           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
-
-    PLUSOP  shift, and go to state 105
-    MINOP   shift, and go to state 106
-    MULOP   shift, and go to state 107
-    DIVOP   shift, and go to state 108
-    AND     shift, and go to state 109
-    OR      shift, and go to state 110
-    EQ      shift, and go to state 111
-    LT      shift, and go to state 112
-    GT      shift, and go to state 113
-    '['     shift, and go to state 114
-    '.'     shift, and go to state 116
+    PLUSOP  shift, and go to state 108
+    MINOP   shift, and go to state 109
+    MULOP   shift, and go to state 110
+    DIVOP   shift, and go to state 111
+    AND     shift, and go to state 112
+    OR      shift, and go to state 113
+    EQ      shift, and go to state 114
+    LT      shift, and go to state 115
+    GT      shift, and go to state 116
+    '['     shift, and go to state 117
+    '.'     shift, and go to state 119
 
     PLUSOP    [reduce using rule 34 (Expression)]
     MINOP     [reduce using rule 34 (Expression)]
@@ -2192,33 +2152,75 @@ State 131
     $default  reduce using rule 34 (Expression)
 
 
-State 132
+State 133
 
-   32 Expression: Expression . AND Expression
-   33           | Expression . OR Expression
-   34           | Expression . LT Expression
-   35           | Expression . GT Expression
-   35           | Expression GT Expression .
-   36           | Expression . EQ Expression
-   37           | Expression . PLUSOP Expression
-   38           | Expression . MINOP Expression
-   39           | Expression . MULOP Expression
-   40           | Expression . DIVOP Expression
-   41           | Expression . '[' Expression ']'
-   42           | Expression . '.' LENGTH
-   43           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
+   33 Expression: Expression . AND Expression
+   34           | Expression . OR Expression
+   35           | Expression . LT Expression
+   36           | Expression . GT Expression
+   37           | Expression . EQ Expression
+   37           | Expression EQ Expression .
+   38           | Expression . PLUSOP Expression
+   39           | Expression . MINOP Expression
+   40           | Expression . MULOP Expression
+   41           | Expression . DIVOP Expression
+   42           | Expression . '[' Expression ']'
+   43           | Expression . '.' LENGTH
+   44           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
 
-    PLUSOP  shift, and go to state 105
-    MINOP   shift, and go to state 106
-    MULOP   shift, and go to state 107
-    DIVOP   shift, and go to state 108
-    AND     shift, and go to state 109
-    OR      shift, and go to state 110
-    EQ      shift, and go to state 111
-    LT      shift, and go to state 112
-    GT      shift, and go to state 113
-    '['     shift, and go to state 114
-    '.'     shift, and go to state 116
+    PLUSOP  shift, and go to state 108
+    MINOP   shift, and go to state 109
+    MULOP   shift, and go to state 110
+    DIVOP   shift, and go to state 111
+    AND     shift, and go to state 112
+    OR      shift, and go to state 113
+    EQ      shift, and go to state 114
+    LT      shift, and go to state 115
+    GT      shift, and go to state 116
+    '['     shift, and go to state 117
+    '.'     shift, and go to state 119
+
+    PLUSOP    [reduce using rule 37 (Expression)]
+    MINOP     [reduce using rule 37 (Expression)]
+    MULOP     [reduce using rule 37 (Expression)]
+    DIVOP     [reduce using rule 37 (Expression)]
+    AND       [reduce using rule 37 (Expression)]
+    OR        [reduce using rule 37 (Expression)]
+    EQ        [reduce using rule 37 (Expression)]
+    LT        [reduce using rule 37 (Expression)]
+    GT        [reduce using rule 37 (Expression)]
+    '['       [reduce using rule 37 (Expression)]
+    '.'       [reduce using rule 37 (Expression)]
+    $default  reduce using rule 37 (Expression)
+
+
+State 134
+
+   33 Expression: Expression . AND Expression
+   34           | Expression . OR Expression
+   35           | Expression . LT Expression
+   35           | Expression LT Expression .
+   36           | Expression . GT Expression
+   37           | Expression . EQ Expression
+   38           | Expression . PLUSOP Expression
+   39           | Expression . MINOP Expression
+   40           | Expression . MULOP Expression
+   41           | Expression . DIVOP Expression
+   42           | Expression . '[' Expression ']'
+   43           | Expression . '.' LENGTH
+   44           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
+
+    PLUSOP  shift, and go to state 108
+    MINOP   shift, and go to state 109
+    MULOP   shift, and go to state 110
+    DIVOP   shift, and go to state 111
+    AND     shift, and go to state 112
+    OR      shift, and go to state 113
+    EQ      shift, and go to state 114
+    LT      shift, and go to state 115
+    GT      shift, and go to state 116
+    '['     shift, and go to state 117
+    '.'     shift, and go to state 119
 
     PLUSOP    [reduce using rule 35 (Expression)]
     MINOP     [reduce using rule 35 (Expression)]
@@ -2234,67 +2236,81 @@ State 132
     $default  reduce using rule 35 (Expression)
 
 
-State 133
-
-   32 Expression: Expression . AND Expression
-   33           | Expression . OR Expression
-   34           | Expression . LT Expression
-   35           | Expression . GT Expression
-   36           | Expression . EQ Expression
-   37           | Expression . PLUSOP Expression
-   38           | Expression . MINOP Expression
-   39           | Expression . MULOP Expression
-   40           | Expression . DIVOP Expression
-   41           | Expression . '[' Expression ']'
-   41           | Expression '[' Expression . ']'
-   42           | Expression . '.' LENGTH
-   43           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
-
-    PLUSOP  shift, and go to state 105
-    MINOP   shift, and go to state 106
-    MULOP   shift, and go to state 107
-    DIVOP   shift, and go to state 108
-    AND     shift, and go to state 109
-    OR      shift, and go to state 110
-    EQ      shift, and go to state 111
-    LT      shift, and go to state 112
-    GT      shift, and go to state 113
-    '['     shift, and go to state 114
-    ']'     shift, and go to state 141
-    '.'     shift, and go to state 116
-
-
-State 134
-
-   27 Statement: IF '(' Expression ')' '{' . Statement ';' '}' ELSE '{' Statement ';' '}'
-
-    IDENTIFIER   shift, and go to state 4
-    MAIN         shift, and go to state 5
-    IF           shift, and go to state 61
-    WHILE        shift, and go to state 62
-    SYS_PRINTLN  shift, and go to state 63
-
-    Statement   go to state 142
-    Identifier  go to state 81
-
-
 State 135
 
-   42 Expression: Expression '.' LENGTH .
+   33 Expression: Expression . AND Expression
+   34           | Expression . OR Expression
+   35           | Expression . LT Expression
+   36           | Expression . GT Expression
+   36           | Expression GT Expression .
+   37           | Expression . EQ Expression
+   38           | Expression . PLUSOP Expression
+   39           | Expression . MINOP Expression
+   40           | Expression . MULOP Expression
+   41           | Expression . DIVOP Expression
+   42           | Expression . '[' Expression ']'
+   43           | Expression . '.' LENGTH
+   44           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
 
-    $default  reduce using rule 42 (Expression)
+    PLUSOP  shift, and go to state 108
+    MINOP   shift, and go to state 109
+    MULOP   shift, and go to state 110
+    DIVOP   shift, and go to state 111
+    AND     shift, and go to state 112
+    OR      shift, and go to state 113
+    EQ      shift, and go to state 114
+    LT      shift, and go to state 115
+    GT      shift, and go to state 116
+    '['     shift, and go to state 117
+    '.'     shift, and go to state 119
+
+    PLUSOP    [reduce using rule 36 (Expression)]
+    MINOP     [reduce using rule 36 (Expression)]
+    MULOP     [reduce using rule 36 (Expression)]
+    DIVOP     [reduce using rule 36 (Expression)]
+    AND       [reduce using rule 36 (Expression)]
+    OR        [reduce using rule 36 (Expression)]
+    EQ        [reduce using rule 36 (Expression)]
+    LT        [reduce using rule 36 (Expression)]
+    GT        [reduce using rule 36 (Expression)]
+    '['       [reduce using rule 36 (Expression)]
+    '.'       [reduce using rule 36 (Expression)]
+    $default  reduce using rule 36 (Expression)
 
 
 State 136
 
-   43 Expression: Expression '.' Identifier . '(' FunctionCallDeclaration ')'
+   33 Expression: Expression . AND Expression
+   34           | Expression . OR Expression
+   35           | Expression . LT Expression
+   36           | Expression . GT Expression
+   37           | Expression . EQ Expression
+   38           | Expression . PLUSOP Expression
+   39           | Expression . MINOP Expression
+   40           | Expression . MULOP Expression
+   41           | Expression . DIVOP Expression
+   42           | Expression . '[' Expression ']'
+   42           | Expression '[' Expression . ']'
+   43           | Expression . '.' LENGTH
+   44           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
 
-    '('  shift, and go to state 143
+    PLUSOP  shift, and go to state 108
+    MINOP   shift, and go to state 109
+    MULOP   shift, and go to state 110
+    DIVOP   shift, and go to state 111
+    AND     shift, and go to state 112
+    OR      shift, and go to state 113
+    EQ      shift, and go to state 114
+    LT      shift, and go to state 115
+    GT      shift, and go to state 116
+    '['     shift, and go to state 117
+    ']'     shift, and go to state 144
+    '.'     shift, and go to state 119
 
 
 State 137
 
-   28 Statement: WHILE '(' Expression ')' '{' . Statement ';' '}'
+   28 Statement: IF '(' Expression ')' '{' . Statement '}' ELSE '{' Statement '}'
 
     IDENTIFIER   shift, and go to state 4
     MAIN         shift, and go to state 5
@@ -2302,283 +2318,27 @@ State 137
     WHILE        shift, and go to state 62
     SYS_PRINTLN  shift, and go to state 63
 
-    Statement   go to state 144
+    Statement   go to state 145
     Identifier  go to state 81
 
 
 State 138
 
-   31 Statement: Identifier '[' Expression ']' '=' . Expression
-
-    INTEGER_LITERAL  shift, and go to state 86
-    IDENTIFIER       shift, and go to state 4
-    MAIN             shift, and go to state 5
-    T_True           shift, and go to state 87
-    T_False          shift, and go to state 88
-    THIS             shift, and go to state 89
-    NEW              shift, and go to state 90
-    '('              shift, and go to state 91
-    '!'              shift, and go to state 92
-
-    Expression  go to state 145
-    Identifier  go to state 94
-
-
-State 139
-
-   32 Expression: Expression . AND Expression
-   33           | Expression . OR Expression
-   34           | Expression . LT Expression
-   35           | Expression . GT Expression
-   36           | Expression . EQ Expression
-   37           | Expression . PLUSOP Expression
-   38           | Expression . MINOP Expression
-   39           | Expression . MULOP Expression
-   40           | Expression . DIVOP Expression
-   41           | Expression . '[' Expression ']'
-   42           | Expression . '.' LENGTH
-   43           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
-   49           | NEW T_Int '[' Expression . ']'
-
-    PLUSOP  shift, and go to state 105
-    MINOP   shift, and go to state 106
-    MULOP   shift, and go to state 107
-    DIVOP   shift, and go to state 108
-    AND     shift, and go to state 109
-    OR      shift, and go to state 110
-    EQ      shift, and go to state 111
-    LT      shift, and go to state 112
-    GT      shift, and go to state 113
-    '['     shift, and go to state 114
-    ']'     shift, and go to state 146
-    '.'     shift, and go to state 116
-
-
-State 140
-
-   50 Expression: NEW Identifier '(' ')' .
-
-    $default  reduce using rule 50 (Expression)
-
-
-State 141
-
-   41 Expression: Expression '[' Expression ']' .
-
-    $default  reduce using rule 41 (Expression)
-
-
-State 142
-
-   26 Statement: Statement .
-   27          | IF '(' Expression ')' '{' Statement . ';' '}' ELSE '{' Statement ';' '}'
-
-    ';'  shift, and go to state 147
-
-    ';'  [reduce using rule 26 (Statement)]
-
-
-State 143
-
-   43 Expression: Expression '.' Identifier '(' . FunctionCallDeclaration ')'
-
-    INTEGER_LITERAL  shift, and go to state 86
-    IDENTIFIER       shift, and go to state 4
-    MAIN             shift, and go to state 5
-    T_True           shift, and go to state 87
-    T_False          shift, and go to state 88
-    THIS             shift, and go to state 89
-    NEW              shift, and go to state 90
-    '('              shift, and go to state 91
-    '!'              shift, and go to state 92
-
-    Expression               go to state 148
-    FunctionCallDeclaration  go to state 149
-    Identifier               go to state 94
-
-
-State 144
-
-   26 Statement: Statement .
-   28          | WHILE '(' Expression ')' '{' Statement . ';' '}'
-
-    ';'  shift, and go to state 150
-
-    ';'  [reduce using rule 26 (Statement)]
-
-
-State 145
-
-   31 Statement: Identifier '[' Expression ']' '=' Expression .
-   32 Expression: Expression . AND Expression
-   33           | Expression . OR Expression
-   34           | Expression . LT Expression
-   35           | Expression . GT Expression
-   36           | Expression . EQ Expression
-   37           | Expression . PLUSOP Expression
-   38           | Expression . MINOP Expression
-   39           | Expression . MULOP Expression
-   40           | Expression . DIVOP Expression
-   41           | Expression . '[' Expression ']'
-   42           | Expression . '.' LENGTH
-   43           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
-
-    PLUSOP  shift, and go to state 105
-    MINOP   shift, and go to state 106
-    MULOP   shift, and go to state 107
-    DIVOP   shift, and go to state 108
-    AND     shift, and go to state 109
-    OR      shift, and go to state 110
-    EQ      shift, and go to state 111
-    LT      shift, and go to state 112
-    GT      shift, and go to state 113
-    '['     shift, and go to state 114
-    '.'     shift, and go to state 116
-
-    $default  reduce using rule 31 (Statement)
-
-
-State 146
-
-   49 Expression: NEW T_Int '[' Expression ']' .
-
-    $default  reduce using rule 49 (Expression)
-
-
-State 147
-
-   27 Statement: IF '(' Expression ')' '{' Statement ';' . '}' ELSE '{' Statement ';' '}'
-
-    '}'  shift, and go to state 151
-
-
-State 148
-
-   32 Expression: Expression . AND Expression
-   33           | Expression . OR Expression
-   34           | Expression . LT Expression
-   35           | Expression . GT Expression
-   36           | Expression . EQ Expression
-   37           | Expression . PLUSOP Expression
-   38           | Expression . MINOP Expression
-   39           | Expression . MULOP Expression
-   40           | Expression . DIVOP Expression
-   41           | Expression . '[' Expression ']'
-   42           | Expression . '.' LENGTH
-   43           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
-   54 FunctionCallDeclaration: Expression .
-
-    PLUSOP  shift, and go to state 105
-    MINOP   shift, and go to state 106
-    MULOP   shift, and go to state 107
-    DIVOP   shift, and go to state 108
-    AND     shift, and go to state 109
-    OR      shift, and go to state 110
-    EQ      shift, and go to state 111
-    LT      shift, and go to state 112
-    GT      shift, and go to state 113
-    '['     shift, and go to state 114
-    '.'     shift, and go to state 116
-
-    $default  reduce using rule 54 (FunctionCallDeclaration)
-
-
-State 149
-
-   43 Expression: Expression '.' Identifier '(' FunctionCallDeclaration . ')'
-   53 FunctionCallDeclaration: FunctionCallDeclaration . ',' Expression
-
-    ')'  shift, and go to state 152
-    ','  shift, and go to state 153
-
-
-State 150
-
-   28 Statement: WHILE '(' Expression ')' '{' Statement ';' . '}'
-
-    '}'  shift, and go to state 154
-
-
-State 151
-
-   27 Statement: IF '(' Expression ')' '{' Statement ';' '}' . ELSE '{' Statement ';' '}'
-
-    ELSE  shift, and go to state 155
-
-
-State 152
-
-   43 Expression: Expression '.' Identifier '(' FunctionCallDeclaration ')' .
+   43 Expression: Expression '.' LENGTH .
 
     $default  reduce using rule 43 (Expression)
 
 
-State 153
+State 139
 
-   53 FunctionCallDeclaration: FunctionCallDeclaration ',' . Expression
+   44 Expression: Expression '.' Identifier . '(' FunctionCallDeclaration ')'
 
-    INTEGER_LITERAL  shift, and go to state 86
-    IDENTIFIER       shift, and go to state 4
-    MAIN             shift, and go to state 5
-    T_True           shift, and go to state 87
-    T_False          shift, and go to state 88
-    THIS             shift, and go to state 89
-    NEW              shift, and go to state 90
-    '('              shift, and go to state 91
-    '!'              shift, and go to state 92
-
-    Expression  go to state 156
-    Identifier  go to state 94
+    '('  shift, and go to state 146
 
 
-State 154
+State 140
 
-   28 Statement: WHILE '(' Expression ')' '{' Statement ';' '}' .
-
-    $default  reduce using rule 28 (Statement)
-
-
-State 155
-
-   27 Statement: IF '(' Expression ')' '{' Statement ';' '}' ELSE . '{' Statement ';' '}'
-
-    '{'  shift, and go to state 157
-
-
-State 156
-
-   32 Expression: Expression . AND Expression
-   33           | Expression . OR Expression
-   34           | Expression . LT Expression
-   35           | Expression . GT Expression
-   36           | Expression . EQ Expression
-   37           | Expression . PLUSOP Expression
-   38           | Expression . MINOP Expression
-   39           | Expression . MULOP Expression
-   40           | Expression . DIVOP Expression
-   41           | Expression . '[' Expression ']'
-   42           | Expression . '.' LENGTH
-   43           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
-   53 FunctionCallDeclaration: FunctionCallDeclaration ',' Expression .
-
-    PLUSOP  shift, and go to state 105
-    MINOP   shift, and go to state 106
-    MULOP   shift, and go to state 107
-    DIVOP   shift, and go to state 108
-    AND     shift, and go to state 109
-    OR      shift, and go to state 110
-    EQ      shift, and go to state 111
-    LT      shift, and go to state 112
-    GT      shift, and go to state 113
-    '['     shift, and go to state 114
-    '.'     shift, and go to state 116
-
-    $default  reduce using rule 53 (FunctionCallDeclaration)
-
-
-State 157
-
-   27 Statement: IF '(' Expression ')' '{' Statement ';' '}' ELSE '{' . Statement ';' '}'
+   29 Statement: WHILE '(' Expression ')' '{' . Statement '}'
 
     IDENTIFIER   shift, and go to state 4
     MAIN         shift, and go to state 5
@@ -2586,29 +2346,316 @@ State 157
     WHILE        shift, and go to state 62
     SYS_PRINTLN  shift, and go to state 63
 
-    Statement   go to state 158
+    Statement   go to state 147
+    Identifier  go to state 81
+
+
+State 141
+
+   32 Statement: Identifier '[' Expression ']' '=' . Expression
+
+    INTEGER_LITERAL  shift, and go to state 88
+    IDENTIFIER       shift, and go to state 4
+    MAIN             shift, and go to state 5
+    T_True           shift, and go to state 89
+    T_False          shift, and go to state 90
+    THIS             shift, and go to state 91
+    NEW              shift, and go to state 92
+    '('              shift, and go to state 93
+    '!'              shift, and go to state 94
+
+    Expression  go to state 148
+    Identifier  go to state 96
+
+
+State 142
+
+   33 Expression: Expression . AND Expression
+   34           | Expression . OR Expression
+   35           | Expression . LT Expression
+   36           | Expression . GT Expression
+   37           | Expression . EQ Expression
+   38           | Expression . PLUSOP Expression
+   39           | Expression . MINOP Expression
+   40           | Expression . MULOP Expression
+   41           | Expression . DIVOP Expression
+   42           | Expression . '[' Expression ']'
+   43           | Expression . '.' LENGTH
+   44           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
+   50           | NEW T_Int '[' Expression . ']'
+
+    PLUSOP  shift, and go to state 108
+    MINOP   shift, and go to state 109
+    MULOP   shift, and go to state 110
+    DIVOP   shift, and go to state 111
+    AND     shift, and go to state 112
+    OR      shift, and go to state 113
+    EQ      shift, and go to state 114
+    LT      shift, and go to state 115
+    GT      shift, and go to state 116
+    '['     shift, and go to state 117
+    ']'     shift, and go to state 149
+    '.'     shift, and go to state 119
+
+
+State 143
+
+   51 Expression: NEW Identifier '(' ')' .
+
+    $default  reduce using rule 51 (Expression)
+
+
+State 144
+
+   42 Expression: Expression '[' Expression ']' .
+
+    $default  reduce using rule 42 (Expression)
+
+
+State 145
+
+   26 Statement: Statement . Statement ';'
+   27          | Statement . ';'
+   28          | IF '(' Expression ')' '{' Statement . '}' ELSE '{' Statement '}'
+
+    IDENTIFIER   shift, and go to state 4
+    MAIN         shift, and go to state 5
+    IF           shift, and go to state 61
+    WHILE        shift, and go to state 62
+    SYS_PRINTLN  shift, and go to state 63
+    '}'          shift, and go to state 150
+    ';'          shift, and go to state 82
+
+    Statement   go to state 83
+    Identifier  go to state 81
+
+
+State 146
+
+   44 Expression: Expression '.' Identifier '(' . FunctionCallDeclaration ')'
+
+    INTEGER_LITERAL  shift, and go to state 88
+    IDENTIFIER       shift, and go to state 4
+    MAIN             shift, and go to state 5
+    T_True           shift, and go to state 89
+    T_False          shift, and go to state 90
+    THIS             shift, and go to state 91
+    NEW              shift, and go to state 92
+    '('              shift, and go to state 93
+    '!'              shift, and go to state 94
+
+    Expression               go to state 151
+    FunctionCallDeclaration  go to state 152
+    Identifier               go to state 96
+
+
+State 147
+
+   26 Statement: Statement . Statement ';'
+   27          | Statement . ';'
+   29          | WHILE '(' Expression ')' '{' Statement . '}'
+
+    IDENTIFIER   shift, and go to state 4
+    MAIN         shift, and go to state 5
+    IF           shift, and go to state 61
+    WHILE        shift, and go to state 62
+    SYS_PRINTLN  shift, and go to state 63
+    '}'          shift, and go to state 153
+    ';'          shift, and go to state 82
+
+    Statement   go to state 83
+    Identifier  go to state 81
+
+
+State 148
+
+   32 Statement: Identifier '[' Expression ']' '=' Expression .
+   33 Expression: Expression . AND Expression
+   34           | Expression . OR Expression
+   35           | Expression . LT Expression
+   36           | Expression . GT Expression
+   37           | Expression . EQ Expression
+   38           | Expression . PLUSOP Expression
+   39           | Expression . MINOP Expression
+   40           | Expression . MULOP Expression
+   41           | Expression . DIVOP Expression
+   42           | Expression . '[' Expression ']'
+   43           | Expression . '.' LENGTH
+   44           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
+
+    PLUSOP  shift, and go to state 108
+    MINOP   shift, and go to state 109
+    MULOP   shift, and go to state 110
+    DIVOP   shift, and go to state 111
+    AND     shift, and go to state 112
+    OR      shift, and go to state 113
+    EQ      shift, and go to state 114
+    LT      shift, and go to state 115
+    GT      shift, and go to state 116
+    '['     shift, and go to state 117
+    '.'     shift, and go to state 119
+
+    $default  reduce using rule 32 (Statement)
+
+
+State 149
+
+   50 Expression: NEW T_Int '[' Expression ']' .
+
+    $default  reduce using rule 50 (Expression)
+
+
+State 150
+
+   28 Statement: IF '(' Expression ')' '{' Statement '}' . ELSE '{' Statement '}'
+
+    ELSE  shift, and go to state 154
+
+
+State 151
+
+   33 Expression: Expression . AND Expression
+   34           | Expression . OR Expression
+   35           | Expression . LT Expression
+   36           | Expression . GT Expression
+   37           | Expression . EQ Expression
+   38           | Expression . PLUSOP Expression
+   39           | Expression . MINOP Expression
+   40           | Expression . MULOP Expression
+   41           | Expression . DIVOP Expression
+   42           | Expression . '[' Expression ']'
+   43           | Expression . '.' LENGTH
+   44           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
+   55 FunctionCallDeclaration: Expression .
+
+    PLUSOP  shift, and go to state 108
+    MINOP   shift, and go to state 109
+    MULOP   shift, and go to state 110
+    DIVOP   shift, and go to state 111
+    AND     shift, and go to state 112
+    OR      shift, and go to state 113
+    EQ      shift, and go to state 114
+    LT      shift, and go to state 115
+    GT      shift, and go to state 116
+    '['     shift, and go to state 117
+    '.'     shift, and go to state 119
+
+    $default  reduce using rule 55 (FunctionCallDeclaration)
+
+
+State 152
+
+   44 Expression: Expression '.' Identifier '(' FunctionCallDeclaration . ')'
+   54 FunctionCallDeclaration: FunctionCallDeclaration . ',' Expression
+
+    ')'  shift, and go to state 155
+    ','  shift, and go to state 156
+
+
+State 153
+
+   29 Statement: WHILE '(' Expression ')' '{' Statement '}' .
+
+    $default  reduce using rule 29 (Statement)
+
+
+State 154
+
+   28 Statement: IF '(' Expression ')' '{' Statement '}' ELSE . '{' Statement '}'
+
+    '{'  shift, and go to state 157
+
+
+State 155
+
+   44 Expression: Expression '.' Identifier '(' FunctionCallDeclaration ')' .
+
+    $default  reduce using rule 44 (Expression)
+
+
+State 156
+
+   54 FunctionCallDeclaration: FunctionCallDeclaration ',' . Expression
+
+    INTEGER_LITERAL  shift, and go to state 88
+    IDENTIFIER       shift, and go to state 4
+    MAIN             shift, and go to state 5
+    T_True           shift, and go to state 89
+    T_False          shift, and go to state 90
+    THIS             shift, and go to state 91
+    NEW              shift, and go to state 92
+    '('              shift, and go to state 93
+    '!'              shift, and go to state 94
+
+    Expression  go to state 158
+    Identifier  go to state 96
+
+
+State 157
+
+   28 Statement: IF '(' Expression ')' '{' Statement '}' ELSE '{' . Statement '}'
+
+    IDENTIFIER   shift, and go to state 4
+    MAIN         shift, and go to state 5
+    IF           shift, and go to state 61
+    WHILE        shift, and go to state 62
+    SYS_PRINTLN  shift, and go to state 63
+
+    Statement   go to state 159
     Identifier  go to state 81
 
 
 State 158
 
-   26 Statement: Statement .
-   27          | IF '(' Expression ')' '{' Statement ';' '}' ELSE '{' Statement . ';' '}'
+   33 Expression: Expression . AND Expression
+   34           | Expression . OR Expression
+   35           | Expression . LT Expression
+   36           | Expression . GT Expression
+   37           | Expression . EQ Expression
+   38           | Expression . PLUSOP Expression
+   39           | Expression . MINOP Expression
+   40           | Expression . MULOP Expression
+   41           | Expression . DIVOP Expression
+   42           | Expression . '[' Expression ']'
+   43           | Expression . '.' LENGTH
+   44           | Expression . '.' Identifier '(' FunctionCallDeclaration ')'
+   54 FunctionCallDeclaration: FunctionCallDeclaration ',' Expression .
 
-    ';'  shift, and go to state 159
+    PLUSOP  shift, and go to state 108
+    MINOP   shift, and go to state 109
+    MULOP   shift, and go to state 110
+    DIVOP   shift, and go to state 111
+    AND     shift, and go to state 112
+    OR      shift, and go to state 113
+    EQ      shift, and go to state 114
+    LT      shift, and go to state 115
+    GT      shift, and go to state 116
+    '['     shift, and go to state 117
+    '.'     shift, and go to state 119
 
-    ';'  [reduce using rule 26 (Statement)]
+    $default  reduce using rule 54 (FunctionCallDeclaration)
 
 
 State 159
 
-   27 Statement: IF '(' Expression ')' '{' Statement ';' '}' ELSE '{' Statement ';' . '}'
+   26 Statement: Statement . Statement ';'
+   27          | Statement . ';'
+   28          | IF '(' Expression ')' '{' Statement '}' ELSE '{' Statement . '}'
 
-    '}'  shift, and go to state 160
+    IDENTIFIER   shift, and go to state 4
+    MAIN         shift, and go to state 5
+    IF           shift, and go to state 61
+    WHILE        shift, and go to state 62
+    SYS_PRINTLN  shift, and go to state 63
+    '}'          shift, and go to state 160
+    ';'          shift, and go to state 82
+
+    Statement   go to state 83
+    Identifier  go to state 81
 
 
 State 160
 
-   27 Statement: IF '(' Expression ')' '{' Statement ';' '}' ELSE '{' Statement ';' '}' .
+   28 Statement: IF '(' Expression ')' '{' Statement '}' ELSE '{' Statement '}' .
 
-    $default  reduce using rule 27 (Statement)
+    $default  reduce using rule 28 (Statement)
