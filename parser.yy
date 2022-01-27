@@ -31,12 +31,12 @@
 %token SYS_PRINTLN
 %token <std::string> T_Int T_Bool T_True T_False
 %token PLUSOP MINOP MULOP DIVOP 
-%token AND OR EQ LT GT 
 %token THIS NEW
+%token AND OR EQ LT GT 
 
-%left PLUSOP
+%left PLUSOP 
 %left MINOP
-%left MULOP
+%left MULOP 
 %left DIVOP
 
 
@@ -80,6 +80,7 @@ ClassDeclaration    : CLASS Identifier '{' VarDeclaration MethodDeclaration '}' 
 VarDeclaration      : VarDeclaration Type Identifier ';' {
                                             $$ = new Node("Var declaration", "");
                                             $$->children.push_back($2);
+                                            $$->children.push_back($3);
                                             $$->children.push_back($1);
                                             printf("r7 ");
                                         }
@@ -92,18 +93,18 @@ VarDeclaration      : VarDeclaration Type Identifier ';' {
                     |
                     ;
 
-MethodDeclaration   : MethodDeclaration PUBLIC Type Identifier '(' MethodArgumentDeclaration ')' '{' MethodBodyDeclaration RETURN ';' '}' {
+MethodDeclaration   : MethodDeclaration PUBLIC Type Identifier '(' MethodArgumentDeclaration ')' '{' MethodBodyDeclaration '}' {
                                 $$ = new Node("Type Method Declaration", $4->type);
                                 $$->children.push_back($6);
                                 $$->children.push_back($9);
                                 printf("r9 ");
                             }
-                    | PUBLIC Type Identifier '(' MethodArgumentDeclaration ')' '{' MethodBodyDeclaration RETURN ';' '}' {
+                    | PUBLIC Type Identifier '(' MethodArgumentDeclaration ')' '{' MethodBodyDeclaration '}' {
                                 $$ = new Node("Type Method Declaration", "");
                                 $$->children.push_back($3);
                                 $$->children.push_back($5);
                                 $$->children.push_back($8);
-                                printf("r9 ");
+                                printf("r9.2 ");
                             }
                     |
                     ;
@@ -180,21 +181,21 @@ Type                : T_Int {
                             }
                     ;
                     
-Statement           : '{' Statement '}' {
+Statement           : Statement {
                                 $$ = new Node("Statement", "");
-                                $$->children.push_back($2);
+                                $$->children.push_back($1);
                                 printf("r27 ");
                             }
-                    | IF '(' Expression ')' Statement ELSE Statement {
+                    | IF '(' Expression ')' '{' Statement ';' '}' ELSE '{' Statement ';' '}' {
                                 $$ = new Node("IF", "");
                                 $$->children.push_back($3);
-                                $$->children.push_back($7);
+                                $$->children.push_back($11);
                                 printf("r29 ");
                             }
-                    | WHILE '(' Expression ')'  Statement  {
+                    | WHILE '(' Expression ')'  '{' Statement ';' '}' {
                                 $$ = new Node("While", "");
                                 $$->children.push_back($3);
-                                $$->children.push_back($5);
+                                $$->children.push_back($6);
                                 printf("r30 ");
                             }
                     | SYS_PRINTLN '(' Expression ')' {
