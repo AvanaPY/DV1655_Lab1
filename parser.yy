@@ -40,7 +40,7 @@
 %left DIVOP
 
 
-%type <Node *> Goal MainClass ClassDeclaration VarDeclaration MethodDeclaration MethodBodyDeclaration MethodArgumentDeclaration MethodVarDeclaration MethodStatementDeclaration Type Statement Expression FunctionCallDeclaration Identifier
+%type <Node *> Goal MainClass ClassDeclaration VarDeclaration MethodDeclaration MethodBodyDeclaration MethodArgumentDeclaration MethodStatementDeclaration Type Statement Expression FunctionCallDeclaration Identifier
 // definition of the production rules. All production rules are of type Node
 
 %%
@@ -91,7 +91,10 @@ VarDeclaration      : VarDeclaration Type Identifier ';' {
                                             $$->children.push_back($1);
                                             printf("r8 ");
                                         }
-                    |
+                    |                   {
+                                            $$ = new Node("Variables", "None");
+                                            printf("r8.1 ");
+                                    }
                     ;
 
 MethodDeclaration   : MethodDeclaration PUBLIC Type Identifier '(' MethodArgumentDeclaration ')' '{' MethodBodyDeclaration '}' {
@@ -101,16 +104,18 @@ MethodDeclaration   : MethodDeclaration PUBLIC Type Identifier '(' MethodArgumen
                                 printf("r9 ");
                             }
                     | PUBLIC Type Identifier '(' MethodArgumentDeclaration ')' '{' MethodBodyDeclaration '}' {
-                                $$ = new Node("Method", "");
-                                $$->children.push_back($3);
+                                $$ = new Node("Method", $3->type);
                                 $$->children.push_back($5);
                                 $$->children.push_back($8);
                                 printf("r9.2 ");
                             }
-                    |
+                    |       {
+                                            $$ = new Node("Methods", "None");
+                                            printf("9.1 ");
+                                    }
                     ;
 
-MethodBodyDeclaration       : MethodBodyDeclaration MethodVarDeclaration {
+MethodBodyDeclaration       : MethodBodyDeclaration VarDeclaration {
                                 $$ = new Node("Variable", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($2);
@@ -122,7 +127,7 @@ MethodBodyDeclaration       : MethodBodyDeclaration MethodVarDeclaration {
                                 $$->children.push_back($2);
                                 printf("r11 ");
                             }
-                            | MethodVarDeclaration{
+                            | VarDeclaration{
                                 $$ = new Node("Variable", "");
                                 $$->children.push_back($1);
                                 printf("r12 ");
@@ -134,24 +139,31 @@ MethodBodyDeclaration       : MethodBodyDeclaration MethodVarDeclaration {
                             }
                             ;
 
-MethodArgumentDeclaration   : MethodArgumentDeclaration ',' Type Identifier
+MethodArgumentDeclaration   : MethodArgumentDeclaration ',' Type Identifier{
+                                            $$ = new Node("Argument", "");
+                                            $$->children.push_back($1);
+                                            $$->children.push_back($3);
+                                            $$->children.push_back($4);
+                                            printf("r16 ");
+                                        }
                             | Type Identifier{
                                             $$ = new Node("Argument", "");
                                             $$->children.push_back($1);
                                             $$->children.push_back($2);
                                             printf("r16 ");
                                         }
-                            ;
-
-MethodVarDeclaration        : MethodVarDeclaration VarDeclaration
-                            | VarDeclaration {
-                                            $$ = new Node("Variable", "");
-                                            $$->children.push_back($1);
-                                            printf("r19 ");
+                            |           {
+                                            $$ = new Node("Arguments", "None");
+                                            printf("r16.1 ");
                                         }
                             ;
 
-MethodStatementDeclaration  : MethodStatementDeclaration Statement
+MethodStatementDeclaration  : MethodStatementDeclaration Statement {
+                                            $$ = new Node("Method Statement Declaration", "");
+                                            $$->children.push_back($1);
+                                            $$->children.push_back($2);
+                                            printf("r20 ");
+                                        }
                             | Statement {
                                             $$ = new Node("Method Statement Declaration", "");
                                             $$->children.push_back($1);
@@ -339,20 +351,20 @@ Expression          : Expression AND Expression {
                             }
                     ;
 
-FunctionCallDeclaration : FunctionCallDeclaration ',' Expression
+FunctionCallDeclaration : FunctionCallDeclaration ',' Expression{
+                                $$ = new Node("Function Call Expression", "");
+                                $$->children.push_back($1);
+                                $$->children.push_back($3);
+                                printf("r54 ");
+                            }
                         | Expression{
                                 $$ = new Node("Function Call Expression", "");
                                 $$->children.push_back($1);
-                                printf("r54 ");
+                                printf("r55 ");
                             }
                         ;
                         
-Identifier          : IDENTIFIER{
+Identifier          : IDENTIFIER {
                                 $$ = new Node($1, "");
-                                printf("r55 ");
-                            }
-                    | MAIN {
-                                $$ = new Node("MAIN", "");
                                 printf("r56 ");
                             }
-                    ;
