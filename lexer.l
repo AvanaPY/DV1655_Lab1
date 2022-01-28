@@ -37,7 +37,7 @@
 "-"                 { return yy::parser::make_MINOP(); }
 "*"                 { return yy::parser::make_MULOP(); }
 "/"                 { return yy::parser::make_DIVOP(); }
-"="                 { return yytext[0]; }
+"="                 { return yy::parser::make_ASSIGN_OP(); }
 
 "."                 { return yy::parser::make_DOT(); }
 
