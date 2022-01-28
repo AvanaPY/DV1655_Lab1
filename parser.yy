@@ -41,7 +41,6 @@
 %left MULOP 
 %left DIVOP
 
-
 %type <Node *> Goal MainClass 
 OptionalClassList ClassDeclaration 
 VarList VarDeclaration 
@@ -135,29 +134,36 @@ MethodList          :   MethodList MethodDeclaration {
                         }
                     ;
 
-MethodDeclaration   :   PUBLIC Type Identifier '(' MethodParameterList ')' '{' MethodBodyDeclaration '}' {
+MethodDeclaration   :   PUBLIC VOID Identifier '(' MethodParameterList ')' '{' MethodBodyDeclaration '}' {
                             $$ = new Node("Method", $3->type);
                             $$->children.push_back($5);
                             $$->children.push_back($8);
                             printf("r9.2 ");
                         }
+                    |   PUBLIC Type Identifier '(' MethodParameterList ')' '{' MethodBodyDeclaration RETURN Expression ';' '}' {
+                            $$ = new Node("Method", $3->type);
+                            $$->children.push_back($5);
+                            $$->children.push_back($8);
+                            $$->children.push_back(new Node("Returns", $10->type));
+                            printf("r9.3 ");
+                        }
                     ;
 
 MethodBodyDeclaration       : MethodBodyDeclaration Statement {
-                                $$ = new Node("Variable", "");
-                                $$->children.push_back($1);
-                                $$->children.push_back($2);
-                                printf("r10 ");
-                            }
+                                    $$ = new Node("Method Body", "");
+                                    $$->children.push_back($1);
+                                    $$->children.push_back($2);
+                                    printf("r10 ");
+                                }
                             | VarList {
-                                printf("r12 ");
-                                $$ = $1;
-                            }
+                                    printf("r12 ");
+                                    $$ = $1;
+                                }
                             | Statement {
-                                $$ = new Node("Statement List", "");
-                                $$->children.push_back($1);
-                                printf("r14 ");
-                            }
+                                    $$ = new Node("Statement List", "");
+                                    $$->children.push_back($1);
+                                    printf("r14 ");
+                                }
                             ;
 
 MethodParameterList :  MethodParameterList ',' MethodParameterDecl{
@@ -196,10 +202,6 @@ Type                : T_Int {
                                 $$ = new Node("Bool", "");
                                 printf("r24 ");
                             }
-                    | VOID {
-                                $$ = new Node("VOID", "");
-                                printf("r25 ");
-                            }
                     ;
                     
 Statement           : Statement Statement {
@@ -212,7 +214,10 @@ Statement           : Statement Statement {
                                 $$ = new Node("IF", "");
                                 $$->children.push_back($3);
                                 $$->children.push_back($6);
-                                $$->children.push_back($10);
+
+                                Node* else_node = new Node("ELSE", "");
+                                else_node->children.push_back($10);
+                                $$->children.push_back(else_node);
                                 printf("r29 ");
                             }
                     | WHILE '(' Expression ')'  '{' Statement '}' {
@@ -237,7 +242,7 @@ Statement           : Statement Statement {
                                 $$->children.push_back($3);
                                 $$->children.push_back($6);
                                 printf("r33 ");
-                            }
+                        }
                     ;
 
 Expression          : Expression AND Expression {
