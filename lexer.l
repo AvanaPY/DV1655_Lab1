@@ -39,7 +39,7 @@
 "/"                 { return yy::parser::make_DIVOP(); }
 "="                 { return yytext[0]; }
 
-"."                 { printf("found dot!!!!\n"); return yy::parser::make_DOT(); }
+"."                 { return yy::parser::make_DOT(); }
 
 "&&"                { return yy::parser::make_AND(); }
 "||"                { return yy::parser::make_OR(); }
@@ -47,13 +47,17 @@
 "<"                 { return yy::parser::make_LT(); }
 ">"                 { return yy::parser::make_GT(); }
 "!"                 { return yy::parser::make_NOT(); }
+
+"("                 { return yy::parser::make_LP(); }
+")"                 { return yy::parser::make_RP(); }
 "["                 { return yy::parser::make_LHKP(); }
 "]"                 { return yy::parser::make_RHKP(); }
 
 [\{\}\(\)\[\]\,\.\;] { return yytext[0]; }
-[ \t]+|\/\/.+\n    {}
+[ \t]+               {}
+\/\/.+               { }
 "\n"                 { lineno++;}
-[a-zA-Z_]+           { return yy::parser::make_IDENTIFIER(yytext); }
+[a-zA-Z_]+[0-9]*     { return yy::parser::make_IDENTIFIER(yytext); }
 0|[1-9][0-9]*        { return yy::parser::make_INTEGER_LITERAL(yytext); }
 
 .                   { return yytext[0]; }

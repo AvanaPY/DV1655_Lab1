@@ -18,23 +18,8 @@ class Abcyeee extends Abc{
    }
 }
 
-class Abcyeee extends def{
-   int[] a;
-   int b;
+class ClassTwo {
    public void m(){
-      int a;
-      int b;
-      if(a == b){
-         System.out.println(yeet);
-      } else {
-         System.out.println(yeet);
-      }
-   }
-   public boolean p(){
-      boolean p;
-      while(p == false){
-         p = true;
-      }
-      return p;
+      a = abc.abc(5)length;
    }
 }
