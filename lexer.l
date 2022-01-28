@@ -46,6 +46,9 @@
 "=="                { return yy::parser::make_EQ(); }
 "<"                 { return yy::parser::make_LT(); }
 ">"                 { return yy::parser::make_GT(); }
+"!"                 { return yy::parser::make_NOT(); }
+"["                 { return yy::parser::make_LHKP(); }
+"]"                 { return yy::parser::make_RHKP(); }
 
 [\{\}\(\)\[\]\,\.\;] { return yytext[0]; }
 [ \t]+|\/\/.+\n    {}

@@ -20,34 +20,45 @@
 %token <std::string> IDENTIFIER 
 
 %token CLASS  
-%token PUBLIC  
-%token STATIC  
-%token VOID    
-%token MAIN    
-%token EXTENDS
-%token STRING
-%token RETURN
-%token LENGTH
+%token MAIN EXTENDS STRING
+
+%token PUBLIC STATIC  
+
+%token VOID
+%token <std::string> T_Int T_Bool T_True T_False
+
+%token RETURN LENGTH
 %token IF ELSE WHILE
 %token SYS_PRINTLN
-%token <std::string> T_Int T_Bool T_True T_False
-%token PLUSOP MINOP MULOP DIVOP 
 %token THIS NEW
-%token AND OR EQ LT GT 
-%token DOT
 
-%left PLUSOP 
-%left MINOP
-%left MULOP 
-%left DIVOP
+%token PLUSOP MINOP MULOP DIVOP 
+
+%token AND OR EQ LT GT DOT NOT 
+
+%token LHKP RHKP
+
+%left PLUSOP MINOP
+%left MULOP  DIVOP
+
+%left AND OR NOT
+%left EQ 
+%left LT GT 
+%left DOT
+
+%right LHKP
+%left RHKP
 
 %type <Node *> Goal MainClass 
 OptionalClassList ClassDeclaration 
 VarList VarDeclaration 
 MethodList MethodDeclaration MethodBodyDeclaration 
 MethodParameterList MethodParameterDecl
-Type Statement Expression 
-FunctionArgumentList Identifier
+Type 
+Statement 
+Expression 
+FunctionArgumentList 
+Identifier
 // definition of the production rules. All production rules are of type Node
 
 %%
@@ -60,7 +71,7 @@ Goal                : MainClass OptionalClassList {
                                     }
                     ;
 
-MainClass           : CLASS Identifier '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' Identifier ')' '{' Statement '}' '}' {
+MainClass           : CLASS Identifier '{' PUBLIC STATIC VOID MAIN '(' STRING LHKP RHKP Identifier ')' '{' Statement '}' '}' {
                                                                     $$ = new Node("MainClass", $2->type);
                                                                     Node* n = new Node("Method", "Main");
                                                                     n->children.push_back($15);
@@ -194,7 +205,7 @@ Type                : T_Int {
                                 $$ = new Node("Int", "");
                                 printf("r22 ");
                             }
-                    | T_Int '[' ']' {
+                    | T_Int LHKP RHKP {
                                 $$ = new Node("Int[]", "");
                                 printf("r23 ");
                             }
@@ -203,14 +214,8 @@ Type                : T_Int {
                                 printf("r24 ");
                             }
                     ;
-                    
-Statement           : Statement Statement {
-                                    $$ = new Node("Statement", "");
-                                    $$->children.push_back($1);
-                                    $$->children.push_back($2);
-                                    printf("r27 ");
-                                    }
-                    | IF '(' Expression ')' '{' Statement '}' ELSE '{' Statement '}' {
+
+Statement           :  IF '(' Expression ')' '{' Statement '}' ELSE '{' Statement '}' {
                                 $$ = new Node("IF", "");
                                 $$->children.push_back($3);
                                 $$->children.push_back($6);
@@ -236,7 +241,7 @@ Statement           : Statement Statement {
                                 $$->children.push_back($3);
                                 printf("r32 ");
                             }
-                    | Identifier '[' Expression ']' '=' Expression ';' {
+                    | Identifier LHKP Expression RHKP '=' Expression ';' {
                                 $$ = new Node("Assign[]", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($3);
@@ -299,7 +304,7 @@ Expression          : Expression AND Expression {
                                 $$->children.push_back($3);
                                 printf("r42 ");
                             }
-                    | Expression '[' Expression ']' {
+                    | Expression LHKP Expression RHKP {
                                 $$ = new Node("Indexing", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($3);
@@ -337,7 +342,7 @@ Expression          : Expression AND Expression {
                                 $$ = new Node("THIS", "");
                                 printf("r49 ");
                             }
-                    | NEW T_Int '[' Expression ']'{
+                    | NEW T_Int LHKP Expression RHKP{
                                 $$ = new Node("new[]", $2);
                                 $$->children.push_back($4);
                                 printf("r50 ");
@@ -347,7 +352,7 @@ Expression          : Expression AND Expression {
                                 $$->children.push_back($2);
                                 printf("r51 ");
                             }
-                    | '!' Expression {
+                    | NOT Expression {
                                 $$ = new Node("Negate", "");
                                 $$->children.push_back($2);
                                 printf("r52 ");
