@@ -377,6 +377,7 @@ namespace yy {
       // MethodParameterList
       // MethodParameterDecl
       // Type
+      // StatementList
       // Statement
       // Expression
       // FunctionArgumentList
@@ -461,7 +462,9 @@ namespace yy {
         DOT = 288,
         NOT = 289,
         LHKP = 290,
-        RHKP = 291
+        RHKP = 291,
+        LP = 292,
+        RP = 293
       };
     };
 
@@ -569,10 +572,11 @@ switch (yytype)
       case 54: // MethodParameterList
       case 55: // MethodParameterDecl
       case 56: // Type
-      case 57: // Statement
-      case 58: // Expression
-      case 59: // FunctionArgumentList
-      case 60: // Identifier
+      case 57: // StatementList
+      case 58: // Statement
+      case 59: // Expression
+      case 60: // FunctionArgumentList
+      case 61: // Identifier
         value.template destroy< Node * > ();
         break;
 
@@ -658,13 +662,13 @@ switch (yytype)
       symbol_type (int tok)
         : super_type(token_type (tok))
       {
-        YY_ASSERT (tok == 0 || tok == token::CLASS || tok == token::MAIN || tok == token::EXTENDS || tok == token::STRING || tok == token::PUBLIC || tok == token::STATIC || tok == token::VOID || tok == token::RETURN || tok == token::LENGTH || tok == token::IF || tok == token::ELSE || tok == token::WHILE || tok == token::SYS_PRINTLN || tok == token::THIS || tok == token::NEW || tok == token::PLUSOP || tok == token::MINOP || tok == token::MULOP || tok == token::DIVOP || tok == token::AND || tok == token::OR || tok == token::EQ || tok == token::LT || tok == token::GT || tok == token::DOT || tok == token::NOT || tok == token::LHKP || tok == token::RHKP || tok == 123 || tok == 40 || tok == 41 || tok == 125 || tok == 59 || tok == 44 || tok == 61);
+        YY_ASSERT (tok == 0 || tok == token::CLASS || tok == token::MAIN || tok == token::EXTENDS || tok == token::STRING || tok == token::PUBLIC || tok == token::STATIC || tok == token::VOID || tok == token::RETURN || tok == token::LENGTH || tok == token::IF || tok == token::ELSE || tok == token::WHILE || tok == token::SYS_PRINTLN || tok == token::THIS || tok == token::NEW || tok == token::PLUSOP || tok == token::MINOP || tok == token::MULOP || tok == token::DIVOP || tok == token::AND || tok == token::OR || tok == token::EQ || tok == token::LT || tok == token::GT || tok == token::DOT || tok == token::NOT || tok == token::LHKP || tok == token::RHKP || tok == token::LP || tok == token::RP || tok == 123 || tok == 125 || tok == 59 || tok == 44 || tok == 61);
       }
 #else
       symbol_type (int tok)
         : super_type(token_type (tok))
       {
-        YY_ASSERT (tok == 0 || tok == token::CLASS || tok == token::MAIN || tok == token::EXTENDS || tok == token::STRING || tok == token::PUBLIC || tok == token::STATIC || tok == token::VOID || tok == token::RETURN || tok == token::LENGTH || tok == token::IF || tok == token::ELSE || tok == token::WHILE || tok == token::SYS_PRINTLN || tok == token::THIS || tok == token::NEW || tok == token::PLUSOP || tok == token::MINOP || tok == token::MULOP || tok == token::DIVOP || tok == token::AND || tok == token::OR || tok == token::EQ || tok == token::LT || tok == token::GT || tok == token::DOT || tok == token::NOT || tok == token::LHKP || tok == token::RHKP || tok == 123 || tok == 40 || tok == 41 || tok == 125 || tok == 59 || tok == 44 || tok == 61);
+        YY_ASSERT (tok == 0 || tok == token::CLASS || tok == token::MAIN || tok == token::EXTENDS || tok == token::STRING || tok == token::PUBLIC || tok == token::STATIC || tok == token::VOID || tok == token::RETURN || tok == token::LENGTH || tok == token::IF || tok == token::ELSE || tok == token::WHILE || tok == token::SYS_PRINTLN || tok == token::THIS || tok == token::NEW || tok == token::PLUSOP || tok == token::MINOP || tok == token::MULOP || tok == token::DIVOP || tok == token::AND || tok == token::OR || tok == token::EQ || tok == token::LT || tok == token::GT || tok == token::DOT || tok == token::NOT || tok == token::LHKP || tok == token::RHKP || tok == token::LP || tok == token::RP || tok == 123 || tok == 125 || tok == 59 || tok == 44 || tok == 61);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
@@ -1226,6 +1230,36 @@ switch (yytype)
         return symbol_type (token::RHKP);
       }
 #endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_LP ()
+      {
+        return symbol_type (token::LP);
+      }
+#else
+      static
+      symbol_type
+      make_LP ()
+      {
+        return symbol_type (token::LP);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_RP ()
+      {
+        return symbol_type (token::RP);
+      }
+#else
+      static
+      symbol_type
+      make_RP ()
+      {
+        return symbol_type (token::RP);
+      }
+#endif
 
 
   private:
@@ -1255,7 +1289,7 @@ switch (yytype)
     /// \param yyvalue   the value to check
     static bool yy_table_value_is_error_ (int yyvalue);
 
-    static const signed char yypact_ninf_;
+    static const short yypact_ninf_;
     static const signed char yytable_ninf_;
 
     /// Convert a scanner token number \a t to a symbol number.
@@ -1284,7 +1318,7 @@ switch (yytype)
     // number is the opposite.  If YYTABLE_NINF, syntax error.
     static const unsigned char yytable_[];
 
-    static const unsigned char yycheck_[];
+    static const short yycheck_[];
 
     // YYSTOS[STATE-NUM] -- The (internal number of the) accessing
     // symbol of state STATE-NUM.
@@ -1532,8 +1566,8 @@ switch (yytype)
     enum
     {
       yyeof_ = 0,
-      yylast_ = 314,     ///< Last index in yytable_.
-      yynnts_ = 17,  ///< Number of nonterminal symbols.
+      yylast_ = 440,     ///< Last index in yytable_.
+      yynnts_ = 18,  ///< Number of nonterminal symbols.
       yyfinal_ = 6, ///< Termination state number.
       yyntokens_ = 44  ///< Number of tokens.
     };
@@ -1555,7 +1589,7 @@ switch (yytype)
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-      38,    39,     2,     2,    42,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,    42,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,    41,
        2,    43,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -1563,7 +1597,7 @@ switch (yytype)
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,    37,     2,    40,     2,     2,     2,     2,
+       2,     2,     2,    39,     2,    40,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -1580,9 +1614,9 @@ switch (yytype)
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
-      35,    36
+      35,    36,    37,    38
     };
-    const int user_token_number_max_ = 291;
+    const int user_token_number_max_ = 293;
 
     if (t <= 0)
       return yyeof_;
@@ -1613,10 +1647,11 @@ switch (yytype)
       case 54: // MethodParameterList
       case 55: // MethodParameterDecl
       case 56: // Type
-      case 57: // Statement
-      case 58: // Expression
-      case 59: // FunctionArgumentList
-      case 60: // Identifier
+      case 57: // StatementList
+      case 58: // Statement
+      case 59: // Expression
+      case 60: // FunctionArgumentList
+      case 61: // Identifier
         value.move< Node * > (std::move (that.value));
         break;
 
@@ -1655,10 +1690,11 @@ switch (yytype)
       case 54: // MethodParameterList
       case 55: // MethodParameterDecl
       case 56: // Type
-      case 57: // Statement
-      case 58: // Expression
-      case 59: // FunctionArgumentList
-      case 60: // Identifier
+      case 57: // StatementList
+      case 58: // Statement
+      case 59: // Expression
+      case 60: // FunctionArgumentList
+      case 61: // Identifier
         value.copy< Node * > (YY_MOVE (that.value));
         break;
 
@@ -1705,10 +1741,11 @@ switch (yytype)
       case 54: // MethodParameterList
       case 55: // MethodParameterDecl
       case 56: // Type
-      case 57: // Statement
-      case 58: // Expression
-      case 59: // FunctionArgumentList
-      case 60: // Identifier
+      case 57: // StatementList
+      case 58: // Statement
+      case 59: // Expression
+      case 60: // FunctionArgumentList
+      case 61: // Identifier
         value.move< Node * > (YY_MOVE (s.value));
         break;
 
@@ -1775,7 +1812,7 @@ switch (yytype)
   }
 
 } // yy
-#line 1779 "parser.tab.hh"
+#line 1816 "parser.tab.hh"
 
 
 
