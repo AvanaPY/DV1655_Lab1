@@ -39,6 +39,8 @@
 "/"                 { return yy::parser::make_DIVOP(); }
 "="                 { return yytext[0]; }
 
+"."                 { printf("found dot!!!!\n"); return yy::parser::make_DOT(); }
+
 "&&"                { return yy::parser::make_AND(); }
 "||"                { return yy::parser::make_OR(); }
 "=="                { return yy::parser::make_EQ(); }
@@ -51,4 +53,5 @@
 [a-zA-Z_]+           { return yy::parser::make_IDENTIFIER(yytext); }
 0|[1-9][0-9]*        { return yy::parser::make_INTEGER_LITERAL(yytext); }
 
+.                   { return yytext[0]; }
 %%
