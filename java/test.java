@@ -14,12 +14,9 @@ class Abcyeee extends Abc{
       int b;
    }
    public void p(int a, int b){
-      int p;
+      a = true;
    }
 }
 
 class ClassTwo {
-   public void m(){
-      a = abc.abc(5)length;
-   }
 }

@@ -1,12 +1,7 @@
-State 3 conflicts: 1 shift/reduce
-State 15 conflicts: 2 shift/reduce
-State 20 conflicts: 1 shift/reduce
-State 24 conflicts: 2 shift/reduce
-State 32 conflicts: 1 shift/reduce
-State 58 conflicts: 13 shift/reduce
-State 60 conflicts: 13 shift/reduce
-State 74 conflicts: 11 shift/reduce
-State 77 conflicts: 1 shift/reduce
+State 75 conflicts: 3 shift/reduce
+State 78 conflicts: 11 shift/reduce
+State 81 conflicts: 1 shift/reduce
+State 95 conflicts: 1 shift/reduce
 
 
 Grammar
@@ -14,127 +9,134 @@ Grammar
     0 $accept: Goal $end
 
     1 Goal: MainClass OptionalClassList
+    2     | MainClass
 
-    2 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP '{' Statement '}' '}'
+    3 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP '{' Statement '}' '}'
 
-    3 OptionalClassList: OptionalClassList ClassDeclaration
-    4                  | ClassDeclaration
-    5                  | %empty
+    4 OptionalClassList: OptionalClassList ClassDeclaration
+    5                  | ClassDeclaration
 
-    6 ClassDeclaration: CLASS Identifier '{' VarList MethodList '}'
-    7                 | CLASS Identifier EXTENDS Identifier '{' VarList MethodList '}'
+    6 ClassDeclaration: CLASS Identifier '{' ClassBody '}'
+    7                 | CLASS Identifier EXTENDS Identifier '{' ClassBody '}'
+    8                 | CLASS Identifier '{' '}'
+    9                 | CLASS Identifier EXTENDS Identifier '{' '}'
 
-    8 VarList: VarList VarDeclaration
-    9        | VarDeclaration
-   10        | %empty
+   10 ClassBody: VarList
+   11          | MethodList
+   12          | VarList MethodList
 
-   11 VarDeclaration: Type Identifier ';'
+   13 VarList: VarList VarDeclaration
+   14        | VarDeclaration
 
-   12 MethodList: MethodList MethodDeclaration
-   13           | MethodDeclaration
-   14           | %empty
+   15 VarDeclaration: Type Identifier ';'
 
-   15 MethodDeclaration: PUBLIC VOID Identifier LP MethodParameterList RP '{' MethodBodyDeclaration '}'
-   16                  | PUBLIC Type Identifier LP MethodParameterList RP '{' MethodBodyDeclaration RETURN Expression ';' '}'
+   16 MethodList: MethodList MethodDeclaration
+   17           | MethodDeclaration
 
-   17 MethodBodyDeclaration: MethodBodyDeclaration Statement
-   18                      | VarList
-   19                      | StatementList
+   18 MethodDeclaration: PUBLIC VOID Identifier LP MethodParameterList RP '{' MethodBodyDeclaration '}'
+   19                  | PUBLIC Type Identifier LP MethodParameterList RP '{' MethodBodyDeclaration RETURN Expression ';' '}'
 
-   20 MethodParameterList: MethodParameterList ',' MethodParameterDecl
-   21                    | MethodParameterDecl
-   22                    | %empty
+   20 MethodBodyDeclaration: MethodBodyDeclaration MBD
+   21                      | MBD
 
-   23 MethodParameterDecl: Type Identifier
+   22 MBD: VarList
+   23    | StatementList
 
-   24 Type: T_Int
-   25     | T_Int LHKP RHKP
-   26     | T_Bool
+   24 MethodParameterList: MethodParameterList ',' MethodParameterDecl
+   25                    | MethodParameterDecl
+   26                    | %empty
 
-   27 StatementList: StatementList Statement
-   28              | Statement
+   27 MethodParameterDecl: Type Identifier
 
-   29 Statement: IF LP Expression RP '{' StatementList '}' ELSE '{' StatementList '}'
-   30          | WHILE LP Expression RP '{' StatementList '}'
-   31          | SYS_PRINTLN LP Expression RP ';'
-   32          | Identifier '=' Expression ';'
-   33          | Identifier LHKP Expression RHKP '=' Expression ';'
-   34          | Expression
+   28 Type: T_Int
+   29     | T_Int LHKP RHKP
+   30     | T_Bool
+   31     | Identifier
 
-   35 Expression: Expression AND Expression
-   36           | Expression OR Expression
-   37           | Expression LT Expression
-   38           | Expression GT Expression
-   39           | Expression EQ Expression
-   40           | Expression PLUSOP Expression
-   41           | Expression MINOP Expression
-   42           | Expression MULOP Expression
-   43           | Expression DIVOP Expression
-   44           | Expression LHKP Expression RHKP
-   45           | Expression DOT LENGTH
-   46           | Expression DOT Identifier LP FunctionArgumentList RP
-   47           | INTEGER_LITERAL
-   48           | T_True
-   49           | T_False
-   50           | Identifier
-   51           | THIS
+   32 StatementList: StatementList Statement
+   33              | Statement
+
+   34 Statement: IF LP Expression RP '{' StatementList '}' ELSE '{' StatementList '}'
+   35          | WHILE LP Expression RP '{' StatementList '}'
+   36          | SYS_PRINTLN LP Expression RP ';'
+   37          | Identifier ASSIGN_OP Expression ';'
+   38          | Identifier LHKP Expression RHKP ASSIGN_OP Expression ';'
+   39          | Expression ';'
+
+   40 Expression: Expression AND Expression
+   41           | Expression OR Expression
+   42           | Expression LT Expression
+   43           | Expression GT Expression
+   44           | Expression EQ Expression
+   45           | Expression PLUSOP Expression
+   46           | Expression MINOP Expression
+   47           | Expression MULOP Expression
+   48           | Expression DIVOP Expression
+   49           | Expression LHKP Expression RHKP
+   50           | Expression DOT LENGTH
+   51           | Expression DOT Identifier LP FunctionArgumentList RP
    52           | NEW T_Int LHKP Expression RHKP
    53           | NEW Identifier LP RP
    54           | NOT Expression
    55           | LP Expression RP
+   56           | Identifier
+   57           | INTEGER_LITERAL
+   58           | T_True
+   59           | T_False
+   60           | THIS
 
-   56 FunctionArgumentList: FunctionArgumentList ',' Expression
-   57                     | Expression
-   58                     | %empty
+   61 FunctionArgumentList: FunctionArgumentList ',' Expression
+   62                     | Expression
+   63                     | %empty
 
-   59 Identifier: IDENTIFIER
+   64 Identifier: IDENTIFIER
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
-    ',' (44) 20 56
-    ';' (59) 11 16 31 32 33
-    '=' (61) 32 33
-    '{' (123) 2 6 7 15 16 29 30
-    '}' (125) 2 6 7 15 16 29 30
+    ',' (44) 24 61
+    ';' (59) 15 19 36 37 38 39
+    '{' (123) 3 6 7 8 9 18 19 34 35
+    '}' (125) 3 6 7 8 9 18 19 34 35
     error (256)
-    INTEGER_LITERAL <std::string> (258) 47
-    IDENTIFIER <std::string> (259) 59
-    CLASS (260) 2 6 7
-    MAIN (261) 2
-    EXTENDS (262) 7
-    STRING (263) 2
-    PUBLIC (264) 2 15 16
-    STATIC (265) 2
-    VOID (266) 2 15
-    T_Int <std::string> (267) 24 25 52
-    T_Bool <std::string> (268) 26
-    T_True <std::string> (269) 48
-    T_False <std::string> (270) 49
-    RETURN (271) 16
-    LENGTH (272) 45
-    IF (273) 29
-    ELSE (274) 29
-    WHILE (275) 30
-    SYS_PRINTLN (276) 31
-    THIS (277) 51
+    INTEGER_LITERAL <std::string> (258) 57
+    IDENTIFIER <std::string> (259) 64
+    CLASS (260) 3 6 7 8 9
+    MAIN (261) 3
+    EXTENDS (262) 7 9
+    STRING (263) 3
+    PUBLIC (264) 3 18 19
+    STATIC (265) 3
+    VOID (266) 3 18
+    T_Int <std::string> (267) 28 29 52
+    T_Bool <std::string> (268) 30
+    T_True <std::string> (269) 58
+    T_False <std::string> (270) 59
+    RETURN (271) 19
+    LENGTH (272) 50
+    IF (273) 34
+    ELSE (274) 34
+    WHILE (275) 35
+    SYS_PRINTLN (276) 36
+    THIS (277) 60
     NEW (278) 52 53
-    PLUSOP (279) 40
-    MINOP (280) 41
-    MULOP (281) 42
-    DIVOP (282) 43
-    AND (283) 35
-    OR (284) 36
-    EQ (285) 39
-    LT (286) 37
-    GT (287) 38
-    DOT (288) 45 46
-    NOT (289) 54
-    LHKP (290) 2 25 33 44 52
-    RHKP (291) 2 25 33 44 52
-    LP (292) 2 15 16 29 30 31 46 53 55
-    RP (293) 2 15 16 29 30 31 46 53 55
+    PLUSOP (279) 45
+    MINOP (280) 46
+    MULOP (281) 47
+    DIVOP (282) 48
+    ASSIGN_OP (283) 37 38
+    AND (284) 40
+    OR (285) 41
+    EQ (286) 44
+    LT (287) 42
+    GT (288) 43
+    DOT (289) 50 51
+    NOT (290) 54
+    LHKP (291) 3 29 38 49 52
+    RHKP (292) 3 29 38 49 52
+    LP (293) 3 18 19 34 35 36 51 53 55
+    RP (294) 3 18 19 34 35 36 51 53 55
 
 
 Nonterminals, with rules where they appear
@@ -142,56 +144,62 @@ Nonterminals, with rules where they appear
     $accept (44)
         on left: 0
     Goal <Node *> (45)
-        on left: 1
+        on left: 1 2
         on right: 0
     MainClass <Node *> (46)
-        on left: 2
-        on right: 1
+        on left: 3
+        on right: 1 2
     OptionalClassList <Node *> (47)
-        on left: 3 4 5
-        on right: 1 3
+        on left: 4 5
+        on right: 1 4
     ClassDeclaration <Node *> (48)
-        on left: 6 7
-        on right: 3 4
-    VarList <Node *> (49)
-        on left: 8 9 10
-        on right: 6 7 8 18
-    VarDeclaration <Node *> (50)
-        on left: 11
-        on right: 8 9
-    MethodList <Node *> (51)
-        on left: 12 13 14
-        on right: 6 7 12
-    MethodDeclaration <Node *> (52)
-        on left: 15 16
-        on right: 12 13
-    MethodBodyDeclaration <Node *> (53)
-        on left: 17 18 19
-        on right: 15 16 17
-    MethodParameterList <Node *> (54)
-        on left: 20 21 22
-        on right: 15 16 20
-    MethodParameterDecl <Node *> (55)
-        on left: 23
+        on left: 6 7 8 9
+        on right: 4 5
+    ClassBody <Node *> (49)
+        on left: 10 11 12
+        on right: 6 7
+    VarList <Node *> (50)
+        on left: 13 14
+        on right: 10 12 13 22
+    VarDeclaration <Node *> (51)
+        on left: 15
+        on right: 13 14
+    MethodList <Node *> (52)
+        on left: 16 17
+        on right: 11 12 16
+    MethodDeclaration <Node *> (53)
+        on left: 18 19
+        on right: 16 17
+    MethodBodyDeclaration <Node *> (54)
+        on left: 20 21
+        on right: 18 19 20
+    MBD <Node *> (55)
+        on left: 22 23
         on right: 20 21
-    Type <Node *> (56)
+    MethodParameterList <Node *> (56)
         on left: 24 25 26
-        on right: 11 16 23
-    StatementList <Node *> (57)
-        on left: 27 28
-        on right: 19 27 29 30
-    Statement <Node *> (58)
-        on left: 29 30 31 32 33 34
-        on right: 2 17 27 28
-    Expression <Node *> (59)
-        on left: 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55
-        on right: 16 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 52 54 55 56 57
-    FunctionArgumentList <Node *> (60)
-        on left: 56 57 58
-        on right: 46 56
-    Identifier <Node *> (61)
-        on left: 59
-        on right: 2 6 7 11 15 16 23 32 33 46 50 53
+        on right: 18 19 24
+    MethodParameterDecl <Node *> (57)
+        on left: 27
+        on right: 24 25
+    Type <Node *> (58)
+        on left: 28 29 30 31
+        on right: 15 19 27
+    StatementList <Node *> (59)
+        on left: 32 33
+        on right: 23 32 34 35
+    Statement <Node *> (60)
+        on left: 34 35 36 37 38 39
+        on right: 3 32 33
+    Expression <Node *> (61)
+        on left: 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60
+        on right: 19 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 54 55 61 62
+    FunctionArgumentList <Node *> (62)
+        on left: 61 62 63
+        on right: 51 61
+    Identifier <Node *> (63)
+        on left: 64
+        on right: 3 6 7 8 9 15 18 19 27 31 37 38 51 53 56
 
 
 State 0
@@ -206,7 +214,7 @@ State 0
 
 State 1
 
-    2 MainClass: CLASS . Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP '{' Statement '}' '}'
+    3 MainClass: CLASS . Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP '{' Statement '}' '}'
 
     IDENTIFIER  shift, and go to state 4
 
@@ -223,11 +231,11 @@ State 2
 State 3
 
     1 Goal: MainClass . OptionalClassList
+    2     | MainClass .
 
     CLASS  shift, and go to state 7
 
-    CLASS     [reduce using rule 5 (OptionalClassList)]
-    $default  reduce using rule 5 (OptionalClassList)
+    $default  reduce using rule 2 (Goal)
 
     OptionalClassList  go to state 8
     ClassDeclaration   go to state 9
@@ -235,14 +243,14 @@ State 3
 
 State 4
 
-   59 Identifier: IDENTIFIER .
+   64 Identifier: IDENTIFIER .
 
-    $default  reduce using rule 59 (Identifier)
+    $default  reduce using rule 64 (Identifier)
 
 
 State 5
 
-    2 MainClass: CLASS Identifier . '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP '{' Statement '}' '}'
+    3 MainClass: CLASS Identifier . '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP '{' Statement '}' '}'
 
     '{'  shift, and go to state 10
 
@@ -256,8 +264,10 @@ State 6
 
 State 7
 
-    6 ClassDeclaration: CLASS . Identifier '{' VarList MethodList '}'
-    7                 | CLASS . Identifier EXTENDS Identifier '{' VarList MethodList '}'
+    6 ClassDeclaration: CLASS . Identifier '{' ClassBody '}'
+    7                 | CLASS . Identifier EXTENDS Identifier '{' ClassBody '}'
+    8                 | CLASS . Identifier '{' '}'
+    9                 | CLASS . Identifier EXTENDS Identifier '{' '}'
 
     IDENTIFIER  shift, and go to state 4
 
@@ -267,7 +277,7 @@ State 7
 State 8
 
     1 Goal: MainClass OptionalClassList .
-    3 OptionalClassList: OptionalClassList . ClassDeclaration
+    4 OptionalClassList: OptionalClassList . ClassDeclaration
 
     CLASS  shift, and go to state 7
 
@@ -278,22 +288,24 @@ State 8
 
 State 9
 
-    4 OptionalClassList: ClassDeclaration .
+    5 OptionalClassList: ClassDeclaration .
 
-    $default  reduce using rule 4 (OptionalClassList)
+    $default  reduce using rule 5 (OptionalClassList)
 
 
 State 10
 
-    2 MainClass: CLASS Identifier '{' . PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP '{' Statement '}' '}'
+    3 MainClass: CLASS Identifier '{' . PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP '{' Statement '}' '}'
 
     PUBLIC  shift, and go to state 13
 
 
 State 11
 
-    6 ClassDeclaration: CLASS Identifier . '{' VarList MethodList '}'
-    7                 | CLASS Identifier . EXTENDS Identifier '{' VarList MethodList '}'
+    6 ClassDeclaration: CLASS Identifier . '{' ClassBody '}'
+    7                 | CLASS Identifier . EXTENDS Identifier '{' ClassBody '}'
+    8                 | CLASS Identifier . '{' '}'
+    9                 | CLASS Identifier . EXTENDS Identifier '{' '}'
 
     EXTENDS  shift, and go to state 14
     '{'      shift, and go to state 15
@@ -301,21 +313,22 @@ State 11
 
 State 12
 
-    3 OptionalClassList: OptionalClassList ClassDeclaration .
+    4 OptionalClassList: OptionalClassList ClassDeclaration .
 
-    $default  reduce using rule 3 (OptionalClassList)
+    $default  reduce using rule 4 (OptionalClassList)
 
 
 State 13
 
-    2 MainClass: CLASS Identifier '{' PUBLIC . STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP '{' Statement '}' '}'
+    3 MainClass: CLASS Identifier '{' PUBLIC . STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP '{' Statement '}' '}'
 
     STATIC  shift, and go to state 16
 
 
 State 14
 
-    7 ClassDeclaration: CLASS Identifier EXTENDS . Identifier '{' VarList MethodList '}'
+    7 ClassDeclaration: CLASS Identifier EXTENDS . Identifier '{' ClassBody '}'
+    9                 | CLASS Identifier EXTENDS . Identifier '{' '}'
 
     IDENTIFIER  shift, and go to state 4
 
@@ -324,2074 +337,2114 @@ State 14
 
 State 15
 
-    6 ClassDeclaration: CLASS Identifier '{' . VarList MethodList '}'
+    6 ClassDeclaration: CLASS Identifier '{' . ClassBody '}'
+    8                 | CLASS Identifier '{' . '}'
 
-    T_Int   shift, and go to state 18
-    T_Bool  shift, and go to state 19
+    IDENTIFIER  shift, and go to state 4
+    PUBLIC      shift, and go to state 18
+    T_Int       shift, and go to state 19
+    T_Bool      shift, and go to state 20
+    '}'         shift, and go to state 21
 
-    T_Int     [reduce using rule 10 (VarList)]
-    T_Bool    [reduce using rule 10 (VarList)]
-    $default  reduce using rule 10 (VarList)
-
-    VarList         go to state 20
-    VarDeclaration  go to state 21
-    Type            go to state 22
+    ClassBody          go to state 22
+    VarList            go to state 23
+    VarDeclaration     go to state 24
+    MethodList         go to state 25
+    MethodDeclaration  go to state 26
+    Type               go to state 27
+    Identifier         go to state 28
 
 
 State 16
 
-    2 MainClass: CLASS Identifier '{' PUBLIC STATIC . VOID MAIN LP STRING LHKP RHKP Identifier RP '{' Statement '}' '}'
+    3 MainClass: CLASS Identifier '{' PUBLIC STATIC . VOID MAIN LP STRING LHKP RHKP Identifier RP '{' Statement '}' '}'
 
-    VOID  shift, and go to state 23
+    VOID  shift, and go to state 29
 
 
 State 17
 
-    7 ClassDeclaration: CLASS Identifier EXTENDS Identifier . '{' VarList MethodList '}'
+    7 ClassDeclaration: CLASS Identifier EXTENDS Identifier . '{' ClassBody '}'
+    9                 | CLASS Identifier EXTENDS Identifier . '{' '}'
 
-    '{'  shift, and go to state 24
+    '{'  shift, and go to state 30
 
 
 State 18
 
-   24 Type: T_Int .
-   25     | T_Int . LHKP RHKP
+   18 MethodDeclaration: PUBLIC . VOID Identifier LP MethodParameterList RP '{' MethodBodyDeclaration '}'
+   19                  | PUBLIC . Type Identifier LP MethodParameterList RP '{' MethodBodyDeclaration RETURN Expression ';' '}'
 
-    LHKP  shift, and go to state 25
+    IDENTIFIER  shift, and go to state 4
+    VOID        shift, and go to state 31
+    T_Int       shift, and go to state 19
+    T_Bool      shift, and go to state 20
 
-    $default  reduce using rule 24 (Type)
+    Type        go to state 32
+    Identifier  go to state 28
 
 
 State 19
 
-   26 Type: T_Bool .
+   28 Type: T_Int .
+   29     | T_Int . LHKP RHKP
 
-    $default  reduce using rule 26 (Type)
+    LHKP  shift, and go to state 33
+
+    $default  reduce using rule 28 (Type)
 
 
 State 20
 
-    6 ClassDeclaration: CLASS Identifier '{' VarList . MethodList '}'
-    8 VarList: VarList . VarDeclaration
+   30 Type: T_Bool .
 
-    PUBLIC  shift, and go to state 26
-    T_Int   shift, and go to state 18
-    T_Bool  shift, and go to state 19
-
-    PUBLIC    [reduce using rule 14 (MethodList)]
-    $default  reduce using rule 14 (MethodList)
-
-    VarDeclaration     go to state 27
-    MethodList         go to state 28
-    MethodDeclaration  go to state 29
-    Type               go to state 22
+    $default  reduce using rule 30 (Type)
 
 
 State 21
 
-    9 VarList: VarDeclaration .
+    8 ClassDeclaration: CLASS Identifier '{' '}' .
 
-    $default  reduce using rule 9 (VarList)
+    $default  reduce using rule 8 (ClassDeclaration)
 
 
 State 22
 
-   11 VarDeclaration: Type . Identifier ';'
+    6 ClassDeclaration: CLASS Identifier '{' ClassBody . '}'
 
-    IDENTIFIER  shift, and go to state 4
-
-    Identifier  go to state 30
+    '}'  shift, and go to state 34
 
 
 State 23
 
-    2 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID . MAIN LP STRING LHKP RHKP Identifier RP '{' Statement '}' '}'
+   10 ClassBody: VarList .
+   12          | VarList . MethodList
+   13 VarList: VarList . VarDeclaration
 
-    MAIN  shift, and go to state 31
+    IDENTIFIER  shift, and go to state 4
+    PUBLIC      shift, and go to state 18
+    T_Int       shift, and go to state 19
+    T_Bool      shift, and go to state 20
+
+    $default  reduce using rule 10 (ClassBody)
+
+    VarDeclaration     go to state 35
+    MethodList         go to state 36
+    MethodDeclaration  go to state 26
+    Type               go to state 27
+    Identifier         go to state 28
 
 
 State 24
 
-    7 ClassDeclaration: CLASS Identifier EXTENDS Identifier '{' . VarList MethodList '}'
+   14 VarList: VarDeclaration .
 
-    T_Int   shift, and go to state 18
-    T_Bool  shift, and go to state 19
-
-    T_Int     [reduce using rule 10 (VarList)]
-    T_Bool    [reduce using rule 10 (VarList)]
-    $default  reduce using rule 10 (VarList)
-
-    VarList         go to state 32
-    VarDeclaration  go to state 21
-    Type            go to state 22
+    $default  reduce using rule 14 (VarList)
 
 
 State 25
 
-   25 Type: T_Int LHKP . RHKP
+   11 ClassBody: MethodList .
+   16 MethodList: MethodList . MethodDeclaration
 
-    RHKP  shift, and go to state 33
+    PUBLIC  shift, and go to state 18
 
-
-State 26
-
-   15 MethodDeclaration: PUBLIC . VOID Identifier LP MethodParameterList RP '{' MethodBodyDeclaration '}'
-   16                  | PUBLIC . Type Identifier LP MethodParameterList RP '{' MethodBodyDeclaration RETURN Expression ';' '}'
-
-    VOID    shift, and go to state 34
-    T_Int   shift, and go to state 18
-    T_Bool  shift, and go to state 19
-
-    Type  go to state 35
-
-
-State 27
-
-    8 VarList: VarList VarDeclaration .
-
-    $default  reduce using rule 8 (VarList)
-
-
-State 28
-
-    6 ClassDeclaration: CLASS Identifier '{' VarList MethodList . '}'
-   12 MethodList: MethodList . MethodDeclaration
-
-    PUBLIC  shift, and go to state 26
-    '}'     shift, and go to state 36
+    $default  reduce using rule 11 (ClassBody)
 
     MethodDeclaration  go to state 37
 
 
+State 26
+
+   17 MethodList: MethodDeclaration .
+
+    $default  reduce using rule 17 (MethodList)
+
+
+State 27
+
+   15 VarDeclaration: Type . Identifier ';'
+
+    IDENTIFIER  shift, and go to state 4
+
+    Identifier  go to state 38
+
+
+State 28
+
+   31 Type: Identifier .
+
+    $default  reduce using rule 31 (Type)
+
+
 State 29
 
-   13 MethodList: MethodDeclaration .
+    3 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID . MAIN LP STRING LHKP RHKP Identifier RP '{' Statement '}' '}'
 
-    $default  reduce using rule 13 (MethodList)
+    MAIN  shift, and go to state 39
 
 
 State 30
 
-   11 VarDeclaration: Type Identifier . ';'
+    7 ClassDeclaration: CLASS Identifier EXTENDS Identifier '{' . ClassBody '}'
+    9                 | CLASS Identifier EXTENDS Identifier '{' . '}'
 
-    ';'  shift, and go to state 38
+    IDENTIFIER  shift, and go to state 4
+    PUBLIC      shift, and go to state 18
+    T_Int       shift, and go to state 19
+    T_Bool      shift, and go to state 20
+    '}'         shift, and go to state 40
+
+    ClassBody          go to state 41
+    VarList            go to state 23
+    VarDeclaration     go to state 24
+    MethodList         go to state 25
+    MethodDeclaration  go to state 26
+    Type               go to state 27
+    Identifier         go to state 28
 
 
 State 31
 
-    2 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN . LP STRING LHKP RHKP Identifier RP '{' Statement '}' '}'
-
-    LP  shift, and go to state 39
-
-
-State 32
-
-    7 ClassDeclaration: CLASS Identifier EXTENDS Identifier '{' VarList . MethodList '}'
-    8 VarList: VarList . VarDeclaration
-
-    PUBLIC  shift, and go to state 26
-    T_Int   shift, and go to state 18
-    T_Bool  shift, and go to state 19
-
-    PUBLIC    [reduce using rule 14 (MethodList)]
-    $default  reduce using rule 14 (MethodList)
-
-    VarDeclaration     go to state 27
-    MethodList         go to state 40
-    MethodDeclaration  go to state 29
-    Type               go to state 22
-
-
-State 33
-
-   25 Type: T_Int LHKP RHKP .
-
-    $default  reduce using rule 25 (Type)
-
-
-State 34
-
-   15 MethodDeclaration: PUBLIC VOID . Identifier LP MethodParameterList RP '{' MethodBodyDeclaration '}'
-
-    IDENTIFIER  shift, and go to state 4
-
-    Identifier  go to state 41
-
-
-State 35
-
-   16 MethodDeclaration: PUBLIC Type . Identifier LP MethodParameterList RP '{' MethodBodyDeclaration RETURN Expression ';' '}'
+   18 MethodDeclaration: PUBLIC VOID . Identifier LP MethodParameterList RP '{' MethodBodyDeclaration '}'
 
     IDENTIFIER  shift, and go to state 4
 
     Identifier  go to state 42
 
 
-State 36
+State 32
 
-    6 ClassDeclaration: CLASS Identifier '{' VarList MethodList '}' .
+   19 MethodDeclaration: PUBLIC Type . Identifier LP MethodParameterList RP '{' MethodBodyDeclaration RETURN Expression ';' '}'
+
+    IDENTIFIER  shift, and go to state 4
+
+    Identifier  go to state 43
+
+
+State 33
+
+   29 Type: T_Int LHKP . RHKP
+
+    RHKP  shift, and go to state 44
+
+
+State 34
+
+    6 ClassDeclaration: CLASS Identifier '{' ClassBody '}' .
 
     $default  reduce using rule 6 (ClassDeclaration)
 
 
-State 37
+State 35
 
-   12 MethodList: MethodList MethodDeclaration .
+   13 VarList: VarList VarDeclaration .
 
-    $default  reduce using rule 12 (MethodList)
-
-
-State 38
-
-   11 VarDeclaration: Type Identifier ';' .
-
-    $default  reduce using rule 11 (VarDeclaration)
+    $default  reduce using rule 13 (VarList)
 
 
-State 39
+State 36
 
-    2 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP . STRING LHKP RHKP Identifier RP '{' Statement '}' '}'
+   12 ClassBody: VarList MethodList .
+   16 MethodList: MethodList . MethodDeclaration
 
-    STRING  shift, and go to state 43
+    PUBLIC  shift, and go to state 18
 
-
-State 40
-
-    7 ClassDeclaration: CLASS Identifier EXTENDS Identifier '{' VarList MethodList . '}'
-   12 MethodList: MethodList . MethodDeclaration
-
-    PUBLIC  shift, and go to state 26
-    '}'     shift, and go to state 44
+    $default  reduce using rule 12 (ClassBody)
 
     MethodDeclaration  go to state 37
 
 
-State 41
+State 37
 
-   15 MethodDeclaration: PUBLIC VOID Identifier . LP MethodParameterList RP '{' MethodBodyDeclaration '}'
+   16 MethodList: MethodList MethodDeclaration .
 
-    LP  shift, and go to state 45
+    $default  reduce using rule 16 (MethodList)
 
 
-State 42
+State 38
 
-   16 MethodDeclaration: PUBLIC Type Identifier . LP MethodParameterList RP '{' MethodBodyDeclaration RETURN Expression ';' '}'
+   15 VarDeclaration: Type Identifier . ';'
+
+    ';'  shift, and go to state 45
+
+
+State 39
+
+    3 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN . LP STRING LHKP RHKP Identifier RP '{' Statement '}' '}'
 
     LP  shift, and go to state 46
 
 
+State 40
+
+    9 ClassDeclaration: CLASS Identifier EXTENDS Identifier '{' '}' .
+
+    $default  reduce using rule 9 (ClassDeclaration)
+
+
+State 41
+
+    7 ClassDeclaration: CLASS Identifier EXTENDS Identifier '{' ClassBody . '}'
+
+    '}'  shift, and go to state 47
+
+
+State 42
+
+   18 MethodDeclaration: PUBLIC VOID Identifier . LP MethodParameterList RP '{' MethodBodyDeclaration '}'
+
+    LP  shift, and go to state 48
+
+
 State 43
 
-    2 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING . LHKP RHKP Identifier RP '{' Statement '}' '}'
+   19 MethodDeclaration: PUBLIC Type Identifier . LP MethodParameterList RP '{' MethodBodyDeclaration RETURN Expression ';' '}'
 
-    LHKP  shift, and go to state 47
+    LP  shift, and go to state 49
 
 
 State 44
 
-    7 ClassDeclaration: CLASS Identifier EXTENDS Identifier '{' VarList MethodList '}' .
+   29 Type: T_Int LHKP RHKP .
 
-    $default  reduce using rule 7 (ClassDeclaration)
+    $default  reduce using rule 29 (Type)
 
 
 State 45
 
-   15 MethodDeclaration: PUBLIC VOID Identifier LP . MethodParameterList RP '{' MethodBodyDeclaration '}'
+   15 VarDeclaration: Type Identifier ';' .
 
-    T_Int   shift, and go to state 18
-    T_Bool  shift, and go to state 19
-
-    $default  reduce using rule 22 (MethodParameterList)
-
-    MethodParameterList  go to state 48
-    MethodParameterDecl  go to state 49
-    Type                 go to state 50
+    $default  reduce using rule 15 (VarDeclaration)
 
 
 State 46
 
-   16 MethodDeclaration: PUBLIC Type Identifier LP . MethodParameterList RP '{' MethodBodyDeclaration RETURN Expression ';' '}'
+    3 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP . STRING LHKP RHKP Identifier RP '{' Statement '}' '}'
 
-    T_Int   shift, and go to state 18
-    T_Bool  shift, and go to state 19
-
-    $default  reduce using rule 22 (MethodParameterList)
-
-    MethodParameterList  go to state 51
-    MethodParameterDecl  go to state 49
-    Type                 go to state 50
+    STRING  shift, and go to state 50
 
 
 State 47
 
-    2 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP . RHKP Identifier RP '{' Statement '}' '}'
+    7 ClassDeclaration: CLASS Identifier EXTENDS Identifier '{' ClassBody '}' .
 
-    RHKP  shift, and go to state 52
+    $default  reduce using rule 7 (ClassDeclaration)
 
 
 State 48
 
-   15 MethodDeclaration: PUBLIC VOID Identifier LP MethodParameterList . RP '{' MethodBodyDeclaration '}'
-   20 MethodParameterList: MethodParameterList . ',' MethodParameterDecl
+   18 MethodDeclaration: PUBLIC VOID Identifier LP . MethodParameterList RP '{' MethodBodyDeclaration '}'
 
-    RP   shift, and go to state 53
-    ','  shift, and go to state 54
+    IDENTIFIER  shift, and go to state 4
+    T_Int       shift, and go to state 19
+    T_Bool      shift, and go to state 20
+
+    $default  reduce using rule 26 (MethodParameterList)
+
+    MethodParameterList  go to state 51
+    MethodParameterDecl  go to state 52
+    Type                 go to state 53
+    Identifier           go to state 28
 
 
 State 49
 
-   21 MethodParameterList: MethodParameterDecl .
+   19 MethodDeclaration: PUBLIC Type Identifier LP . MethodParameterList RP '{' MethodBodyDeclaration RETURN Expression ';' '}'
 
-    $default  reduce using rule 21 (MethodParameterList)
+    IDENTIFIER  shift, and go to state 4
+    T_Int       shift, and go to state 19
+    T_Bool      shift, and go to state 20
+
+    $default  reduce using rule 26 (MethodParameterList)
+
+    MethodParameterList  go to state 54
+    MethodParameterDecl  go to state 52
+    Type                 go to state 53
+    Identifier           go to state 28
 
 
 State 50
 
-   23 MethodParameterDecl: Type . Identifier
+    3 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING . LHKP RHKP Identifier RP '{' Statement '}' '}'
 
-    IDENTIFIER  shift, and go to state 4
-
-    Identifier  go to state 55
+    LHKP  shift, and go to state 55
 
 
 State 51
 
-   16 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList . RP '{' MethodBodyDeclaration RETURN Expression ';' '}'
-   20 MethodParameterList: MethodParameterList . ',' MethodParameterDecl
+   18 MethodDeclaration: PUBLIC VOID Identifier LP MethodParameterList . RP '{' MethodBodyDeclaration '}'
+   24 MethodParameterList: MethodParameterList . ',' MethodParameterDecl
 
     RP   shift, and go to state 56
-    ','  shift, and go to state 54
+    ','  shift, and go to state 57
 
 
 State 52
 
-    2 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP . Identifier RP '{' Statement '}' '}'
+   25 MethodParameterList: MethodParameterDecl .
 
-    IDENTIFIER  shift, and go to state 4
-
-    Identifier  go to state 57
+    $default  reduce using rule 25 (MethodParameterList)
 
 
 State 53
 
-   15 MethodDeclaration: PUBLIC VOID Identifier LP MethodParameterList RP . '{' MethodBodyDeclaration '}'
+   27 MethodParameterDecl: Type . Identifier
 
-    '{'  shift, and go to state 58
+    IDENTIFIER  shift, and go to state 4
+
+    Identifier  go to state 58
 
 
 State 54
 
-   20 MethodParameterList: MethodParameterList ',' . MethodParameterDecl
+   19 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList . RP '{' MethodBodyDeclaration RETURN Expression ';' '}'
+   24 MethodParameterList: MethodParameterList . ',' MethodParameterDecl
 
-    T_Int   shift, and go to state 18
-    T_Bool  shift, and go to state 19
-
-    MethodParameterDecl  go to state 59
-    Type                 go to state 50
+    RP   shift, and go to state 59
+    ','  shift, and go to state 57
 
 
 State 55
 
-   23 MethodParameterDecl: Type Identifier .
+    3 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP . RHKP Identifier RP '{' Statement '}' '}'
 
-    $default  reduce using rule 23 (MethodParameterDecl)
+    RHKP  shift, and go to state 60
 
 
 State 56
 
-   16 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList RP . '{' MethodBodyDeclaration RETURN Expression ';' '}'
+   18 MethodDeclaration: PUBLIC VOID Identifier LP MethodParameterList RP . '{' MethodBodyDeclaration '}'
 
-    '{'  shift, and go to state 60
+    '{'  shift, and go to state 61
 
 
 State 57
 
-    2 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier . RP '{' Statement '}' '}'
+   24 MethodParameterList: MethodParameterList ',' . MethodParameterDecl
 
-    RP  shift, and go to state 61
+    IDENTIFIER  shift, and go to state 4
+    T_Int       shift, and go to state 19
+    T_Bool      shift, and go to state 20
+
+    MethodParameterDecl  go to state 62
+    Type                 go to state 53
+    Identifier           go to state 28
 
 
 State 58
 
-   15 MethodDeclaration: PUBLIC VOID Identifier LP MethodParameterList RP '{' . MethodBodyDeclaration '}'
+   27 MethodParameterDecl: Type Identifier .
 
-    INTEGER_LITERAL  shift, and go to state 62
-    IDENTIFIER       shift, and go to state 4
-    T_Int            shift, and go to state 18
-    T_Bool           shift, and go to state 19
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    IF               shift, and go to state 65
-    WHILE            shift, and go to state 66
-    SYS_PRINTLN      shift, and go to state 67
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
-
-    INTEGER_LITERAL  [reduce using rule 10 (VarList)]
-    IDENTIFIER       [reduce using rule 10 (VarList)]
-    T_Int            [reduce using rule 10 (VarList)]
-    T_Bool           [reduce using rule 10 (VarList)]
-    T_True           [reduce using rule 10 (VarList)]
-    T_False          [reduce using rule 10 (VarList)]
-    IF               [reduce using rule 10 (VarList)]
-    WHILE            [reduce using rule 10 (VarList)]
-    SYS_PRINTLN      [reduce using rule 10 (VarList)]
-    THIS             [reduce using rule 10 (VarList)]
-    NEW              [reduce using rule 10 (VarList)]
-    NOT              [reduce using rule 10 (VarList)]
-    LP               [reduce using rule 10 (VarList)]
-    $default         reduce using rule 10 (VarList)
-
-    VarList                go to state 72
-    VarDeclaration         go to state 21
-    MethodBodyDeclaration  go to state 73
-    Type                   go to state 22
-    StatementList          go to state 74
-    Statement              go to state 75
-    Expression             go to state 76
-    Identifier             go to state 77
+    $default  reduce using rule 27 (MethodParameterDecl)
 
 
 State 59
 
-   20 MethodParameterList: MethodParameterList ',' MethodParameterDecl .
+   19 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList RP . '{' MethodBodyDeclaration RETURN Expression ';' '}'
 
-    $default  reduce using rule 20 (MethodParameterList)
+    '{'  shift, and go to state 63
 
 
 State 60
 
-   16 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList RP '{' . MethodBodyDeclaration RETURN Expression ';' '}'
+    3 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP . Identifier RP '{' Statement '}' '}'
 
-    INTEGER_LITERAL  shift, and go to state 62
-    IDENTIFIER       shift, and go to state 4
-    T_Int            shift, and go to state 18
-    T_Bool           shift, and go to state 19
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    IF               shift, and go to state 65
-    WHILE            shift, and go to state 66
-    SYS_PRINTLN      shift, and go to state 67
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
+    IDENTIFIER  shift, and go to state 4
 
-    INTEGER_LITERAL  [reduce using rule 10 (VarList)]
-    IDENTIFIER       [reduce using rule 10 (VarList)]
-    T_Int            [reduce using rule 10 (VarList)]
-    T_Bool           [reduce using rule 10 (VarList)]
-    T_True           [reduce using rule 10 (VarList)]
-    T_False          [reduce using rule 10 (VarList)]
-    IF               [reduce using rule 10 (VarList)]
-    WHILE            [reduce using rule 10 (VarList)]
-    SYS_PRINTLN      [reduce using rule 10 (VarList)]
-    THIS             [reduce using rule 10 (VarList)]
-    NEW              [reduce using rule 10 (VarList)]
-    NOT              [reduce using rule 10 (VarList)]
-    LP               [reduce using rule 10 (VarList)]
-    $default         reduce using rule 10 (VarList)
-
-    VarList                go to state 72
-    VarDeclaration         go to state 21
-    MethodBodyDeclaration  go to state 78
-    Type                   go to state 22
-    StatementList          go to state 74
-    Statement              go to state 75
-    Expression             go to state 76
-    Identifier             go to state 77
+    Identifier  go to state 64
 
 
 State 61
 
-    2 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP . '{' Statement '}' '}'
+   18 MethodDeclaration: PUBLIC VOID Identifier LP MethodParameterList RP '{' . MethodBodyDeclaration '}'
 
-    '{'  shift, and go to state 79
+    INTEGER_LITERAL  shift, and go to state 65
+    IDENTIFIER       shift, and go to state 4
+    T_Int            shift, and go to state 19
+    T_Bool           shift, and go to state 20
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    IF               shift, and go to state 68
+    WHILE            shift, and go to state 69
+    SYS_PRINTLN      shift, and go to state 70
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
+
+    VarList                go to state 75
+    VarDeclaration         go to state 24
+    MethodBodyDeclaration  go to state 76
+    MBD                    go to state 77
+    Type                   go to state 27
+    StatementList          go to state 78
+    Statement              go to state 79
+    Expression             go to state 80
+    Identifier             go to state 81
 
 
 State 62
 
-   47 Expression: INTEGER_LITERAL .
+   24 MethodParameterList: MethodParameterList ',' MethodParameterDecl .
 
-    $default  reduce using rule 47 (Expression)
+    $default  reduce using rule 24 (MethodParameterList)
 
 
 State 63
 
-   48 Expression: T_True .
+   19 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList RP '{' . MethodBodyDeclaration RETURN Expression ';' '}'
 
-    $default  reduce using rule 48 (Expression)
+    INTEGER_LITERAL  shift, and go to state 65
+    IDENTIFIER       shift, and go to state 4
+    T_Int            shift, and go to state 19
+    T_Bool           shift, and go to state 20
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    IF               shift, and go to state 68
+    WHILE            shift, and go to state 69
+    SYS_PRINTLN      shift, and go to state 70
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
+
+    VarList                go to state 75
+    VarDeclaration         go to state 24
+    MethodBodyDeclaration  go to state 82
+    MBD                    go to state 77
+    Type                   go to state 27
+    StatementList          go to state 78
+    Statement              go to state 79
+    Expression             go to state 80
+    Identifier             go to state 81
 
 
 State 64
 
-   49 Expression: T_False .
+    3 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier . RP '{' Statement '}' '}'
 
-    $default  reduce using rule 49 (Expression)
+    RP  shift, and go to state 83
 
 
 State 65
 
-   29 Statement: IF . LP Expression RP '{' StatementList '}' ELSE '{' StatementList '}'
+   57 Expression: INTEGER_LITERAL .
 
-    LP  shift, and go to state 80
+    $default  reduce using rule 57 (Expression)
 
 
 State 66
 
-   30 Statement: WHILE . LP Expression RP '{' StatementList '}'
+   58 Expression: T_True .
 
-    LP  shift, and go to state 81
+    $default  reduce using rule 58 (Expression)
 
 
 State 67
 
-   31 Statement: SYS_PRINTLN . LP Expression RP ';'
+   59 Expression: T_False .
 
-    LP  shift, and go to state 82
+    $default  reduce using rule 59 (Expression)
 
 
 State 68
 
-   51 Expression: THIS .
+   34 Statement: IF . LP Expression RP '{' StatementList '}' ELSE '{' StatementList '}'
 
-    $default  reduce using rule 51 (Expression)
+    LP  shift, and go to state 84
 
 
 State 69
+
+   35 Statement: WHILE . LP Expression RP '{' StatementList '}'
+
+    LP  shift, and go to state 85
+
+
+State 70
+
+   36 Statement: SYS_PRINTLN . LP Expression RP ';'
+
+    LP  shift, and go to state 86
+
+
+State 71
+
+   60 Expression: THIS .
+
+    $default  reduce using rule 60 (Expression)
+
+
+State 72
 
    52 Expression: NEW . T_Int LHKP Expression RHKP
    53           | NEW . Identifier LP RP
 
     IDENTIFIER  shift, and go to state 4
-    T_Int       shift, and go to state 83
+    T_Int       shift, and go to state 87
 
-    Identifier  go to state 84
-
-
-State 70
-
-   54 Expression: NOT . Expression
-
-    INTEGER_LITERAL  shift, and go to state 62
-    IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
-
-    Expression  go to state 85
-    Identifier  go to state 86
-
-
-State 71
-
-   55 Expression: LP . Expression RP
-
-    INTEGER_LITERAL  shift, and go to state 62
-    IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
-
-    Expression  go to state 87
-    Identifier  go to state 86
-
-
-State 72
-
-    8 VarList: VarList . VarDeclaration
-   18 MethodBodyDeclaration: VarList .
-
-    T_Int   shift, and go to state 18
-    T_Bool  shift, and go to state 19
-
-    $default  reduce using rule 18 (MethodBodyDeclaration)
-
-    VarDeclaration  go to state 27
-    Type            go to state 22
+    Identifier  go to state 88
 
 
 State 73
 
-   15 MethodDeclaration: PUBLIC VOID Identifier LP MethodParameterList RP '{' MethodBodyDeclaration . '}'
-   17 MethodBodyDeclaration: MethodBodyDeclaration . Statement
+   54 Expression: NOT . Expression
 
-    INTEGER_LITERAL  shift, and go to state 62
+    INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    IF               shift, and go to state 65
-    WHILE            shift, and go to state 66
-    SYS_PRINTLN      shift, and go to state 67
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
-    '}'              shift, and go to state 88
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
 
-    Statement   go to state 89
-    Expression  go to state 76
-    Identifier  go to state 77
+    Expression  go to state 89
+    Identifier  go to state 90
 
 
 State 74
 
-   19 MethodBodyDeclaration: StatementList .
-   27 StatementList: StatementList . Statement
+   55 Expression: LP . Expression RP
 
-    INTEGER_LITERAL  shift, and go to state 62
+    INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    IF               shift, and go to state 65
-    WHILE            shift, and go to state 66
-    SYS_PRINTLN      shift, and go to state 67
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
 
-    INTEGER_LITERAL  [reduce using rule 19 (MethodBodyDeclaration)]
-    IDENTIFIER       [reduce using rule 19 (MethodBodyDeclaration)]
-    T_True           [reduce using rule 19 (MethodBodyDeclaration)]
-    T_False          [reduce using rule 19 (MethodBodyDeclaration)]
-    IF               [reduce using rule 19 (MethodBodyDeclaration)]
-    WHILE            [reduce using rule 19 (MethodBodyDeclaration)]
-    SYS_PRINTLN      [reduce using rule 19 (MethodBodyDeclaration)]
-    THIS             [reduce using rule 19 (MethodBodyDeclaration)]
-    NEW              [reduce using rule 19 (MethodBodyDeclaration)]
-    NOT              [reduce using rule 19 (MethodBodyDeclaration)]
-    LP               [reduce using rule 19 (MethodBodyDeclaration)]
-    $default         reduce using rule 19 (MethodBodyDeclaration)
-
-    Statement   go to state 90
-    Expression  go to state 76
-    Identifier  go to state 77
+    Expression  go to state 91
+    Identifier  go to state 90
 
 
 State 75
 
-   28 StatementList: Statement .
+   13 VarList: VarList . VarDeclaration
+   22 MBD: VarList .
 
-    $default  reduce using rule 28 (StatementList)
+    IDENTIFIER  shift, and go to state 4
+    T_Int       shift, and go to state 19
+    T_Bool      shift, and go to state 20
+
+    IDENTIFIER  [reduce using rule 22 (MBD)]
+    T_Int       [reduce using rule 22 (MBD)]
+    T_Bool      [reduce using rule 22 (MBD)]
+    $default    reduce using rule 22 (MBD)
+
+    VarDeclaration  go to state 35
+    Type            go to state 27
+    Identifier      go to state 28
 
 
 State 76
 
-   34 Statement: Expression .
-   35 Expression: Expression . AND Expression
-   36           | Expression . OR Expression
-   37           | Expression . LT Expression
-   38           | Expression . GT Expression
-   39           | Expression . EQ Expression
-   40           | Expression . PLUSOP Expression
-   41           | Expression . MINOP Expression
-   42           | Expression . MULOP Expression
-   43           | Expression . DIVOP Expression
-   44           | Expression . LHKP Expression RHKP
-   45           | Expression . DOT LENGTH
-   46           | Expression . DOT Identifier LP FunctionArgumentList RP
+   18 MethodDeclaration: PUBLIC VOID Identifier LP MethodParameterList RP '{' MethodBodyDeclaration . '}'
+   20 MethodBodyDeclaration: MethodBodyDeclaration . MBD
 
-    PLUSOP  shift, and go to state 91
-    MINOP   shift, and go to state 92
-    MULOP   shift, and go to state 93
-    DIVOP   shift, and go to state 94
-    AND     shift, and go to state 95
-    OR      shift, and go to state 96
-    EQ      shift, and go to state 97
-    LT      shift, and go to state 98
-    GT      shift, and go to state 99
-    DOT     shift, and go to state 100
-    LHKP    shift, and go to state 101
+    INTEGER_LITERAL  shift, and go to state 65
+    IDENTIFIER       shift, and go to state 4
+    T_Int            shift, and go to state 19
+    T_Bool           shift, and go to state 20
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    IF               shift, and go to state 68
+    WHILE            shift, and go to state 69
+    SYS_PRINTLN      shift, and go to state 70
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
+    '}'              shift, and go to state 92
 
-    $default  reduce using rule 34 (Statement)
+    VarList         go to state 75
+    VarDeclaration  go to state 24
+    MBD             go to state 93
+    Type            go to state 27
+    StatementList   go to state 78
+    Statement       go to state 79
+    Expression      go to state 80
+    Identifier      go to state 81
 
 
 State 77
 
-   32 Statement: Identifier . '=' Expression ';'
-   33          | Identifier . LHKP Expression RHKP '=' Expression ';'
-   50 Expression: Identifier .
+   21 MethodBodyDeclaration: MBD .
 
-    LHKP  shift, and go to state 102
-    '='   shift, and go to state 103
-
-    LHKP      [reduce using rule 50 (Expression)]
-    $default  reduce using rule 50 (Expression)
+    $default  reduce using rule 21 (MethodBodyDeclaration)
 
 
 State 78
 
-   16 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList RP '{' MethodBodyDeclaration . RETURN Expression ';' '}'
-   17 MethodBodyDeclaration: MethodBodyDeclaration . Statement
+   23 MBD: StatementList .
+   32 StatementList: StatementList . Statement
 
-    INTEGER_LITERAL  shift, and go to state 62
+    INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    RETURN           shift, and go to state 104
-    IF               shift, and go to state 65
-    WHILE            shift, and go to state 66
-    SYS_PRINTLN      shift, and go to state 67
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    IF               shift, and go to state 68
+    WHILE            shift, and go to state 69
+    SYS_PRINTLN      shift, and go to state 70
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
 
-    Statement   go to state 89
-    Expression  go to state 76
-    Identifier  go to state 77
+    INTEGER_LITERAL  [reduce using rule 23 (MBD)]
+    IDENTIFIER       [reduce using rule 23 (MBD)]
+    T_True           [reduce using rule 23 (MBD)]
+    T_False          [reduce using rule 23 (MBD)]
+    IF               [reduce using rule 23 (MBD)]
+    WHILE            [reduce using rule 23 (MBD)]
+    SYS_PRINTLN      [reduce using rule 23 (MBD)]
+    THIS             [reduce using rule 23 (MBD)]
+    NEW              [reduce using rule 23 (MBD)]
+    NOT              [reduce using rule 23 (MBD)]
+    LP               [reduce using rule 23 (MBD)]
+    $default         reduce using rule 23 (MBD)
+
+    Statement   go to state 94
+    Expression  go to state 80
+    Identifier  go to state 95
 
 
 State 79
 
-    2 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP '{' . Statement '}' '}'
+   33 StatementList: Statement .
 
-    INTEGER_LITERAL  shift, and go to state 62
-    IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    IF               shift, and go to state 65
-    WHILE            shift, and go to state 66
-    SYS_PRINTLN      shift, and go to state 67
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
-
-    Statement   go to state 105
-    Expression  go to state 76
-    Identifier  go to state 77
+    $default  reduce using rule 33 (StatementList)
 
 
 State 80
 
-   29 Statement: IF LP . Expression RP '{' StatementList '}' ELSE '{' StatementList '}'
+   39 Statement: Expression . ';'
+   40 Expression: Expression . AND Expression
+   41           | Expression . OR Expression
+   42           | Expression . LT Expression
+   43           | Expression . GT Expression
+   44           | Expression . EQ Expression
+   45           | Expression . PLUSOP Expression
+   46           | Expression . MINOP Expression
+   47           | Expression . MULOP Expression
+   48           | Expression . DIVOP Expression
+   49           | Expression . LHKP Expression RHKP
+   50           | Expression . DOT LENGTH
+   51           | Expression . DOT Identifier LP FunctionArgumentList RP
 
-    INTEGER_LITERAL  shift, and go to state 62
-    IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
-
-    Expression  go to state 106
-    Identifier  go to state 86
+    PLUSOP  shift, and go to state 96
+    MINOP   shift, and go to state 97
+    MULOP   shift, and go to state 98
+    DIVOP   shift, and go to state 99
+    AND     shift, and go to state 100
+    OR      shift, and go to state 101
+    EQ      shift, and go to state 102
+    LT      shift, and go to state 103
+    GT      shift, and go to state 104
+    DOT     shift, and go to state 105
+    LHKP    shift, and go to state 106
+    ';'     shift, and go to state 107
 
 
 State 81
 
-   30 Statement: WHILE LP . Expression RP '{' StatementList '}'
+   31 Type: Identifier .
+   37 Statement: Identifier . ASSIGN_OP Expression ';'
+   38          | Identifier . LHKP Expression RHKP ASSIGN_OP Expression ';'
+   56 Expression: Identifier .
 
-    INTEGER_LITERAL  shift, and go to state 62
-    IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
+    ASSIGN_OP  shift, and go to state 108
+    LHKP       shift, and go to state 109
 
-    Expression  go to state 107
-    Identifier  go to state 86
+    IDENTIFIER  reduce using rule 31 (Type)
+    LHKP        [reduce using rule 56 (Expression)]
+    $default    reduce using rule 56 (Expression)
 
 
 State 82
 
-   31 Statement: SYS_PRINTLN LP . Expression RP ';'
+   19 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList RP '{' MethodBodyDeclaration . RETURN Expression ';' '}'
+   20 MethodBodyDeclaration: MethodBodyDeclaration . MBD
 
-    INTEGER_LITERAL  shift, and go to state 62
+    INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
+    T_Int            shift, and go to state 19
+    T_Bool           shift, and go to state 20
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    RETURN           shift, and go to state 110
+    IF               shift, and go to state 68
+    WHILE            shift, and go to state 69
+    SYS_PRINTLN      shift, and go to state 70
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
 
-    Expression  go to state 108
-    Identifier  go to state 86
+    VarList         go to state 75
+    VarDeclaration  go to state 24
+    MBD             go to state 93
+    Type            go to state 27
+    StatementList   go to state 78
+    Statement       go to state 79
+    Expression      go to state 80
+    Identifier      go to state 81
 
 
 State 83
 
-   52 Expression: NEW T_Int . LHKP Expression RHKP
+    3 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP . '{' Statement '}' '}'
 
-    LHKP  shift, and go to state 109
+    '{'  shift, and go to state 111
 
 
 State 84
 
-   53 Expression: NEW Identifier . LP RP
+   34 Statement: IF LP . Expression RP '{' StatementList '}' ELSE '{' StatementList '}'
 
-    LP  shift, and go to state 110
+    INTEGER_LITERAL  shift, and go to state 65
+    IDENTIFIER       shift, and go to state 4
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
+
+    Expression  go to state 112
+    Identifier  go to state 90
 
 
 State 85
 
-   35 Expression: Expression . AND Expression
-   36           | Expression . OR Expression
-   37           | Expression . LT Expression
-   38           | Expression . GT Expression
-   39           | Expression . EQ Expression
-   40           | Expression . PLUSOP Expression
-   41           | Expression . MINOP Expression
-   42           | Expression . MULOP Expression
-   43           | Expression . DIVOP Expression
-   44           | Expression . LHKP Expression RHKP
-   45           | Expression . DOT LENGTH
-   46           | Expression . DOT Identifier LP FunctionArgumentList RP
-   54           | NOT Expression .
+   35 Statement: WHILE LP . Expression RP '{' StatementList '}'
 
-    EQ    shift, and go to state 97
-    LT    shift, and go to state 98
-    GT    shift, and go to state 99
-    DOT   shift, and go to state 100
-    LHKP  shift, and go to state 101
+    INTEGER_LITERAL  shift, and go to state 65
+    IDENTIFIER       shift, and go to state 4
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
 
-    $default  reduce using rule 54 (Expression)
+    Expression  go to state 113
+    Identifier  go to state 90
 
 
 State 86
 
-   50 Expression: Identifier .
+   36 Statement: SYS_PRINTLN LP . Expression RP ';'
 
-    $default  reduce using rule 50 (Expression)
+    INTEGER_LITERAL  shift, and go to state 65
+    IDENTIFIER       shift, and go to state 4
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
+
+    Expression  go to state 114
+    Identifier  go to state 90
 
 
 State 87
 
-   35 Expression: Expression . AND Expression
-   36           | Expression . OR Expression
-   37           | Expression . LT Expression
-   38           | Expression . GT Expression
-   39           | Expression . EQ Expression
-   40           | Expression . PLUSOP Expression
-   41           | Expression . MINOP Expression
-   42           | Expression . MULOP Expression
-   43           | Expression . DIVOP Expression
-   44           | Expression . LHKP Expression RHKP
-   45           | Expression . DOT LENGTH
-   46           | Expression . DOT Identifier LP FunctionArgumentList RP
-   55           | LP Expression . RP
+   52 Expression: NEW T_Int . LHKP Expression RHKP
 
-    PLUSOP  shift, and go to state 91
-    MINOP   shift, and go to state 92
-    MULOP   shift, and go to state 93
-    DIVOP   shift, and go to state 94
-    AND     shift, and go to state 95
-    OR      shift, and go to state 96
-    EQ      shift, and go to state 97
-    LT      shift, and go to state 98
-    GT      shift, and go to state 99
-    DOT     shift, and go to state 100
-    LHKP    shift, and go to state 101
-    RP      shift, and go to state 111
+    LHKP  shift, and go to state 115
 
 
 State 88
 
-   15 MethodDeclaration: PUBLIC VOID Identifier LP MethodParameterList RP '{' MethodBodyDeclaration '}' .
+   53 Expression: NEW Identifier . LP RP
 
-    $default  reduce using rule 15 (MethodDeclaration)
+    LP  shift, and go to state 116
 
 
 State 89
 
-   17 MethodBodyDeclaration: MethodBodyDeclaration Statement .
+   40 Expression: Expression . AND Expression
+   41           | Expression . OR Expression
+   42           | Expression . LT Expression
+   43           | Expression . GT Expression
+   44           | Expression . EQ Expression
+   45           | Expression . PLUSOP Expression
+   46           | Expression . MINOP Expression
+   47           | Expression . MULOP Expression
+   48           | Expression . DIVOP Expression
+   49           | Expression . LHKP Expression RHKP
+   50           | Expression . DOT LENGTH
+   51           | Expression . DOT Identifier LP FunctionArgumentList RP
+   54           | NOT Expression .
 
-    $default  reduce using rule 17 (MethodBodyDeclaration)
+    LHKP  shift, and go to state 106
+
+    $default  reduce using rule 54 (Expression)
 
 
 State 90
 
-   27 StatementList: StatementList Statement .
+   56 Expression: Identifier .
 
-    $default  reduce using rule 27 (StatementList)
+    $default  reduce using rule 56 (Expression)
 
 
 State 91
 
-   40 Expression: Expression PLUSOP . Expression
+   40 Expression: Expression . AND Expression
+   41           | Expression . OR Expression
+   42           | Expression . LT Expression
+   43           | Expression . GT Expression
+   44           | Expression . EQ Expression
+   45           | Expression . PLUSOP Expression
+   46           | Expression . MINOP Expression
+   47           | Expression . MULOP Expression
+   48           | Expression . DIVOP Expression
+   49           | Expression . LHKP Expression RHKP
+   50           | Expression . DOT LENGTH
+   51           | Expression . DOT Identifier LP FunctionArgumentList RP
+   55           | LP Expression . RP
 
-    INTEGER_LITERAL  shift, and go to state 62
-    IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
-
-    Expression  go to state 112
-    Identifier  go to state 86
+    PLUSOP  shift, and go to state 96
+    MINOP   shift, and go to state 97
+    MULOP   shift, and go to state 98
+    DIVOP   shift, and go to state 99
+    AND     shift, and go to state 100
+    OR      shift, and go to state 101
+    EQ      shift, and go to state 102
+    LT      shift, and go to state 103
+    GT      shift, and go to state 104
+    DOT     shift, and go to state 105
+    LHKP    shift, and go to state 106
+    RP      shift, and go to state 117
 
 
 State 92
 
-   41 Expression: Expression MINOP . Expression
+   18 MethodDeclaration: PUBLIC VOID Identifier LP MethodParameterList RP '{' MethodBodyDeclaration '}' .
 
-    INTEGER_LITERAL  shift, and go to state 62
-    IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
-
-    Expression  go to state 113
-    Identifier  go to state 86
+    $default  reduce using rule 18 (MethodDeclaration)
 
 
 State 93
 
-   42 Expression: Expression MULOP . Expression
+   20 MethodBodyDeclaration: MethodBodyDeclaration MBD .
 
-    INTEGER_LITERAL  shift, and go to state 62
-    IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
-
-    Expression  go to state 114
-    Identifier  go to state 86
+    $default  reduce using rule 20 (MethodBodyDeclaration)
 
 
 State 94
 
-   43 Expression: Expression DIVOP . Expression
+   32 StatementList: StatementList Statement .
 
-    INTEGER_LITERAL  shift, and go to state 62
-    IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
-
-    Expression  go to state 115
-    Identifier  go to state 86
+    $default  reduce using rule 32 (StatementList)
 
 
 State 95
 
-   35 Expression: Expression AND . Expression
+   37 Statement: Identifier . ASSIGN_OP Expression ';'
+   38          | Identifier . LHKP Expression RHKP ASSIGN_OP Expression ';'
+   56 Expression: Identifier .
 
-    INTEGER_LITERAL  shift, and go to state 62
-    IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
+    ASSIGN_OP  shift, and go to state 108
+    LHKP       shift, and go to state 109
 
-    Expression  go to state 116
-    Identifier  go to state 86
+    LHKP      [reduce using rule 56 (Expression)]
+    $default  reduce using rule 56 (Expression)
 
 
 State 96
 
-   36 Expression: Expression OR . Expression
+   45 Expression: Expression PLUSOP . Expression
 
-    INTEGER_LITERAL  shift, and go to state 62
+    INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
 
-    Expression  go to state 117
-    Identifier  go to state 86
+    Expression  go to state 118
+    Identifier  go to state 90
 
 
 State 97
 
-   39 Expression: Expression EQ . Expression
+   46 Expression: Expression MINOP . Expression
 
-    INTEGER_LITERAL  shift, and go to state 62
+    INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
 
-    Expression  go to state 118
-    Identifier  go to state 86
+    Expression  go to state 119
+    Identifier  go to state 90
 
 
 State 98
 
-   37 Expression: Expression LT . Expression
+   47 Expression: Expression MULOP . Expression
 
-    INTEGER_LITERAL  shift, and go to state 62
+    INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
 
-    Expression  go to state 119
-    Identifier  go to state 86
+    Expression  go to state 120
+    Identifier  go to state 90
 
 
 State 99
 
-   38 Expression: Expression GT . Expression
+   48 Expression: Expression DIVOP . Expression
 
-    INTEGER_LITERAL  shift, and go to state 62
+    INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
 
-    Expression  go to state 120
-    Identifier  go to state 86
+    Expression  go to state 121
+    Identifier  go to state 90
 
 
 State 100
 
-   45 Expression: Expression DOT . LENGTH
-   46           | Expression DOT . Identifier LP FunctionArgumentList RP
+   40 Expression: Expression AND . Expression
 
-    IDENTIFIER  shift, and go to state 4
-    LENGTH      shift, and go to state 121
+    INTEGER_LITERAL  shift, and go to state 65
+    IDENTIFIER       shift, and go to state 4
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
 
-    Identifier  go to state 122
+    Expression  go to state 122
+    Identifier  go to state 90
 
 
 State 101
 
-   44 Expression: Expression LHKP . Expression RHKP
+   41 Expression: Expression OR . Expression
 
-    INTEGER_LITERAL  shift, and go to state 62
+    INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
 
     Expression  go to state 123
-    Identifier  go to state 86
+    Identifier  go to state 90
 
 
 State 102
 
-   33 Statement: Identifier LHKP . Expression RHKP '=' Expression ';'
+   44 Expression: Expression EQ . Expression
 
-    INTEGER_LITERAL  shift, and go to state 62
+    INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
 
     Expression  go to state 124
-    Identifier  go to state 86
+    Identifier  go to state 90
 
 
 State 103
 
-   32 Statement: Identifier '=' . Expression ';'
+   42 Expression: Expression LT . Expression
 
-    INTEGER_LITERAL  shift, and go to state 62
+    INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
 
     Expression  go to state 125
-    Identifier  go to state 86
+    Identifier  go to state 90
 
 
 State 104
 
-   16 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList RP '{' MethodBodyDeclaration RETURN . Expression ';' '}'
+   43 Expression: Expression GT . Expression
 
-    INTEGER_LITERAL  shift, and go to state 62
+    INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
 
     Expression  go to state 126
-    Identifier  go to state 86
+    Identifier  go to state 90
 
 
 State 105
 
-    2 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP '{' Statement . '}' '}'
+   50 Expression: Expression DOT . LENGTH
+   51           | Expression DOT . Identifier LP FunctionArgumentList RP
 
-    '}'  shift, and go to state 127
+    IDENTIFIER  shift, and go to state 4
+    LENGTH      shift, and go to state 127
+
+    Identifier  go to state 128
 
 
 State 106
 
-   29 Statement: IF LP Expression . RP '{' StatementList '}' ELSE '{' StatementList '}'
-   35 Expression: Expression . AND Expression
-   36           | Expression . OR Expression
-   37           | Expression . LT Expression
-   38           | Expression . GT Expression
-   39           | Expression . EQ Expression
-   40           | Expression . PLUSOP Expression
-   41           | Expression . MINOP Expression
-   42           | Expression . MULOP Expression
-   43           | Expression . DIVOP Expression
-   44           | Expression . LHKP Expression RHKP
-   45           | Expression . DOT LENGTH
-   46           | Expression . DOT Identifier LP FunctionArgumentList RP
+   49 Expression: Expression LHKP . Expression RHKP
 
-    PLUSOP  shift, and go to state 91
-    MINOP   shift, and go to state 92
-    MULOP   shift, and go to state 93
-    DIVOP   shift, and go to state 94
-    AND     shift, and go to state 95
-    OR      shift, and go to state 96
-    EQ      shift, and go to state 97
-    LT      shift, and go to state 98
-    GT      shift, and go to state 99
-    DOT     shift, and go to state 100
-    LHKP    shift, and go to state 101
-    RP      shift, and go to state 128
+    INTEGER_LITERAL  shift, and go to state 65
+    IDENTIFIER       shift, and go to state 4
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
+
+    Expression  go to state 129
+    Identifier  go to state 90
 
 
 State 107
 
-   30 Statement: WHILE LP Expression . RP '{' StatementList '}'
-   35 Expression: Expression . AND Expression
-   36           | Expression . OR Expression
-   37           | Expression . LT Expression
-   38           | Expression . GT Expression
-   39           | Expression . EQ Expression
-   40           | Expression . PLUSOP Expression
-   41           | Expression . MINOP Expression
-   42           | Expression . MULOP Expression
-   43           | Expression . DIVOP Expression
-   44           | Expression . LHKP Expression RHKP
-   45           | Expression . DOT LENGTH
-   46           | Expression . DOT Identifier LP FunctionArgumentList RP
+   39 Statement: Expression ';' .
 
-    PLUSOP  shift, and go to state 91
-    MINOP   shift, and go to state 92
-    MULOP   shift, and go to state 93
-    DIVOP   shift, and go to state 94
-    AND     shift, and go to state 95
-    OR      shift, and go to state 96
-    EQ      shift, and go to state 97
-    LT      shift, and go to state 98
-    GT      shift, and go to state 99
-    DOT     shift, and go to state 100
-    LHKP    shift, and go to state 101
-    RP      shift, and go to state 129
+    $default  reduce using rule 39 (Statement)
 
 
 State 108
 
-   31 Statement: SYS_PRINTLN LP Expression . RP ';'
-   35 Expression: Expression . AND Expression
-   36           | Expression . OR Expression
-   37           | Expression . LT Expression
-   38           | Expression . GT Expression
-   39           | Expression . EQ Expression
-   40           | Expression . PLUSOP Expression
-   41           | Expression . MINOP Expression
-   42           | Expression . MULOP Expression
-   43           | Expression . DIVOP Expression
-   44           | Expression . LHKP Expression RHKP
-   45           | Expression . DOT LENGTH
-   46           | Expression . DOT Identifier LP FunctionArgumentList RP
+   37 Statement: Identifier ASSIGN_OP . Expression ';'
 
-    PLUSOP  shift, and go to state 91
-    MINOP   shift, and go to state 92
-    MULOP   shift, and go to state 93
-    DIVOP   shift, and go to state 94
-    AND     shift, and go to state 95
-    OR      shift, and go to state 96
-    EQ      shift, and go to state 97
-    LT      shift, and go to state 98
-    GT      shift, and go to state 99
-    DOT     shift, and go to state 100
-    LHKP    shift, and go to state 101
-    RP      shift, and go to state 130
+    INTEGER_LITERAL  shift, and go to state 65
+    IDENTIFIER       shift, and go to state 4
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
+
+    Expression  go to state 130
+    Identifier  go to state 90
 
 
 State 109
 
-   52 Expression: NEW T_Int LHKP . Expression RHKP
+   38 Statement: Identifier LHKP . Expression RHKP ASSIGN_OP Expression ';'
 
-    INTEGER_LITERAL  shift, and go to state 62
+    INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
 
     Expression  go to state 131
-    Identifier  go to state 86
+    Identifier  go to state 90
 
 
 State 110
 
-   53 Expression: NEW Identifier LP . RP
+   19 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList RP '{' MethodBodyDeclaration RETURN . Expression ';' '}'
 
-    RP  shift, and go to state 132
+    INTEGER_LITERAL  shift, and go to state 65
+    IDENTIFIER       shift, and go to state 4
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
+
+    Expression  go to state 132
+    Identifier  go to state 90
 
 
 State 111
+
+    3 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP '{' . Statement '}' '}'
+
+    INTEGER_LITERAL  shift, and go to state 65
+    IDENTIFIER       shift, and go to state 4
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    IF               shift, and go to state 68
+    WHILE            shift, and go to state 69
+    SYS_PRINTLN      shift, and go to state 70
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
+
+    Statement   go to state 133
+    Expression  go to state 80
+    Identifier  go to state 95
+
+
+State 112
+
+   34 Statement: IF LP Expression . RP '{' StatementList '}' ELSE '{' StatementList '}'
+   40 Expression: Expression . AND Expression
+   41           | Expression . OR Expression
+   42           | Expression . LT Expression
+   43           | Expression . GT Expression
+   44           | Expression . EQ Expression
+   45           | Expression . PLUSOP Expression
+   46           | Expression . MINOP Expression
+   47           | Expression . MULOP Expression
+   48           | Expression . DIVOP Expression
+   49           | Expression . LHKP Expression RHKP
+   50           | Expression . DOT LENGTH
+   51           | Expression . DOT Identifier LP FunctionArgumentList RP
+
+    PLUSOP  shift, and go to state 96
+    MINOP   shift, and go to state 97
+    MULOP   shift, and go to state 98
+    DIVOP   shift, and go to state 99
+    AND     shift, and go to state 100
+    OR      shift, and go to state 101
+    EQ      shift, and go to state 102
+    LT      shift, and go to state 103
+    GT      shift, and go to state 104
+    DOT     shift, and go to state 105
+    LHKP    shift, and go to state 106
+    RP      shift, and go to state 134
+
+
+State 113
+
+   35 Statement: WHILE LP Expression . RP '{' StatementList '}'
+   40 Expression: Expression . AND Expression
+   41           | Expression . OR Expression
+   42           | Expression . LT Expression
+   43           | Expression . GT Expression
+   44           | Expression . EQ Expression
+   45           | Expression . PLUSOP Expression
+   46           | Expression . MINOP Expression
+   47           | Expression . MULOP Expression
+   48           | Expression . DIVOP Expression
+   49           | Expression . LHKP Expression RHKP
+   50           | Expression . DOT LENGTH
+   51           | Expression . DOT Identifier LP FunctionArgumentList RP
+
+    PLUSOP  shift, and go to state 96
+    MINOP   shift, and go to state 97
+    MULOP   shift, and go to state 98
+    DIVOP   shift, and go to state 99
+    AND     shift, and go to state 100
+    OR      shift, and go to state 101
+    EQ      shift, and go to state 102
+    LT      shift, and go to state 103
+    GT      shift, and go to state 104
+    DOT     shift, and go to state 105
+    LHKP    shift, and go to state 106
+    RP      shift, and go to state 135
+
+
+State 114
+
+   36 Statement: SYS_PRINTLN LP Expression . RP ';'
+   40 Expression: Expression . AND Expression
+   41           | Expression . OR Expression
+   42           | Expression . LT Expression
+   43           | Expression . GT Expression
+   44           | Expression . EQ Expression
+   45           | Expression . PLUSOP Expression
+   46           | Expression . MINOP Expression
+   47           | Expression . MULOP Expression
+   48           | Expression . DIVOP Expression
+   49           | Expression . LHKP Expression RHKP
+   50           | Expression . DOT LENGTH
+   51           | Expression . DOT Identifier LP FunctionArgumentList RP
+
+    PLUSOP  shift, and go to state 96
+    MINOP   shift, and go to state 97
+    MULOP   shift, and go to state 98
+    DIVOP   shift, and go to state 99
+    AND     shift, and go to state 100
+    OR      shift, and go to state 101
+    EQ      shift, and go to state 102
+    LT      shift, and go to state 103
+    GT      shift, and go to state 104
+    DOT     shift, and go to state 105
+    LHKP    shift, and go to state 106
+    RP      shift, and go to state 136
+
+
+State 115
+
+   52 Expression: NEW T_Int LHKP . Expression RHKP
+
+    INTEGER_LITERAL  shift, and go to state 65
+    IDENTIFIER       shift, and go to state 4
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
+
+    Expression  go to state 137
+    Identifier  go to state 90
+
+
+State 116
+
+   53 Expression: NEW Identifier LP . RP
+
+    RP  shift, and go to state 138
+
+
+State 117
 
    55 Expression: LP Expression RP .
 
     $default  reduce using rule 55 (Expression)
 
 
-State 112
-
-   35 Expression: Expression . AND Expression
-   36           | Expression . OR Expression
-   37           | Expression . LT Expression
-   38           | Expression . GT Expression
-   39           | Expression . EQ Expression
-   40           | Expression . PLUSOP Expression
-   40           | Expression PLUSOP Expression .
-   41           | Expression . MINOP Expression
-   42           | Expression . MULOP Expression
-   43           | Expression . DIVOP Expression
-   44           | Expression . LHKP Expression RHKP
-   45           | Expression . DOT LENGTH
-   46           | Expression . DOT Identifier LP FunctionArgumentList RP
-
-    MULOP  shift, and go to state 93
-    DIVOP  shift, and go to state 94
-    AND    shift, and go to state 95
-    OR     shift, and go to state 96
-    EQ     shift, and go to state 97
-    LT     shift, and go to state 98
-    GT     shift, and go to state 99
-    DOT    shift, and go to state 100
-    LHKP   shift, and go to state 101
-
-    $default  reduce using rule 40 (Expression)
-
-
-State 113
-
-   35 Expression: Expression . AND Expression
-   36           | Expression . OR Expression
-   37           | Expression . LT Expression
-   38           | Expression . GT Expression
-   39           | Expression . EQ Expression
-   40           | Expression . PLUSOP Expression
-   41           | Expression . MINOP Expression
-   41           | Expression MINOP Expression .
-   42           | Expression . MULOP Expression
-   43           | Expression . DIVOP Expression
-   44           | Expression . LHKP Expression RHKP
-   45           | Expression . DOT LENGTH
-   46           | Expression . DOT Identifier LP FunctionArgumentList RP
-
-    MULOP  shift, and go to state 93
-    DIVOP  shift, and go to state 94
-    AND    shift, and go to state 95
-    OR     shift, and go to state 96
-    EQ     shift, and go to state 97
-    LT     shift, and go to state 98
-    GT     shift, and go to state 99
-    DOT    shift, and go to state 100
-    LHKP   shift, and go to state 101
-
-    $default  reduce using rule 41 (Expression)
-
-
-State 114
-
-   35 Expression: Expression . AND Expression
-   36           | Expression . OR Expression
-   37           | Expression . LT Expression
-   38           | Expression . GT Expression
-   39           | Expression . EQ Expression
-   40           | Expression . PLUSOP Expression
-   41           | Expression . MINOP Expression
-   42           | Expression . MULOP Expression
-   42           | Expression MULOP Expression .
-   43           | Expression . DIVOP Expression
-   44           | Expression . LHKP Expression RHKP
-   45           | Expression . DOT LENGTH
-   46           | Expression . DOT Identifier LP FunctionArgumentList RP
-
-    AND   shift, and go to state 95
-    OR    shift, and go to state 96
-    EQ    shift, and go to state 97
-    LT    shift, and go to state 98
-    GT    shift, and go to state 99
-    DOT   shift, and go to state 100
-    LHKP  shift, and go to state 101
-
-    $default  reduce using rule 42 (Expression)
-
-
-State 115
-
-   35 Expression: Expression . AND Expression
-   36           | Expression . OR Expression
-   37           | Expression . LT Expression
-   38           | Expression . GT Expression
-   39           | Expression . EQ Expression
-   40           | Expression . PLUSOP Expression
-   41           | Expression . MINOP Expression
-   42           | Expression . MULOP Expression
-   43           | Expression . DIVOP Expression
-   43           | Expression DIVOP Expression .
-   44           | Expression . LHKP Expression RHKP
-   45           | Expression . DOT LENGTH
-   46           | Expression . DOT Identifier LP FunctionArgumentList RP
-
-    AND   shift, and go to state 95
-    OR    shift, and go to state 96
-    EQ    shift, and go to state 97
-    LT    shift, and go to state 98
-    GT    shift, and go to state 99
-    DOT   shift, and go to state 100
-    LHKP  shift, and go to state 101
-
-    $default  reduce using rule 43 (Expression)
-
-
-State 116
-
-   35 Expression: Expression . AND Expression
-   35           | Expression AND Expression .
-   36           | Expression . OR Expression
-   37           | Expression . LT Expression
-   38           | Expression . GT Expression
-   39           | Expression . EQ Expression
-   40           | Expression . PLUSOP Expression
-   41           | Expression . MINOP Expression
-   42           | Expression . MULOP Expression
-   43           | Expression . DIVOP Expression
-   44           | Expression . LHKP Expression RHKP
-   45           | Expression . DOT LENGTH
-   46           | Expression . DOT Identifier LP FunctionArgumentList RP
-
-    EQ    shift, and go to state 97
-    LT    shift, and go to state 98
-    GT    shift, and go to state 99
-    DOT   shift, and go to state 100
-    LHKP  shift, and go to state 101
-
-    $default  reduce using rule 35 (Expression)
-
-
-State 117
-
-   35 Expression: Expression . AND Expression
-   36           | Expression . OR Expression
-   36           | Expression OR Expression .
-   37           | Expression . LT Expression
-   38           | Expression . GT Expression
-   39           | Expression . EQ Expression
-   40           | Expression . PLUSOP Expression
-   41           | Expression . MINOP Expression
-   42           | Expression . MULOP Expression
-   43           | Expression . DIVOP Expression
-   44           | Expression . LHKP Expression RHKP
-   45           | Expression . DOT LENGTH
-   46           | Expression . DOT Identifier LP FunctionArgumentList RP
-
-    EQ    shift, and go to state 97
-    LT    shift, and go to state 98
-    GT    shift, and go to state 99
-    DOT   shift, and go to state 100
-    LHKP  shift, and go to state 101
-
-    $default  reduce using rule 36 (Expression)
-
-
 State 118
 
-   35 Expression: Expression . AND Expression
-   36           | Expression . OR Expression
-   37           | Expression . LT Expression
-   38           | Expression . GT Expression
-   39           | Expression . EQ Expression
-   39           | Expression EQ Expression .
-   40           | Expression . PLUSOP Expression
-   41           | Expression . MINOP Expression
-   42           | Expression . MULOP Expression
-   43           | Expression . DIVOP Expression
-   44           | Expression . LHKP Expression RHKP
-   45           | Expression . DOT LENGTH
-   46           | Expression . DOT Identifier LP FunctionArgumentList RP
+   40 Expression: Expression . AND Expression
+   41           | Expression . OR Expression
+   42           | Expression . LT Expression
+   43           | Expression . GT Expression
+   44           | Expression . EQ Expression
+   45           | Expression . PLUSOP Expression
+   45           | Expression PLUSOP Expression .
+   46           | Expression . MINOP Expression
+   47           | Expression . MULOP Expression
+   48           | Expression . DIVOP Expression
+   49           | Expression . LHKP Expression RHKP
+   50           | Expression . DOT LENGTH
+   51           | Expression . DOT Identifier LP FunctionArgumentList RP
 
-    LT    shift, and go to state 98
-    GT    shift, and go to state 99
-    DOT   shift, and go to state 100
-    LHKP  shift, and go to state 101
-
-    $default  reduce using rule 39 (Expression)
-
-
-State 119
-
-   35 Expression: Expression . AND Expression
-   36           | Expression . OR Expression
-   37           | Expression . LT Expression
-   37           | Expression LT Expression .
-   38           | Expression . GT Expression
-   39           | Expression . EQ Expression
-   40           | Expression . PLUSOP Expression
-   41           | Expression . MINOP Expression
-   42           | Expression . MULOP Expression
-   43           | Expression . DIVOP Expression
-   44           | Expression . LHKP Expression RHKP
-   45           | Expression . DOT LENGTH
-   46           | Expression . DOT Identifier LP FunctionArgumentList RP
-
-    DOT   shift, and go to state 100
-    LHKP  shift, and go to state 101
-
-    $default  reduce using rule 37 (Expression)
-
-
-State 120
-
-   35 Expression: Expression . AND Expression
-   36           | Expression . OR Expression
-   37           | Expression . LT Expression
-   38           | Expression . GT Expression
-   38           | Expression GT Expression .
-   39           | Expression . EQ Expression
-   40           | Expression . PLUSOP Expression
-   41           | Expression . MINOP Expression
-   42           | Expression . MULOP Expression
-   43           | Expression . DIVOP Expression
-   44           | Expression . LHKP Expression RHKP
-   45           | Expression . DOT LENGTH
-   46           | Expression . DOT Identifier LP FunctionArgumentList RP
-
-    DOT   shift, and go to state 100
-    LHKP  shift, and go to state 101
-
-    $default  reduce using rule 38 (Expression)
-
-
-State 121
-
-   45 Expression: Expression DOT LENGTH .
+    MULOP  shift, and go to state 98
+    DIVOP  shift, and go to state 99
+    AND    shift, and go to state 100
+    OR     shift, and go to state 101
+    EQ     shift, and go to state 102
+    LT     shift, and go to state 103
+    GT     shift, and go to state 104
+    DOT    shift, and go to state 105
+    LHKP   shift, and go to state 106
 
     $default  reduce using rule 45 (Expression)
 
 
+State 119
+
+   40 Expression: Expression . AND Expression
+   41           | Expression . OR Expression
+   42           | Expression . LT Expression
+   43           | Expression . GT Expression
+   44           | Expression . EQ Expression
+   45           | Expression . PLUSOP Expression
+   46           | Expression . MINOP Expression
+   46           | Expression MINOP Expression .
+   47           | Expression . MULOP Expression
+   48           | Expression . DIVOP Expression
+   49           | Expression . LHKP Expression RHKP
+   50           | Expression . DOT LENGTH
+   51           | Expression . DOT Identifier LP FunctionArgumentList RP
+
+    MULOP  shift, and go to state 98
+    DIVOP  shift, and go to state 99
+    AND    shift, and go to state 100
+    OR     shift, and go to state 101
+    EQ     shift, and go to state 102
+    LT     shift, and go to state 103
+    GT     shift, and go to state 104
+    DOT    shift, and go to state 105
+    LHKP   shift, and go to state 106
+
+    $default  reduce using rule 46 (Expression)
+
+
+State 120
+
+   40 Expression: Expression . AND Expression
+   41           | Expression . OR Expression
+   42           | Expression . LT Expression
+   43           | Expression . GT Expression
+   44           | Expression . EQ Expression
+   45           | Expression . PLUSOP Expression
+   46           | Expression . MINOP Expression
+   47           | Expression . MULOP Expression
+   47           | Expression MULOP Expression .
+   48           | Expression . DIVOP Expression
+   49           | Expression . LHKP Expression RHKP
+   50           | Expression . DOT LENGTH
+   51           | Expression . DOT Identifier LP FunctionArgumentList RP
+
+    AND   shift, and go to state 100
+    OR    shift, and go to state 101
+    EQ    shift, and go to state 102
+    LT    shift, and go to state 103
+    GT    shift, and go to state 104
+    DOT   shift, and go to state 105
+    LHKP  shift, and go to state 106
+
+    $default  reduce using rule 47 (Expression)
+
+
+State 121
+
+   40 Expression: Expression . AND Expression
+   41           | Expression . OR Expression
+   42           | Expression . LT Expression
+   43           | Expression . GT Expression
+   44           | Expression . EQ Expression
+   45           | Expression . PLUSOP Expression
+   46           | Expression . MINOP Expression
+   47           | Expression . MULOP Expression
+   48           | Expression . DIVOP Expression
+   48           | Expression DIVOP Expression .
+   49           | Expression . LHKP Expression RHKP
+   50           | Expression . DOT LENGTH
+   51           | Expression . DOT Identifier LP FunctionArgumentList RP
+
+    AND   shift, and go to state 100
+    OR    shift, and go to state 101
+    EQ    shift, and go to state 102
+    LT    shift, and go to state 103
+    GT    shift, and go to state 104
+    DOT   shift, and go to state 105
+    LHKP  shift, and go to state 106
+
+    $default  reduce using rule 48 (Expression)
+
+
 State 122
 
-   46 Expression: Expression DOT Identifier . LP FunctionArgumentList RP
+   40 Expression: Expression . AND Expression
+   40           | Expression AND Expression .
+   41           | Expression . OR Expression
+   42           | Expression . LT Expression
+   43           | Expression . GT Expression
+   44           | Expression . EQ Expression
+   45           | Expression . PLUSOP Expression
+   46           | Expression . MINOP Expression
+   47           | Expression . MULOP Expression
+   48           | Expression . DIVOP Expression
+   49           | Expression . LHKP Expression RHKP
+   50           | Expression . DOT LENGTH
+   51           | Expression . DOT Identifier LP FunctionArgumentList RP
 
-    LP  shift, and go to state 133
+    LHKP  shift, and go to state 106
+
+    $default  reduce using rule 40 (Expression)
 
 
 State 123
 
-   35 Expression: Expression . AND Expression
-   36           | Expression . OR Expression
-   37           | Expression . LT Expression
-   38           | Expression . GT Expression
-   39           | Expression . EQ Expression
-   40           | Expression . PLUSOP Expression
-   41           | Expression . MINOP Expression
-   42           | Expression . MULOP Expression
-   43           | Expression . DIVOP Expression
-   44           | Expression . LHKP Expression RHKP
-   44           | Expression LHKP Expression . RHKP
-   45           | Expression . DOT LENGTH
-   46           | Expression . DOT Identifier LP FunctionArgumentList RP
+   40 Expression: Expression . AND Expression
+   41           | Expression . OR Expression
+   41           | Expression OR Expression .
+   42           | Expression . LT Expression
+   43           | Expression . GT Expression
+   44           | Expression . EQ Expression
+   45           | Expression . PLUSOP Expression
+   46           | Expression . MINOP Expression
+   47           | Expression . MULOP Expression
+   48           | Expression . DIVOP Expression
+   49           | Expression . LHKP Expression RHKP
+   50           | Expression . DOT LENGTH
+   51           | Expression . DOT Identifier LP FunctionArgumentList RP
 
-    PLUSOP  shift, and go to state 91
-    MINOP   shift, and go to state 92
-    MULOP   shift, and go to state 93
-    DIVOP   shift, and go to state 94
-    AND     shift, and go to state 95
-    OR      shift, and go to state 96
-    EQ      shift, and go to state 97
-    LT      shift, and go to state 98
-    GT      shift, and go to state 99
-    DOT     shift, and go to state 100
-    LHKP    shift, and go to state 101
-    RHKP    shift, and go to state 134
+    LHKP  shift, and go to state 106
+
+    $default  reduce using rule 41 (Expression)
 
 
 State 124
 
-   33 Statement: Identifier LHKP Expression . RHKP '=' Expression ';'
-   35 Expression: Expression . AND Expression
-   36           | Expression . OR Expression
-   37           | Expression . LT Expression
-   38           | Expression . GT Expression
-   39           | Expression . EQ Expression
-   40           | Expression . PLUSOP Expression
-   41           | Expression . MINOP Expression
-   42           | Expression . MULOP Expression
-   43           | Expression . DIVOP Expression
-   44           | Expression . LHKP Expression RHKP
-   45           | Expression . DOT LENGTH
-   46           | Expression . DOT Identifier LP FunctionArgumentList RP
+   40 Expression: Expression . AND Expression
+   41           | Expression . OR Expression
+   42           | Expression . LT Expression
+   43           | Expression . GT Expression
+   44           | Expression . EQ Expression
+   44           | Expression EQ Expression .
+   45           | Expression . PLUSOP Expression
+   46           | Expression . MINOP Expression
+   47           | Expression . MULOP Expression
+   48           | Expression . DIVOP Expression
+   49           | Expression . LHKP Expression RHKP
+   50           | Expression . DOT LENGTH
+   51           | Expression . DOT Identifier LP FunctionArgumentList RP
 
-    PLUSOP  shift, and go to state 91
-    MINOP   shift, and go to state 92
-    MULOP   shift, and go to state 93
-    DIVOP   shift, and go to state 94
-    AND     shift, and go to state 95
-    OR      shift, and go to state 96
-    EQ      shift, and go to state 97
-    LT      shift, and go to state 98
-    GT      shift, and go to state 99
-    DOT     shift, and go to state 100
-    LHKP    shift, and go to state 101
-    RHKP    shift, and go to state 135
+    LHKP  shift, and go to state 106
+
+    $default  reduce using rule 44 (Expression)
 
 
 State 125
 
-   32 Statement: Identifier '=' Expression . ';'
-   35 Expression: Expression . AND Expression
-   36           | Expression . OR Expression
-   37           | Expression . LT Expression
-   38           | Expression . GT Expression
-   39           | Expression . EQ Expression
-   40           | Expression . PLUSOP Expression
-   41           | Expression . MINOP Expression
-   42           | Expression . MULOP Expression
-   43           | Expression . DIVOP Expression
-   44           | Expression . LHKP Expression RHKP
-   45           | Expression . DOT LENGTH
-   46           | Expression . DOT Identifier LP FunctionArgumentList RP
+   40 Expression: Expression . AND Expression
+   41           | Expression . OR Expression
+   42           | Expression . LT Expression
+   42           | Expression LT Expression .
+   43           | Expression . GT Expression
+   44           | Expression . EQ Expression
+   45           | Expression . PLUSOP Expression
+   46           | Expression . MINOP Expression
+   47           | Expression . MULOP Expression
+   48           | Expression . DIVOP Expression
+   49           | Expression . LHKP Expression RHKP
+   50           | Expression . DOT LENGTH
+   51           | Expression . DOT Identifier LP FunctionArgumentList RP
 
-    PLUSOP  shift, and go to state 91
-    MINOP   shift, and go to state 92
-    MULOP   shift, and go to state 93
-    DIVOP   shift, and go to state 94
-    AND     shift, and go to state 95
-    OR      shift, and go to state 96
-    EQ      shift, and go to state 97
-    LT      shift, and go to state 98
-    GT      shift, and go to state 99
-    DOT     shift, and go to state 100
-    LHKP    shift, and go to state 101
-    ';'     shift, and go to state 136
+    LHKP  shift, and go to state 106
+
+    $default  reduce using rule 42 (Expression)
 
 
 State 126
 
-   16 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList RP '{' MethodBodyDeclaration RETURN Expression . ';' '}'
-   35 Expression: Expression . AND Expression
-   36           | Expression . OR Expression
-   37           | Expression . LT Expression
-   38           | Expression . GT Expression
-   39           | Expression . EQ Expression
-   40           | Expression . PLUSOP Expression
-   41           | Expression . MINOP Expression
-   42           | Expression . MULOP Expression
-   43           | Expression . DIVOP Expression
-   44           | Expression . LHKP Expression RHKP
-   45           | Expression . DOT LENGTH
-   46           | Expression . DOT Identifier LP FunctionArgumentList RP
+   40 Expression: Expression . AND Expression
+   41           | Expression . OR Expression
+   42           | Expression . LT Expression
+   43           | Expression . GT Expression
+   43           | Expression GT Expression .
+   44           | Expression . EQ Expression
+   45           | Expression . PLUSOP Expression
+   46           | Expression . MINOP Expression
+   47           | Expression . MULOP Expression
+   48           | Expression . DIVOP Expression
+   49           | Expression . LHKP Expression RHKP
+   50           | Expression . DOT LENGTH
+   51           | Expression . DOT Identifier LP FunctionArgumentList RP
 
-    PLUSOP  shift, and go to state 91
-    MINOP   shift, and go to state 92
-    MULOP   shift, and go to state 93
-    DIVOP   shift, and go to state 94
-    AND     shift, and go to state 95
-    OR      shift, and go to state 96
-    EQ      shift, and go to state 97
-    LT      shift, and go to state 98
-    GT      shift, and go to state 99
-    DOT     shift, and go to state 100
-    LHKP    shift, and go to state 101
-    ';'     shift, and go to state 137
+    LHKP  shift, and go to state 106
+
+    $default  reduce using rule 43 (Expression)
 
 
 State 127
 
-    2 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP '{' Statement '}' . '}'
+   50 Expression: Expression DOT LENGTH .
 
-    '}'  shift, and go to state 138
+    $default  reduce using rule 50 (Expression)
 
 
 State 128
 
-   29 Statement: IF LP Expression RP . '{' StatementList '}' ELSE '{' StatementList '}'
+   51 Expression: Expression DOT Identifier . LP FunctionArgumentList RP
 
-    '{'  shift, and go to state 139
+    LP  shift, and go to state 139
 
 
 State 129
 
-   30 Statement: WHILE LP Expression RP . '{' StatementList '}'
+   40 Expression: Expression . AND Expression
+   41           | Expression . OR Expression
+   42           | Expression . LT Expression
+   43           | Expression . GT Expression
+   44           | Expression . EQ Expression
+   45           | Expression . PLUSOP Expression
+   46           | Expression . MINOP Expression
+   47           | Expression . MULOP Expression
+   48           | Expression . DIVOP Expression
+   49           | Expression . LHKP Expression RHKP
+   49           | Expression LHKP Expression . RHKP
+   50           | Expression . DOT LENGTH
+   51           | Expression . DOT Identifier LP FunctionArgumentList RP
 
-    '{'  shift, and go to state 140
+    PLUSOP  shift, and go to state 96
+    MINOP   shift, and go to state 97
+    MULOP   shift, and go to state 98
+    DIVOP   shift, and go to state 99
+    AND     shift, and go to state 100
+    OR      shift, and go to state 101
+    EQ      shift, and go to state 102
+    LT      shift, and go to state 103
+    GT      shift, and go to state 104
+    DOT     shift, and go to state 105
+    LHKP    shift, and go to state 106
+    RHKP    shift, and go to state 140
 
 
 State 130
 
-   31 Statement: SYS_PRINTLN LP Expression RP . ';'
+   37 Statement: Identifier ASSIGN_OP Expression . ';'
+   40 Expression: Expression . AND Expression
+   41           | Expression . OR Expression
+   42           | Expression . LT Expression
+   43           | Expression . GT Expression
+   44           | Expression . EQ Expression
+   45           | Expression . PLUSOP Expression
+   46           | Expression . MINOP Expression
+   47           | Expression . MULOP Expression
+   48           | Expression . DIVOP Expression
+   49           | Expression . LHKP Expression RHKP
+   50           | Expression . DOT LENGTH
+   51           | Expression . DOT Identifier LP FunctionArgumentList RP
 
-    ';'  shift, and go to state 141
+    PLUSOP  shift, and go to state 96
+    MINOP   shift, and go to state 97
+    MULOP   shift, and go to state 98
+    DIVOP   shift, and go to state 99
+    AND     shift, and go to state 100
+    OR      shift, and go to state 101
+    EQ      shift, and go to state 102
+    LT      shift, and go to state 103
+    GT      shift, and go to state 104
+    DOT     shift, and go to state 105
+    LHKP    shift, and go to state 106
+    ';'     shift, and go to state 141
 
 
 State 131
 
-   35 Expression: Expression . AND Expression
-   36           | Expression . OR Expression
-   37           | Expression . LT Expression
-   38           | Expression . GT Expression
-   39           | Expression . EQ Expression
-   40           | Expression . PLUSOP Expression
-   41           | Expression . MINOP Expression
-   42           | Expression . MULOP Expression
-   43           | Expression . DIVOP Expression
-   44           | Expression . LHKP Expression RHKP
-   45           | Expression . DOT LENGTH
-   46           | Expression . DOT Identifier LP FunctionArgumentList RP
-   52           | NEW T_Int LHKP Expression . RHKP
+   38 Statement: Identifier LHKP Expression . RHKP ASSIGN_OP Expression ';'
+   40 Expression: Expression . AND Expression
+   41           | Expression . OR Expression
+   42           | Expression . LT Expression
+   43           | Expression . GT Expression
+   44           | Expression . EQ Expression
+   45           | Expression . PLUSOP Expression
+   46           | Expression . MINOP Expression
+   47           | Expression . MULOP Expression
+   48           | Expression . DIVOP Expression
+   49           | Expression . LHKP Expression RHKP
+   50           | Expression . DOT LENGTH
+   51           | Expression . DOT Identifier LP FunctionArgumentList RP
 
-    PLUSOP  shift, and go to state 91
-    MINOP   shift, and go to state 92
-    MULOP   shift, and go to state 93
-    DIVOP   shift, and go to state 94
-    AND     shift, and go to state 95
-    OR      shift, and go to state 96
-    EQ      shift, and go to state 97
-    LT      shift, and go to state 98
-    GT      shift, and go to state 99
-    DOT     shift, and go to state 100
-    LHKP    shift, and go to state 101
+    PLUSOP  shift, and go to state 96
+    MINOP   shift, and go to state 97
+    MULOP   shift, and go to state 98
+    DIVOP   shift, and go to state 99
+    AND     shift, and go to state 100
+    OR      shift, and go to state 101
+    EQ      shift, and go to state 102
+    LT      shift, and go to state 103
+    GT      shift, and go to state 104
+    DOT     shift, and go to state 105
+    LHKP    shift, and go to state 106
     RHKP    shift, and go to state 142
 
 
 State 132
+
+   19 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList RP '{' MethodBodyDeclaration RETURN Expression . ';' '}'
+   40 Expression: Expression . AND Expression
+   41           | Expression . OR Expression
+   42           | Expression . LT Expression
+   43           | Expression . GT Expression
+   44           | Expression . EQ Expression
+   45           | Expression . PLUSOP Expression
+   46           | Expression . MINOP Expression
+   47           | Expression . MULOP Expression
+   48           | Expression . DIVOP Expression
+   49           | Expression . LHKP Expression RHKP
+   50           | Expression . DOT LENGTH
+   51           | Expression . DOT Identifier LP FunctionArgumentList RP
+
+    PLUSOP  shift, and go to state 96
+    MINOP   shift, and go to state 97
+    MULOP   shift, and go to state 98
+    DIVOP   shift, and go to state 99
+    AND     shift, and go to state 100
+    OR      shift, and go to state 101
+    EQ      shift, and go to state 102
+    LT      shift, and go to state 103
+    GT      shift, and go to state 104
+    DOT     shift, and go to state 105
+    LHKP    shift, and go to state 106
+    ';'     shift, and go to state 143
+
+
+State 133
+
+    3 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP '{' Statement . '}' '}'
+
+    '}'  shift, and go to state 144
+
+
+State 134
+
+   34 Statement: IF LP Expression RP . '{' StatementList '}' ELSE '{' StatementList '}'
+
+    '{'  shift, and go to state 145
+
+
+State 135
+
+   35 Statement: WHILE LP Expression RP . '{' StatementList '}'
+
+    '{'  shift, and go to state 146
+
+
+State 136
+
+   36 Statement: SYS_PRINTLN LP Expression RP . ';'
+
+    ';'  shift, and go to state 147
+
+
+State 137
+
+   40 Expression: Expression . AND Expression
+   41           | Expression . OR Expression
+   42           | Expression . LT Expression
+   43           | Expression . GT Expression
+   44           | Expression . EQ Expression
+   45           | Expression . PLUSOP Expression
+   46           | Expression . MINOP Expression
+   47           | Expression . MULOP Expression
+   48           | Expression . DIVOP Expression
+   49           | Expression . LHKP Expression RHKP
+   50           | Expression . DOT LENGTH
+   51           | Expression . DOT Identifier LP FunctionArgumentList RP
+   52           | NEW T_Int LHKP Expression . RHKP
+
+    PLUSOP  shift, and go to state 96
+    MINOP   shift, and go to state 97
+    MULOP   shift, and go to state 98
+    DIVOP   shift, and go to state 99
+    AND     shift, and go to state 100
+    OR      shift, and go to state 101
+    EQ      shift, and go to state 102
+    LT      shift, and go to state 103
+    GT      shift, and go to state 104
+    DOT     shift, and go to state 105
+    LHKP    shift, and go to state 106
+    RHKP    shift, and go to state 148
+
+
+State 138
 
    53 Expression: NEW Identifier LP RP .
 
     $default  reduce using rule 53 (Expression)
 
 
-State 133
-
-   46 Expression: Expression DOT Identifier LP . FunctionArgumentList RP
-
-    INTEGER_LITERAL  shift, and go to state 62
-    IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
-
-    $default  reduce using rule 58 (FunctionArgumentList)
-
-    Expression            go to state 143
-    FunctionArgumentList  go to state 144
-    Identifier            go to state 86
-
-
-State 134
-
-   44 Expression: Expression LHKP Expression RHKP .
-
-    $default  reduce using rule 44 (Expression)
-
-
-State 135
-
-   33 Statement: Identifier LHKP Expression RHKP . '=' Expression ';'
-
-    '='  shift, and go to state 145
-
-
-State 136
-
-   32 Statement: Identifier '=' Expression ';' .
-
-    $default  reduce using rule 32 (Statement)
-
-
-State 137
-
-   16 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList RP '{' MethodBodyDeclaration RETURN Expression ';' . '}'
-
-    '}'  shift, and go to state 146
-
-
-State 138
-
-    2 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP '{' Statement '}' '}' .
-
-    $default  reduce using rule 2 (MainClass)
-
-
 State 139
 
-   29 Statement: IF LP Expression RP '{' . StatementList '}' ELSE '{' StatementList '}'
+   51 Expression: Expression DOT Identifier LP . FunctionArgumentList RP
 
-    INTEGER_LITERAL  shift, and go to state 62
+    INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    IF               shift, and go to state 65
-    WHILE            shift, and go to state 66
-    SYS_PRINTLN      shift, and go to state 67
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
 
-    StatementList  go to state 147
-    Statement      go to state 75
-    Expression     go to state 76
-    Identifier     go to state 77
+    $default  reduce using rule 63 (FunctionArgumentList)
+
+    Expression            go to state 149
+    FunctionArgumentList  go to state 150
+    Identifier            go to state 90
 
 
 State 140
 
-   30 Statement: WHILE LP Expression RP '{' . StatementList '}'
+   49 Expression: Expression LHKP Expression RHKP .
 
-    INTEGER_LITERAL  shift, and go to state 62
-    IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    IF               shift, and go to state 65
-    WHILE            shift, and go to state 66
-    SYS_PRINTLN      shift, and go to state 67
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
-
-    StatementList  go to state 148
-    Statement      go to state 75
-    Expression     go to state 76
-    Identifier     go to state 77
+    $default  reduce using rule 49 (Expression)
 
 
 State 141
 
-   31 Statement: SYS_PRINTLN LP Expression RP ';' .
+   37 Statement: Identifier ASSIGN_OP Expression ';' .
 
-    $default  reduce using rule 31 (Statement)
+    $default  reduce using rule 37 (Statement)
 
 
 State 142
+
+   38 Statement: Identifier LHKP Expression RHKP . ASSIGN_OP Expression ';'
+
+    ASSIGN_OP  shift, and go to state 151
+
+
+State 143
+
+   19 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList RP '{' MethodBodyDeclaration RETURN Expression ';' . '}'
+
+    '}'  shift, and go to state 152
+
+
+State 144
+
+    3 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP '{' Statement '}' . '}'
+
+    '}'  shift, and go to state 153
+
+
+State 145
+
+   34 Statement: IF LP Expression RP '{' . StatementList '}' ELSE '{' StatementList '}'
+
+    INTEGER_LITERAL  shift, and go to state 65
+    IDENTIFIER       shift, and go to state 4
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    IF               shift, and go to state 68
+    WHILE            shift, and go to state 69
+    SYS_PRINTLN      shift, and go to state 70
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
+
+    StatementList  go to state 154
+    Statement      go to state 79
+    Expression     go to state 80
+    Identifier     go to state 95
+
+
+State 146
+
+   35 Statement: WHILE LP Expression RP '{' . StatementList '}'
+
+    INTEGER_LITERAL  shift, and go to state 65
+    IDENTIFIER       shift, and go to state 4
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    IF               shift, and go to state 68
+    WHILE            shift, and go to state 69
+    SYS_PRINTLN      shift, and go to state 70
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
+
+    StatementList  go to state 155
+    Statement      go to state 79
+    Expression     go to state 80
+    Identifier     go to state 95
+
+
+State 147
+
+   36 Statement: SYS_PRINTLN LP Expression RP ';' .
+
+    $default  reduce using rule 36 (Statement)
+
+
+State 148
 
    52 Expression: NEW T_Int LHKP Expression RHKP .
 
     $default  reduce using rule 52 (Expression)
 
 
-State 143
-
-   35 Expression: Expression . AND Expression
-   36           | Expression . OR Expression
-   37           | Expression . LT Expression
-   38           | Expression . GT Expression
-   39           | Expression . EQ Expression
-   40           | Expression . PLUSOP Expression
-   41           | Expression . MINOP Expression
-   42           | Expression . MULOP Expression
-   43           | Expression . DIVOP Expression
-   44           | Expression . LHKP Expression RHKP
-   45           | Expression . DOT LENGTH
-   46           | Expression . DOT Identifier LP FunctionArgumentList RP
-   57 FunctionArgumentList: Expression .
-
-    PLUSOP  shift, and go to state 91
-    MINOP   shift, and go to state 92
-    MULOP   shift, and go to state 93
-    DIVOP   shift, and go to state 94
-    AND     shift, and go to state 95
-    OR      shift, and go to state 96
-    EQ      shift, and go to state 97
-    LT      shift, and go to state 98
-    GT      shift, and go to state 99
-    DOT     shift, and go to state 100
-    LHKP    shift, and go to state 101
-
-    $default  reduce using rule 57 (FunctionArgumentList)
-
-
-State 144
-
-   46 Expression: Expression DOT Identifier LP FunctionArgumentList . RP
-   56 FunctionArgumentList: FunctionArgumentList . ',' Expression
-
-    RP   shift, and go to state 149
-    ','  shift, and go to state 150
-
-
-State 145
-
-   33 Statement: Identifier LHKP Expression RHKP '=' . Expression ';'
-
-    INTEGER_LITERAL  shift, and go to state 62
-    IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
-
-    Expression  go to state 151
-    Identifier  go to state 86
-
-
-State 146
-
-   16 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList RP '{' MethodBodyDeclaration RETURN Expression ';' '}' .
-
-    $default  reduce using rule 16 (MethodDeclaration)
-
-
-State 147
-
-   27 StatementList: StatementList . Statement
-   29 Statement: IF LP Expression RP '{' StatementList . '}' ELSE '{' StatementList '}'
-
-    INTEGER_LITERAL  shift, and go to state 62
-    IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    IF               shift, and go to state 65
-    WHILE            shift, and go to state 66
-    SYS_PRINTLN      shift, and go to state 67
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
-    '}'              shift, and go to state 152
-
-    Statement   go to state 90
-    Expression  go to state 76
-    Identifier  go to state 77
-
-
-State 148
-
-   27 StatementList: StatementList . Statement
-   30 Statement: WHILE LP Expression RP '{' StatementList . '}'
-
-    INTEGER_LITERAL  shift, and go to state 62
-    IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    IF               shift, and go to state 65
-    WHILE            shift, and go to state 66
-    SYS_PRINTLN      shift, and go to state 67
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
-    '}'              shift, and go to state 153
-
-    Statement   go to state 90
-    Expression  go to state 76
-    Identifier  go to state 77
-
-
 State 149
 
-   46 Expression: Expression DOT Identifier LP FunctionArgumentList RP .
+   40 Expression: Expression . AND Expression
+   41           | Expression . OR Expression
+   42           | Expression . LT Expression
+   43           | Expression . GT Expression
+   44           | Expression . EQ Expression
+   45           | Expression . PLUSOP Expression
+   46           | Expression . MINOP Expression
+   47           | Expression . MULOP Expression
+   48           | Expression . DIVOP Expression
+   49           | Expression . LHKP Expression RHKP
+   50           | Expression . DOT LENGTH
+   51           | Expression . DOT Identifier LP FunctionArgumentList RP
+   62 FunctionArgumentList: Expression .
 
-    $default  reduce using rule 46 (Expression)
+    PLUSOP  shift, and go to state 96
+    MINOP   shift, and go to state 97
+    MULOP   shift, and go to state 98
+    DIVOP   shift, and go to state 99
+    AND     shift, and go to state 100
+    OR      shift, and go to state 101
+    EQ      shift, and go to state 102
+    LT      shift, and go to state 103
+    GT      shift, and go to state 104
+    DOT     shift, and go to state 105
+    LHKP    shift, and go to state 106
+
+    $default  reduce using rule 62 (FunctionArgumentList)
 
 
 State 150
 
-   56 FunctionArgumentList: FunctionArgumentList ',' . Expression
+   51 Expression: Expression DOT Identifier LP FunctionArgumentList . RP
+   61 FunctionArgumentList: FunctionArgumentList . ',' Expression
 
-    INTEGER_LITERAL  shift, and go to state 62
-    IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
-
-    Expression  go to state 154
-    Identifier  go to state 86
+    RP   shift, and go to state 156
+    ','  shift, and go to state 157
 
 
 State 151
 
-   33 Statement: Identifier LHKP Expression RHKP '=' Expression . ';'
-   35 Expression: Expression . AND Expression
-   36           | Expression . OR Expression
-   37           | Expression . LT Expression
-   38           | Expression . GT Expression
-   39           | Expression . EQ Expression
-   40           | Expression . PLUSOP Expression
-   41           | Expression . MINOP Expression
-   42           | Expression . MULOP Expression
-   43           | Expression . DIVOP Expression
-   44           | Expression . LHKP Expression RHKP
-   45           | Expression . DOT LENGTH
-   46           | Expression . DOT Identifier LP FunctionArgumentList RP
+   38 Statement: Identifier LHKP Expression RHKP ASSIGN_OP . Expression ';'
 
-    PLUSOP  shift, and go to state 91
-    MINOP   shift, and go to state 92
-    MULOP   shift, and go to state 93
-    DIVOP   shift, and go to state 94
-    AND     shift, and go to state 95
-    OR      shift, and go to state 96
-    EQ      shift, and go to state 97
-    LT      shift, and go to state 98
-    GT      shift, and go to state 99
-    DOT     shift, and go to state 100
-    LHKP    shift, and go to state 101
-    ';'     shift, and go to state 155
+    INTEGER_LITERAL  shift, and go to state 65
+    IDENTIFIER       shift, and go to state 4
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
+
+    Expression  go to state 158
+    Identifier  go to state 90
 
 
 State 152
 
-   29 Statement: IF LP Expression RP '{' StatementList '}' . ELSE '{' StatementList '}'
+   19 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList RP '{' MethodBodyDeclaration RETURN Expression ';' '}' .
 
-    ELSE  shift, and go to state 156
+    $default  reduce using rule 19 (MethodDeclaration)
 
 
 State 153
 
-   30 Statement: WHILE LP Expression RP '{' StatementList '}' .
+    3 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP '{' Statement '}' '}' .
 
-    $default  reduce using rule 30 (Statement)
+    $default  reduce using rule 3 (MainClass)
 
 
 State 154
 
-   35 Expression: Expression . AND Expression
-   36           | Expression . OR Expression
-   37           | Expression . LT Expression
-   38           | Expression . GT Expression
-   39           | Expression . EQ Expression
-   40           | Expression . PLUSOP Expression
-   41           | Expression . MINOP Expression
-   42           | Expression . MULOP Expression
-   43           | Expression . DIVOP Expression
-   44           | Expression . LHKP Expression RHKP
-   45           | Expression . DOT LENGTH
-   46           | Expression . DOT Identifier LP FunctionArgumentList RP
-   56 FunctionArgumentList: FunctionArgumentList ',' Expression .
+   32 StatementList: StatementList . Statement
+   34 Statement: IF LP Expression RP '{' StatementList . '}' ELSE '{' StatementList '}'
 
-    PLUSOP  shift, and go to state 91
-    MINOP   shift, and go to state 92
-    MULOP   shift, and go to state 93
-    DIVOP   shift, and go to state 94
-    AND     shift, and go to state 95
-    OR      shift, and go to state 96
-    EQ      shift, and go to state 97
-    LT      shift, and go to state 98
-    GT      shift, and go to state 99
-    DOT     shift, and go to state 100
-    LHKP    shift, and go to state 101
+    INTEGER_LITERAL  shift, and go to state 65
+    IDENTIFIER       shift, and go to state 4
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    IF               shift, and go to state 68
+    WHILE            shift, and go to state 69
+    SYS_PRINTLN      shift, and go to state 70
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
+    '}'              shift, and go to state 159
 
-    $default  reduce using rule 56 (FunctionArgumentList)
+    Statement   go to state 94
+    Expression  go to state 80
+    Identifier  go to state 95
 
 
 State 155
 
-   33 Statement: Identifier LHKP Expression RHKP '=' Expression ';' .
+   32 StatementList: StatementList . Statement
+   35 Statement: WHILE LP Expression RP '{' StatementList . '}'
 
-    $default  reduce using rule 33 (Statement)
+    INTEGER_LITERAL  shift, and go to state 65
+    IDENTIFIER       shift, and go to state 4
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    IF               shift, and go to state 68
+    WHILE            shift, and go to state 69
+    SYS_PRINTLN      shift, and go to state 70
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
+    '}'              shift, and go to state 160
+
+    Statement   go to state 94
+    Expression  go to state 80
+    Identifier  go to state 95
 
 
 State 156
 
-   29 Statement: IF LP Expression RP '{' StatementList '}' ELSE . '{' StatementList '}'
+   51 Expression: Expression DOT Identifier LP FunctionArgumentList RP .
 
-    '{'  shift, and go to state 157
+    $default  reduce using rule 51 (Expression)
 
 
 State 157
 
-   29 Statement: IF LP Expression RP '{' StatementList '}' ELSE '{' . StatementList '}'
+   61 FunctionArgumentList: FunctionArgumentList ',' . Expression
 
-    INTEGER_LITERAL  shift, and go to state 62
+    INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    IF               shift, and go to state 65
-    WHILE            shift, and go to state 66
-    SYS_PRINTLN      shift, and go to state 67
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
 
-    StatementList  go to state 158
-    Statement      go to state 75
-    Expression     go to state 76
-    Identifier     go to state 77
+    Expression  go to state 161
+    Identifier  go to state 90
 
 
 State 158
 
-   27 StatementList: StatementList . Statement
-   29 Statement: IF LP Expression RP '{' StatementList '}' ELSE '{' StatementList . '}'
+   38 Statement: Identifier LHKP Expression RHKP ASSIGN_OP Expression . ';'
+   40 Expression: Expression . AND Expression
+   41           | Expression . OR Expression
+   42           | Expression . LT Expression
+   43           | Expression . GT Expression
+   44           | Expression . EQ Expression
+   45           | Expression . PLUSOP Expression
+   46           | Expression . MINOP Expression
+   47           | Expression . MULOP Expression
+   48           | Expression . DIVOP Expression
+   49           | Expression . LHKP Expression RHKP
+   50           | Expression . DOT LENGTH
+   51           | Expression . DOT Identifier LP FunctionArgumentList RP
 
-    INTEGER_LITERAL  shift, and go to state 62
-    IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 63
-    T_False          shift, and go to state 64
-    IF               shift, and go to state 65
-    WHILE            shift, and go to state 66
-    SYS_PRINTLN      shift, and go to state 67
-    THIS             shift, and go to state 68
-    NEW              shift, and go to state 69
-    NOT              shift, and go to state 70
-    LP               shift, and go to state 71
-    '}'              shift, and go to state 159
-
-    Statement   go to state 90
-    Expression  go to state 76
-    Identifier  go to state 77
+    PLUSOP  shift, and go to state 96
+    MINOP   shift, and go to state 97
+    MULOP   shift, and go to state 98
+    DIVOP   shift, and go to state 99
+    AND     shift, and go to state 100
+    OR      shift, and go to state 101
+    EQ      shift, and go to state 102
+    LT      shift, and go to state 103
+    GT      shift, and go to state 104
+    DOT     shift, and go to state 105
+    LHKP    shift, and go to state 106
+    ';'     shift, and go to state 162
 
 
 State 159
 
-   29 Statement: IF LP Expression RP '{' StatementList '}' ELSE '{' StatementList '}' .
+   34 Statement: IF LP Expression RP '{' StatementList '}' . ELSE '{' StatementList '}'
 
-    $default  reduce using rule 29 (Statement)
+    ELSE  shift, and go to state 163
+
+
+State 160
+
+   35 Statement: WHILE LP Expression RP '{' StatementList '}' .
+
+    $default  reduce using rule 35 (Statement)
+
+
+State 161
+
+   40 Expression: Expression . AND Expression
+   41           | Expression . OR Expression
+   42           | Expression . LT Expression
+   43           | Expression . GT Expression
+   44           | Expression . EQ Expression
+   45           | Expression . PLUSOP Expression
+   46           | Expression . MINOP Expression
+   47           | Expression . MULOP Expression
+   48           | Expression . DIVOP Expression
+   49           | Expression . LHKP Expression RHKP
+   50           | Expression . DOT LENGTH
+   51           | Expression . DOT Identifier LP FunctionArgumentList RP
+   61 FunctionArgumentList: FunctionArgumentList ',' Expression .
+
+    PLUSOP  shift, and go to state 96
+    MINOP   shift, and go to state 97
+    MULOP   shift, and go to state 98
+    DIVOP   shift, and go to state 99
+    AND     shift, and go to state 100
+    OR      shift, and go to state 101
+    EQ      shift, and go to state 102
+    LT      shift, and go to state 103
+    GT      shift, and go to state 104
+    DOT     shift, and go to state 105
+    LHKP    shift, and go to state 106
+
+    $default  reduce using rule 61 (FunctionArgumentList)
+
+
+State 162
+
+   38 Statement: Identifier LHKP Expression RHKP ASSIGN_OP Expression ';' .
+
+    $default  reduce using rule 38 (Statement)
+
+
+State 163
+
+   34 Statement: IF LP Expression RP '{' StatementList '}' ELSE . '{' StatementList '}'
+
+    '{'  shift, and go to state 164
+
+
+State 164
+
+   34 Statement: IF LP Expression RP '{' StatementList '}' ELSE '{' . StatementList '}'
+
+    INTEGER_LITERAL  shift, and go to state 65
+    IDENTIFIER       shift, and go to state 4
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    IF               shift, and go to state 68
+    WHILE            shift, and go to state 69
+    SYS_PRINTLN      shift, and go to state 70
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
+
+    StatementList  go to state 165
+    Statement      go to state 79
+    Expression     go to state 80
+    Identifier     go to state 95
+
+
+State 165
+
+   32 StatementList: StatementList . Statement
+   34 Statement: IF LP Expression RP '{' StatementList '}' ELSE '{' StatementList . '}'
+
+    INTEGER_LITERAL  shift, and go to state 65
+    IDENTIFIER       shift, and go to state 4
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    IF               shift, and go to state 68
+    WHILE            shift, and go to state 69
+    SYS_PRINTLN      shift, and go to state 70
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
+    '}'              shift, and go to state 166
+
+    Statement   go to state 94
+    Expression  go to state 80
+    Identifier  go to state 95
+
+
+State 166
+
+   34 Statement: IF LP Expression RP '{' StatementList '}' ELSE '{' StatementList '}' .
+
+    $default  reduce using rule 34 (Statement)

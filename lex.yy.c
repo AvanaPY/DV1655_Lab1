@@ -970,7 +970,7 @@ YY_RULE_SETUP
 case 24:
 YY_RULE_SETUP
 #line 40 "lexer.l"
-{ return yytext[0]; }
+{ return yy::parser::make_ASSIGN_OP(); }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP

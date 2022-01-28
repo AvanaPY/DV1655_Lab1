@@ -2,704 +2,92 @@ digraph {
 n0 [label="Program:"];
 n1 [label="MainClass:Main"];
 n2 [label="Method:Main"];
-n3 [label="SYS_PRINTLN:"];
-n4 [label="Function Call:"];
-n5 [label="new():"];
-n6 [label="QS:"];
-n5 -> n6
+n3 [label="While:"];
+n4 [label="EQUALS:"];
+n5 [label="Identifier:a"];
 n4 -> n5
-n7 [label="Start:"];
-n4 -> n7
-n8 [label="Function Call Expression:"];
-n9 [label="Integer:10"];
-n8 -> n9
-n4 -> n8
+n6 [label="Integer:0"];
+n4 -> n6
 n3 -> n4
+n7 [label="Statement List:"];
+n8 [label="SYS_PRINTLN:"];
+n9 [label="Identifier:notyeet"];
+n8 -> n9
+n7 -> n8
+n3 -> n7
 n2 -> n3
 n1 -> n2
 n0 -> n1
 n10 [label="Class List:"];
-n11 [label="Class:QS"];
-n12 [label="Variable List:"];
-n13 [label="Variable:"];
-n14 [label="number:"];
-n13 -> n14
-n15 [label="Int[]:"];
-n13 -> n15
-n12 -> n13
-n16 [label="Variable:"];
-n17 [label="size:"];
-n16 -> n17
-n18 [label="Int:"];
-n16 -> n18
-n12 -> n16
+n11 [label="Class:Abcyeee"];
+n12 [label="Class Extends:Abc"];
 n11 -> n12
-n19 [label="Method List:"];
-n20 [label="Method:Start"];
-n21 [label="Parameter List:"];
-n22 [label="Parameter:"];
-n23 [label="Int:"];
+n13 [label="Class Body:"];
+n14 [label="Variable List:"];
+n15 [label="Variable:"];
+n16 [label="a:"];
+n15 -> n16
+n17 [label="Int[]:"];
+n15 -> n17
+n14 -> n15
+n18 [label="Variable:"];
+n19 [label="b:"];
+n18 -> n19
+n20 [label="Int:"];
+n18 -> n20
+n14 -> n18
+n13 -> n14
+n21 [label="Method List:"];
+n22 [label="Method:m"];
+n23 [label="Arguments:None"];
 n22 -> n23
-n24 [label="sz:"];
+n24 [label="Method Body:"];
+n25 [label="Variable List:"];
+n26 [label="Variable:"];
+n27 [label="a:"];
+n26 -> n27
+n28 [label="Int:"];
+n26 -> n28
+n25 -> n26
+n29 [label="Variable:"];
+n30 [label="b:"];
+n29 -> n30
+n31 [label="Int:"];
+n29 -> n31
+n25 -> n29
+n24 -> n25
 n22 -> n24
 n21 -> n22
-n20 -> n21
-n25 [label="Method Body:"];
-n26 [label="Method Body:"];
-n27 [label="Method Body:"];
-n28 [label="Method Body:"];
-n29 [label="Method Body:"];
-n30 [label="Method Body:"];
-n31 [label="Variable List:"];
-n32 [label="Variable:"];
-n33 [label="aux01:"];
-n32 -> n33
-n34 [label="Int:"];
-n32 -> n34
-n31 -> n32
-n30 -> n31
-n35 [label="Assign:"];
-n36 [label="aux01:"];
-n35 -> n36
-n37 [label="Function Call:"];
-n38 [label="THIS:"];
+n32 [label="Method:p"];
+n33 [label="Parameter List:"];
+n34 [label="Parameter:"];
+n35 [label="Int:"];
+n34 -> n35
+n36 [label="a:"];
+n34 -> n36
+n33 -> n34
+n37 [label="Parameter:"];
+n38 [label="Int:"];
 n37 -> n38
-n39 [label="Init:"];
+n39 [label="b:"];
 n37 -> n39
-n40 [label="Function Call Expression:"];
-n41 [label="Identifier:sz"];
-n40 -> n41
-n37 -> n40
-n35 -> n37
-n30 -> n35
-n29 -> n30
+n33 -> n37
+n32 -> n33
+n40 [label="Method Body:"];
+n41 [label="Statement List:"];
 n42 [label="Assign:"];
-n43 [label="aux01:"];
+n43 [label="a:"];
 n42 -> n43
-n44 [label="Function Call:"];
-n45 [label="THIS:"];
-n44 -> n45
-n46 [label="Print:"];
-n44 -> n46
-n47 [label="Function Argument List:Empty"];
-n44 -> n47
+n44 [label="True:true"];
 n42 -> n44
-n29 -> n42
-n28 -> n29
-n48 [label="SYS_PRINTLN:"];
-n49 [label="Integer:9999"];
-n48 -> n49
-n28 -> n48
-n27 -> n28
-n50 [label="Assign:"];
-n51 [label="aux01:"];
-n50 -> n51
-n52 [label="MINUS:"];
-n53 [label="Identifier:size"];
-n52 -> n53
-n54 [label="Integer:1"];
-n52 -> n54
-n50 -> n52
-n27 -> n50
-n26 -> n27
-n55 [label="Assign:"];
-n56 [label="aux01:"];
-n55 -> n56
-n57 [label="Function Call:"];
-n58 [label="THIS:"];
-n57 -> n58
-n59 [label="Sort:"];
-n57 -> n59
-n60 [label="Function Call Expression:"];
-n61 [label="Function Call Expression:"];
-n62 [label="Integer:0"];
-n61 -> n62
-n60 -> n61
-n63 [label="Identifier:aux01"];
-n60 -> n63
-n57 -> n60
-n55 -> n57
-n26 -> n55
-n25 -> n26
-n64 [label="Assign:"];
-n65 [label="aux01:"];
-n64 -> n65
-n66 [label="Function Call:"];
-n67 [label="THIS:"];
-n66 -> n67
-n68 [label="Print:"];
-n66 -> n68
-n69 [label="Function Argument List:Empty"];
-n66 -> n69
-n64 -> n66
-n25 -> n64
-n20 -> n25
-n70 [label="Returns:Integer"];
-n20 -> n70
-n19 -> n20
-n71 [label="Method:Sort"];
-n72 [label="Parameter List:"];
-n73 [label="Parameter:"];
-n74 [label="Int:"];
-n73 -> n74
-n75 [label="left:"];
-n73 -> n75
-n72 -> n73
-n76 [label="Parameter:"];
-n77 [label="Int:"];
-n76 -> n77
-n78 [label="right:"];
-n76 -> n78
-n72 -> n76
-n71 -> n72
-n79 [label="Method Body:"];
-n80 [label="Method Body:"];
-n81 [label="Variable List:"];
-n82 [label="Variable:"];
-n83 [label="v:"];
-n82 -> n83
-n84 [label="Int:"];
-n82 -> n84
-n81 -> n82
-n85 [label="Variable:"];
-n86 [label="i:"];
-n85 -> n86
-n87 [label="Int:"];
-n85 -> n87
-n81 -> n85
-n88 [label="Variable:"];
-n89 [label="j:"];
-n88 -> n89
-n90 [label="Int:"];
-n88 -> n90
-n81 -> n88
-n91 [label="Variable:"];
-n92 [label="nt:"];
-n91 -> n92
-n93 [label="Int:"];
-n91 -> n93
-n81 -> n91
-n94 [label="Variable:"];
-n95 [label="t:"];
-n94 -> n95
-n96 [label="Int:"];
-n94 -> n96
-n81 -> n94
-n97 [label="Variable:"];
-n98 [label="cont01:"];
-n97 -> n98
-n99 [label="Bool:"];
-n97 -> n99
-n81 -> n97
-n100 [label="Variable:"];
-n101 [label="cont02:"];
-n100 -> n101
-n102 [label="Bool:"];
-n100 -> n102
-n81 -> n100
-n103 [label="Variable:"];
-n104 [label="aux03:"];
-n103 -> n104
-n105 [label="Int:"];
-n103 -> n105
-n81 -> n103
-n80 -> n81
-n106 [label="Assign:"];
-n107 [label="t:"];
-n106 -> n107
-n108 [label="Integer:0"];
-n106 -> n108
-n80 -> n106
-n79 -> n80
-n109 [label="IF:"];
-n110 [label="LESS THAN:"];
-n111 [label="Identifier:left"];
-n110 -> n111
-n112 [label="Identifier:right"];
-n110 -> n112
-n109 -> n110
-n113 [label="Statement List:"];
-n114 [label="Assign:"];
-n115 [label="v:"];
-n114 -> n115
-n116 [label="Indexing:"];
-n117 [label="Identifier:number"];
-n116 -> n117
-n118 [label="Identifier:right"];
-n116 -> n118
-n114 -> n116
-n113 -> n114
-n119 [label="Assign:"];
-n120 [label="i:"];
-n119 -> n120
-n121 [label="MINUS:"];
-n122 [label="Identifier:left"];
-n121 -> n122
-n123 [label="Integer:1"];
-n121 -> n123
-n119 -> n121
-n113 -> n119
-n124 [label="Assign:"];
-n125 [label="j:"];
-n124 -> n125
-n126 [label="Identifier:right"];
-n124 -> n126
-n113 -> n124
-n127 [label="Assign:"];
-n128 [label="cont01:"];
-n127 -> n128
-n129 [label="True:true"];
-n127 -> n129
-n113 -> n127
-n130 [label="While:"];
-n131 [label="Identifier:cont01"];
-n130 -> n131
-n132 [label="Statement List:"];
-n133 [label="Assign:"];
-n134 [label="cont02:"];
-n133 -> n134
-n135 [label="True:true"];
-n133 -> n135
-n132 -> n133
-n136 [label="While:"];
-n137 [label="Identifier:cont02"];
-n136 -> n137
-n138 [label="Statement List:"];
-n139 [label="Assign:"];
-n140 [label="i:"];
-n139 -> n140
-n141 [label="PLUS:"];
-n142 [label="Identifier:i"];
-n141 -> n142
-n143 [label="Integer:1"];
-n141 -> n143
-n139 -> n141
-n138 -> n139
-n144 [label="Assign:"];
-n145 [label="aux03:"];
-n144 -> n145
-n146 [label="Indexing:"];
-n147 [label="Identifier:number"];
-n146 -> n147
-n148 [label="Identifier:i"];
-n146 -> n148
-n144 -> n146
-n138 -> n144
-n149 [label="IF:"];
-n150 [label="Negate:"];
-n151 [label="Statement:"];
-n152 [label="LESS THAN:"];
-n153 [label="Identifier:aux03"];
-n152 -> n153
-n154 [label="Identifier:v"];
-n152 -> n154
-n151 -> n152
-n150 -> n151
-n149 -> n150
-n155 [label="Statement List:"];
-n156 [label="Assign:"];
-n157 [label="cont02:"];
-n156 -> n157
-n158 [label="False:false"];
-n156 -> n158
-n155 -> n156
-n149 -> n155
-n159 [label="ELSE:"];
-n160 [label="Statement List:"];
-n161 [label="Assign:"];
-n162 [label="cont02:"];
-n161 -> n162
-n163 [label="True:true"];
-n161 -> n163
-n160 -> n161
-n159 -> n160
-n149 -> n159
-n138 -> n149
-n136 -> n138
-n132 -> n136
-n164 [label="Assign:"];
-n165 [label="cont02:"];
-n164 -> n165
-n166 [label="True:true"];
-n164 -> n166
-n132 -> n164
-n167 [label="While:"];
-n168 [label="Identifier:cont02"];
-n167 -> n168
-n169 [label="Statement List:"];
-n170 [label="Assign:"];
-n171 [label="j:"];
-n170 -> n171
-n172 [label="MINUS:"];
-n173 [label="Identifier:j"];
-n172 -> n173
-n174 [label="Integer:1"];
-n172 -> n174
-n170 -> n172
-n169 -> n170
-n175 [label="Assign:"];
-n176 [label="aux03:"];
-n175 -> n176
-n177 [label="Indexing:"];
-n178 [label="Identifier:number"];
-n177 -> n178
-n179 [label="Identifier:j"];
-n177 -> n179
-n175 -> n177
-n169 -> n175
-n180 [label="IF:"];
-n181 [label="Negate:"];
-n182 [label="Statement:"];
-n183 [label="LESS THAN:"];
-n184 [label="Identifier:v"];
-n183 -> n184
-n185 [label="Identifier:aux03"];
-n183 -> n185
-n182 -> n183
-n181 -> n182
-n180 -> n181
-n186 [label="Statement List:"];
-n187 [label="Assign:"];
-n188 [label="cont02:"];
-n187 -> n188
-n189 [label="False:false"];
-n187 -> n189
-n186 -> n187
-n180 -> n186
-n190 [label="ELSE:"];
-n191 [label="Statement List:"];
-n192 [label="Assign:"];
-n193 [label="cont02:"];
-n192 -> n193
-n194 [label="True:true"];
-n192 -> n194
-n191 -> n192
-n190 -> n191
-n180 -> n190
-n169 -> n180
-n167 -> n169
-n132 -> n167
-n195 [label="Assign:"];
-n196 [label="t:"];
-n195 -> n196
-n197 [label="Indexing:"];
-n198 [label="Identifier:number"];
-n197 -> n198
-n199 [label="Identifier:i"];
-n197 -> n199
-n195 -> n197
-n132 -> n195
-n200 [label="Assign[]:"];
-n201 [label="number:"];
-n200 -> n201
-n202 [label="Identifier:i"];
-n200 -> n202
-n203 [label="Indexing:"];
-n204 [label="Identifier:number"];
-n203 -> n204
-n205 [label="Identifier:j"];
-n203 -> n205
-n200 -> n203
-n132 -> n200
-n206 [label="Assign[]:"];
-n207 [label="number:"];
-n206 -> n207
-n208 [label="Identifier:j"];
-n206 -> n208
-n209 [label="Identifier:t"];
-n206 -> n209
-n132 -> n206
-n210 [label="IF:"];
-n211 [label="LESS THAN:"];
-n212 [label="Identifier:j"];
-n211 -> n212
-n213 [label="Statement:"];
-n214 [label="PLUS:"];
-n215 [label="Identifier:i"];
-n214 -> n215
-n216 [label="Integer:1"];
-n214 -> n216
-n213 -> n214
-n211 -> n213
-n210 -> n211
-n217 [label="Statement List:"];
-n218 [label="Assign:"];
-n219 [label="cont01:"];
-n218 -> n219
-n220 [label="False:false"];
-n218 -> n220
-n217 -> n218
-n210 -> n217
-n221 [label="ELSE:"];
-n222 [label="Statement List:"];
-n223 [label="Assign:"];
-n224 [label="cont01:"];
-n223 -> n224
-n225 [label="True:true"];
-n223 -> n225
-n222 -> n223
-n221 -> n222
-n210 -> n221
-n132 -> n210
-n130 -> n132
-n113 -> n130
-n226 [label="Assign[]:"];
-n227 [label="number:"];
-n226 -> n227
-n228 [label="Identifier:j"];
-n226 -> n228
-n229 [label="Indexing:"];
-n230 [label="Identifier:number"];
-n229 -> n230
-n231 [label="Identifier:i"];
-n229 -> n231
-n226 -> n229
-n113 -> n226
-n232 [label="Assign[]:"];
-n233 [label="number:"];
-n232 -> n233
-n234 [label="Identifier:i"];
-n232 -> n234
-n235 [label="Indexing:"];
-n236 [label="Identifier:number"];
-n235 -> n236
-n237 [label="Identifier:right"];
-n235 -> n237
-n232 -> n235
-n113 -> n232
-n238 [label="Assign[]:"];
-n239 [label="number:"];
-n238 -> n239
-n240 [label="Identifier:right"];
-n238 -> n240
-n241 [label="Identifier:t"];
-n238 -> n241
-n113 -> n238
-n242 [label="Assign:"];
-n243 [label="nt:"];
-n242 -> n243
-n244 [label="Function Call:"];
-n245 [label="THIS:"];
-n244 -> n245
-n246 [label="Sort:"];
-n244 -> n246
-n247 [label="Function Call Expression:"];
-n248 [label="Function Call Expression:"];
-n249 [label="Identifier:left"];
-n248 -> n249
-n247 -> n248
-n250 [label="MINUS:"];
-n251 [label="Identifier:i"];
-n250 -> n251
-n252 [label="Integer:1"];
-n250 -> n252
-n247 -> n250
-n244 -> n247
-n242 -> n244
-n113 -> n242
-n253 [label="Assign:"];
-n254 [label="nt:"];
-n253 -> n254
-n255 [label="Function Call:"];
-n256 [label="THIS:"];
-n255 -> n256
-n257 [label="Sort:"];
-n255 -> n257
-n258 [label="Function Call Expression:"];
-n259 [label="Function Call Expression:"];
-n260 [label="PLUS:"];
-n261 [label="Identifier:i"];
-n260 -> n261
-n262 [label="Integer:1"];
-n260 -> n262
-n259 -> n260
-n258 -> n259
-n263 [label="Identifier:right"];
-n258 -> n263
-n255 -> n258
-n253 -> n255
-n113 -> n253
-n109 -> n113
-n264 [label="ELSE:"];
-n265 [label="Statement List:"];
-n266 [label="Assign:"];
-n267 [label="nt:"];
-n266 -> n267
-n268 [label="Integer:0"];
-n266 -> n268
-n265 -> n266
-n264 -> n265
-n109 -> n264
-n79 -> n109
-n71 -> n79
-n269 [label="Returns:Integer"];
-n71 -> n269
-n19 -> n71
-n270 [label="Method:Print"];
-n271 [label="Arguments:None"];
-n270 -> n271
-n272 [label="Method Body:"];
-n273 [label="Method Body:"];
-n274 [label="Variable List:"];
-n275 [label="Variable:"];
-n276 [label="j:"];
-n275 -> n276
-n277 [label="Int:"];
-n275 -> n277
-n274 -> n275
-n273 -> n274
-n278 [label="Assign:"];
-n279 [label="j:"];
-n278 -> n279
-n280 [label="Integer:0"];
-n278 -> n280
-n273 -> n278
-n272 -> n273
-n281 [label="While:"];
-n282 [label="LESS THAN:"];
-n283 [label="Identifier:j"];
-n282 -> n283
-n284 [label="Statement:"];
-n285 [label="Identifier:size"];
-n284 -> n285
-n282 -> n284
-n281 -> n282
-n286 [label="Statement List:"];
-n287 [label="SYS_PRINTLN:"];
-n288 [label="Indexing:"];
-n289 [label="Identifier:number"];
-n288 -> n289
-n290 [label="Identifier:j"];
-n288 -> n290
-n287 -> n288
-n286 -> n287
-n291 [label="Assign:"];
-n292 [label="j:"];
-n291 -> n292
-n293 [label="PLUS:"];
-n294 [label="Identifier:j"];
-n293 -> n294
-n295 [label="Integer:1"];
-n293 -> n295
-n291 -> n293
-n286 -> n291
-n281 -> n286
-n272 -> n281
-n270 -> n272
-n296 [label="Returns:Integer"];
-n270 -> n296
-n19 -> n270
-n297 [label="Method:Init"];
-n298 [label="Parameter List:"];
-n299 [label="Parameter:"];
-n300 [label="Int:"];
-n299 -> n300
-n301 [label="sz:"];
-n299 -> n301
-n298 -> n299
-n297 -> n298
-n302 [label="Statement List:"];
-n303 [label="Statement List:"];
-n304 [label="Assign:"];
-n305 [label="size:"];
-n304 -> n305
-n306 [label="Identifier:sz"];
-n304 -> n306
-n303 -> n304
-n307 [label="Assign:"];
-n308 [label="number:"];
-n307 -> n308
-n309 [label="new[]:int"];
-n310 [label="Identifier:sz"];
-n309 -> n310
-n307 -> n309
-n303 -> n307
-n311 [label="Assign[]:"];
-n312 [label="number:"];
-n311 -> n312
-n313 [label="Integer:0"];
-n311 -> n313
-n314 [label="Integer:20"];
-n311 -> n314
-n303 -> n311
-n315 [label="Assign[]:"];
-n316 [label="number:"];
-n315 -> n316
-n317 [label="Integer:1"];
-n315 -> n317
-n318 [label="Integer:7"];
-n315 -> n318
-n303 -> n315
-n319 [label="Assign[]:"];
-n320 [label="number:"];
-n319 -> n320
-n321 [label="Integer:2"];
-n319 -> n321
-n322 [label="Integer:12"];
-n319 -> n322
-n303 -> n319
-n323 [label="Assign[]:"];
-n324 [label="number:"];
-n323 -> n324
-n325 [label="Integer:3"];
-n323 -> n325
-n326 [label="Integer:18"];
-n323 -> n326
-n303 -> n323
-n327 [label="Assign[]:"];
-n328 [label="number:"];
-n327 -> n328
-n329 [label="Integer:4"];
-n327 -> n329
-n330 [label="Integer:2"];
-n327 -> n330
-n303 -> n327
-n331 [label="Assign[]:"];
-n332 [label="number:"];
-n331 -> n332
-n333 [label="Integer:5"];
-n331 -> n333
-n334 [label="Integer:11"];
-n331 -> n334
-n303 -> n331
-n335 [label="Assign[]:"];
-n336 [label="number:"];
-n335 -> n336
-n337 [label="Integer:6"];
-n335 -> n337
-n338 [label="Integer:6"];
-n335 -> n338
-n303 -> n335
-n339 [label="Assign[]:"];
-n340 [label="number:"];
-n339 -> n340
-n341 [label="Integer:7"];
-n339 -> n341
-n342 [label="Integer:9"];
-n339 -> n342
-n303 -> n339
-n343 [label="Assign[]:"];
-n344 [label="number:"];
-n343 -> n344
-n345 [label="Integer:8"];
-n343 -> n345
-n346 [label="Integer:19"];
-n343 -> n346
-n303 -> n343
-n347 [label="Assign[]:"];
-n348 [label="number:"];
-n347 -> n348
-n349 [label="Integer:9"];
-n347 -> n349
-n350 [label="Integer:5"];
-n347 -> n350
-n303 -> n347
-n302 -> n303
-n297 -> n302
-n351 [label="Returns:Integer"];
-n297 -> n351
-n19 -> n297
-n11 -> n19
+n41 -> n42
+n40 -> n41
+n32 -> n40
+n21 -> n32
+n13 -> n21
+n11 -> n13
 n10 -> n11
+n45 [label="Class:ClassTwo"];
+n10 -> n45
 n0 -> n10
 }
