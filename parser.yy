@@ -36,7 +36,9 @@
 
 %token AND OR EQ LT GT DOT NOT 
 
-%token LHKP RHKP LP RP
+%token LHKP RHKP LP RP LMP RMP 
+
+%token COMMA SEMICOLON 
 
 %left PLUSOP MINOP 
 %left MULOP  DIVOP
@@ -70,22 +72,19 @@ Goal                :   MainClass OptionalClassList {
                             $$->children.push_back($1);
                             $$->children.push_back($2);
                             root = $$;
-                            printf("r1 ");
                         }
                     |   MainClass {
                             $$ = new Node("Program", "");
                             $$->children.push_back($1);
                             root = $$;
-                            printf("r1 ");
                         }
                     ;
 
-MainClass           : CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP '{' Statement '}' '}' {
+MainClass           : CLASS Identifier LMP PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP LMP Statement RMP RMP {
                                                                     $$ = new Node("MainClass", $2->value);
                                                                     Node* n = new Node("Method", "Main");
                                                                     n->children.push_back($15);
                                                                     $$->children.push_back(n);
-                                                                    printf("r2 ");
                                                                 }
                     ;
 
@@ -95,7 +94,6 @@ OptionalClassList   : OptionalClassList ClassDeclaration {
                             }
                             $1->children.push_back($2);
                             $$ = $1;
-                            
                         }
                     | ClassDeclaration {
                             if(classes == NULL){
@@ -106,26 +104,22 @@ OptionalClassList   : OptionalClassList ClassDeclaration {
                         }
                     ;
 
-ClassDeclaration    : CLASS Identifier '{' ClassBody '}' {
+ClassDeclaration    : CLASS Identifier LMP ClassBody RMP {
                             $$ = new Node("Class", $2->value);
                             $$->children.push_back($4);
-                            printf("r5 ");
                         }
-                    | CLASS Identifier EXTENDS Identifier '{' ClassBody '}'{
+                    | CLASS Identifier EXTENDS Identifier LMP ClassBody RMP{
                             $$ = new Node("Class", $2->value);
 
                             $$->children.push_back(new Node("Class Extends", $4->value));
                             $$->children.push_back($6);
-                            printf("r6 ");
                         }
-                    |   CLASS Identifier '{' '}' {
+                    |   CLASS Identifier LMP RMP {
                             $$ = new Node("Class", $2->value);
-                            printf("r5 ");
                         }
-                    | CLASS Identifier EXTENDS Identifier '{' '}' {
+                    | CLASS Identifier EXTENDS Identifier LMP RMP {
                             $$ = new Node("Class", $2->value);
                             $$->children.push_back(new Node("Class Extends", $4->value));
-                            printf("r6 ");
                         }
                     ;
 
@@ -147,83 +141,70 @@ ClassBody           :   VarList {
 VarList             :   VarList VarDeclaration {
                             $1->children.push_back($2);
                             $$=$1;
-                            printf("r7.2 ");
                         }
                     |   VarDeclaration {
                             $$ = new Node("Variable List", "");
                             $$->children.push_back($1);
-                            printf("r7.1 ");
                         }
                     ;
 
-VarDeclaration      : Type Identifier ';' {
+VarDeclaration      : Type Identifier SEMICOLON {
                             $$ = new Node("Variable", "");
                             $$->children.push_back($2);
                             $$->children.push_back($1);
-                            printf("r8 ");
                         }
                     ;
 
 MethodList          :   MethodList MethodDeclaration {
                             $1->children.push_back($2);
                             $$=$1;
-                            printf("r8.1 ");
                         }
                     |   MethodDeclaration{
                             $$ = new Node("Method List", "");
                             $$->children.push_back($1);
-                            printf("r8.2 ");
                         }
                     ;
 
-MethodDeclaration   :   PUBLIC VOID Identifier LP MethodParameterList RP '{' MethodBodyDeclaration '}' {
+MethodDeclaration   :   PUBLIC VOID Identifier LP MethodParameterList RP LMP MethodBodyDeclaration RMP {
                             $$ = new Node("Method", $3->value);
                             $$->children.push_back($5);
                             $$->children.push_back($8);
-                            printf("r9.2 ");
                         }
-                    |   PUBLIC Type Identifier LP MethodParameterList RP '{' MethodBodyDeclaration RETURN Expression ';' '}' {
+                    |   PUBLIC Type Identifier LP MethodParameterList RP LMP MethodBodyDeclaration RETURN Expression SEMICOLON RMP {
                             $$ = new Node("Method", $3->value);
                             $$->children.push_back($5);
                             $$->children.push_back($8);
                             $$->children.push_back(new Node("Returns", $10->value));
-                            printf("r9.3 ");
                         }
                     ;
 
 MethodBodyDeclaration       :   VarList StatementList {
                                     $1->children.push_back($2);
                                     $$=$1;
-                                    printf("r10 ");
                                 }
                             |   StatementList {
                                     $$ = new Node("Method Body", "");
                                     $$->children.push_back($1);
-                                    printf("r11 ");
                                 }
                             |   VarList {
                                     $$ = new Node("Method Body", "");
                                     $$->children.push_back($1);
-                                    printf("r12 ");
                                 }
                             |   %empty {
                                     $$ = new Node("Method Body", "Empty");
                                 }
                             ;
 
-MethodParameterList :  MethodParameterList ',' MethodParameterDecl{
+MethodParameterList :  MethodParameterList COMMA MethodParameterDecl{
                             $1->children.push_back($3);
                             $$=$1;
-                            printf("r16 ");
                         }
                     |   MethodParameterDecl {
                             $$ = new Node("Parameter List", "");
                             $$->children.push_back($1);
-                            printf("r16.1 ");
                         }
                     |   %empty {
                             $$ = new Node("Arguments", "None");
-                            printf("r16.2 ");
                         }
                     ;
 
@@ -231,21 +212,17 @@ MethodParameterDecl :   Type Identifier{
                             $$ = new Node("Parameter", "");
                             $$->children.push_back($1);
                             $$->children.push_back($2);
-                            printf("r16 ");
                         }
                     ;
 
 Type                :   T_Int {
                                 $$ = new Node("Int", "");
-                                printf("r22 ");
                             }
                     |   T_Int LHKP RHKP {
                                 $$ = new Node("Int[]", "");
-                                printf("r23 ");
                             }
                     |   T_Bool {
                                 $$ = new Node("Bool", "");
-                                printf("r24 ");
                             }
                     |   Identifier {
                             $$ = $1;
@@ -255,12 +232,10 @@ Type                :   T_Int {
 StatementList       :   StatementList Statement {
                             $1->children.push_back($2);
                             $$=$1;
-                            printf("r25 ");
                         }
                     |   Statement  {
                             $$ = new Node("Statement List", "");
                             $$->children.push_back($1);
-                            printf("r25.1 ");
                         }
                     ;
 
@@ -269,168 +244,138 @@ Statement           :   IF LP Expression RP Statement ELSE Statement {
                                 $$->children.push_back($3);
                                 $$->children.push_back($5);
                                 $$->children.push_back($7);
-                                printf("r29 ");
                             }
-                    |   '{' StatementList '}' {
+                    |   LMP StatementList RMP {
                             $$ = $2;
                         }
-                    |   WHILE LP Expression RP '{' StatementList '}' {
+                    |   WHILE LP Expression RP LMP StatementList RMP {
                                 $$ = new Node("While", "");
                                 $$->children.push_back($3);
                                 $$->children.push_back($6);
-                                printf("r30 ");
                             }
-                    |   SYS_PRINTLN LP Expression RP ';' {
+                    |   SYS_PRINTLN LP Expression RP SEMICOLON {
                                 $$ = new Node("SYS_PRINTLN", "");
                                 $$->children.push_back($3);
-                                printf("r31 ");
                             }
-                    |   Identifier ASSIGN_OP Expression ';' { 
+                    |   Identifier ASSIGN_OP Expression SEMICOLON { 
                                 $$ = new Node("Assign", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($3);
-                                printf("r32 ");
                             }
-                    |   Identifier LHKP Expression RHKP ASSIGN_OP Expression ';' {
+                    |   Identifier LHKP Expression RHKP ASSIGN_OP Expression SEMICOLON {
                                 $$ = new Node("Assign[]", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($3);
                                 $$->children.push_back($6);
-                                printf("r33 ");
                             }
-                    |   Expression ';'
+                    |   Expression SEMICOLON
                     ;
 
 Expression          : Expression AND Expression {
                                 $$ = new Node("AND", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($3);
-                                printf("r34 ");
                             }
                     | Expression OR Expression {
                                 $$ = new Node("OR", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($3);
-                                printf("r35 ");
                             }
                     | Expression LT Expression {
                                 $$ = new Node("LESS THAN", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($3);
-                                printf("r36 ");
                             }
                     | Expression GT Expression {
                                 $$ = new Node("GREATER THAN", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($3);
-                                printf("r37 ");
                             }
                     | Expression EQ Expression {
                                 $$ = new Node("EQUALS", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($3);
-                                printf("r38 ");
                             }
                     | Expression PLUSOP Expression {
                                 $$ = new Node("PLUS", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($3);
-                                printf("r39 ");
                             }
                     | Expression MINOP Expression {
                                 $$ = new Node("MINUS", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($3);
-                                printf("r40 ");
                             }
                     | Expression MULOP Expression {
                                 $$ = new Node("MULT", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($3);
-                                printf("r41 ");
                             }
                     | Expression DIVOP Expression {
                                 $$ = new Node("DIV", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($3);
-                                printf("r42 ");
                             }
                     | Expression LHKP Expression RHKP {
                                 $$ = new Node("Indexing", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($3);
-                                printf("r42 ");
                             }
                     | Expression DOT LENGTH {
                                 $$ = new Node("Length Of", "");
                                 $$->children.push_back($1);
-                                printf("r43 ");
                             }
                     | Expression DOT Identifier LP FunctionArgumentList RP{
                                 $$ = new Node("Function Call", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($3);
                                 $$->children.push_back($5);
-                                printf("r44 ");
                             }
                     | NEW T_Int LHKP Expression RHKP{
                                 $$ = new Node("new[]", $2);
                                 $$->children.push_back($4);
-                                printf("r50 ");
                             }
                     | NEW Identifier LP RP{
                                 $$ = new Node("new()", "");
                                 $$->children.push_back($2);
-                                printf("r51 ");
                             }
                     | NOT Expression {
                                 $$ = new Node("Negate", "");
                                 $$->children.push_back($2);
-                                printf("r52 ");
                             }
                     | LP Expression RP{
                                 $$ = new Node("Statement", "");
                                 $$->children.push_back($2);
-                                printf("r53 ");
                             }
                     | Identifier {
                                 $$ = new Node("Identifier", $1->value);
-                                printf("r48 ");
                             }
                     | INTEGER_LITERAL{
                                 $$ = new Node("Integer", $1);
-                                printf("r45 ");
                             }
                     | T_True{
                                 $$ = new Node("True", $1);
-                                printf("r46 ");
                             }
                     | T_False {
                                 $$ = new Node("False", $1);
-                                printf("r47 ");
                             }
                     | THIS {
                                 $$ = new Node("THIS", "");
-                                printf("r49 ");
                             }
                     ;
 
-FunctionArgumentList : FunctionArgumentList ',' Expression {
+FunctionArgumentList : FunctionArgumentList COMMA Expression {
                                 $1->children.push_back($3);
                                 $$=$1;
-                                printf("r54 ");
                             }
                         | Expression{
                                 $$ = new Node("Function Arguments", "");
                                 $$->children.push_back($1);
-                                printf("r55 ");
                             }
                         |   %empty {
                                 $$ = new Node("Function Argument List", "Empty");
                             }
                         ;
-                        
 Identifier          : IDENTIFIER {
                                 $$ = new Node("Identifier", $1);
-                                printf("r56 ");
                             }

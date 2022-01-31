@@ -23,10 +23,7 @@ int main(int argc, char **argv)
     }
 
     yy::parser parser;
-      
-    printf("Parsing...\n");
     if(!parser.parse()) {
-        printf("Parsed\n");
         root->print_tree();
         root->generate_tree();
     }
