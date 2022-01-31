@@ -82,7 +82,7 @@ Goal                : MainClass OptionalClassList {
                     ;
 
 MainClass           : CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP '{' Statement '}' '}' {
-                                                                    $$ = new Node("MainClass", $2->type);
+                                                                    $$ = new Node("MainClass", $2->value);
                                                                     Node* n = new Node("Method", "Main");
                                                                     n->children.push_back($15);
                                                                     $$->children.push_back(n);
@@ -108,24 +108,24 @@ OptionalClassList   : OptionalClassList ClassDeclaration {
                     ;
 
 ClassDeclaration    : CLASS Identifier '{' ClassBody '}' {
-                            $$ = new Node("Class", $2->type);
+                            $$ = new Node("Class", $2->value);
                             $$->children.push_back($4);
                             printf("r5 ");
                         }
                     | CLASS Identifier EXTENDS Identifier '{' ClassBody '}'{
-                            $$ = new Node("Class", $2->type);
+                            $$ = new Node("Class", $2->value);
 
-                            $$->children.push_back(new Node("Class Extends", $4->type));
+                            $$->children.push_back(new Node("Class Extends", $4->value));
                             $$->children.push_back($6);
                             printf("r6 ");
                         }
                     |   CLASS Identifier '{' '}' {
-                            $$ = new Node("Class", $2->type);
+                            $$ = new Node("Class", $2->value);
                             printf("r5 ");
                         }
                     | CLASS Identifier EXTENDS Identifier '{' '}' {
-                            $$ = new Node("Class", $2->type);
-                            $$->children.push_back(new Node("Class Extends", $4->type));
+                            $$ = new Node("Class", $2->value);
+                            $$->children.push_back(new Node("Class Extends", $4->value));
                             printf("r6 ");
                         }
                     ;
@@ -178,16 +178,16 @@ MethodList          :   MethodList MethodDeclaration {
                     ;
 
 MethodDeclaration   :   PUBLIC VOID Identifier LP MethodParameterList RP '{' MethodBodyDeclaration '}' {
-                            $$ = new Node("Method", $3->type);
+                            $$ = new Node("Method", $3->value);
                             $$->children.push_back($5);
                             $$->children.push_back($8);
                             printf("r9.2 ");
                         }
                     |   PUBLIC Type Identifier LP MethodParameterList RP '{' MethodBodyDeclaration RETURN Expression ';' '}' {
-                            $$ = new Node("Method", $3->type);
+                            $$ = new Node("Method", $3->value);
                             $$->children.push_back($5);
                             $$->children.push_back($8);
-                            $$->children.push_back(new Node("Returns", $10->type));
+                            $$->children.push_back(new Node("Returns", $10->value));
                             printf("r9.3 ");
                         }
                     ;
@@ -395,7 +395,7 @@ Expression          : Expression AND Expression {
                                 printf("r53 ");
                             }
                     | Identifier {
-                                $$ = new Node("Identifier", $1->type);
+                                $$ = new Node("Identifier", $1->value);
                                 printf("r48 ");
                             }
                     | INTEGER_LITERAL{
@@ -432,6 +432,6 @@ FunctionArgumentList : FunctionArgumentList ',' Expression {
                         ;
                         
 Identifier          : IDENTIFIER {
-                                $$ = new Node($1, "");
+                                $$ = new Node("Identifier", $1);
                                 printf("r56 ");
                             }

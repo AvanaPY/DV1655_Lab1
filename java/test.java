@@ -19,4 +19,9 @@ class Abcyeee extends Abc{
 }
 
 class ClassTwo {
+   int value;
+   public void function(boolean v){
+      value = 5;
+      System.out.println(this.value());
+   }
 }
