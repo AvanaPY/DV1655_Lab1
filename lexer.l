@@ -2,6 +2,7 @@
     #include "parser.tab.hh"
     #define YY_DECL yy::parser::symbol_type yylex()
     #include "Node.h"
+    extern int lineno;
 }
 
 %option noyywrap nounput batch noinput
