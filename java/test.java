@@ -19,9 +19,13 @@ class Abcyeee extends Abc{
 }
 
 class ClassTwo {
-   int value;
+   int[] value;
    public void function(boolean v){
-      value = 5;
-      System.out.println(this.value());
+      if(a == b){
+         a = b;
+         b = a;
+         c = d;
+      } else
+         a = b;
    }
 }
