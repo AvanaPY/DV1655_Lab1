@@ -9,15 +9,15 @@ Grammar
     1 Goal: MainClass OptionalClassList
     2     | MainClass
 
-    3 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP '{' Statement '}' '}'
+    3 MainClass: CLASS Identifier LMP PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP LMP Statement RMP RMP
 
     4 OptionalClassList: OptionalClassList ClassDeclaration
     5                  | ClassDeclaration
 
-    6 ClassDeclaration: CLASS Identifier '{' ClassBody '}'
-    7                 | CLASS Identifier EXTENDS Identifier '{' ClassBody '}'
-    8                 | CLASS Identifier '{' '}'
-    9                 | CLASS Identifier EXTENDS Identifier '{' '}'
+    6 ClassDeclaration: CLASS Identifier LMP ClassBody RMP
+    7                 | CLASS Identifier EXTENDS Identifier LMP ClassBody RMP
+    8                 | CLASS Identifier LMP RMP
+    9                 | CLASS Identifier EXTENDS Identifier LMP RMP
 
    10 ClassBody: VarList
    11          | MethodList
@@ -26,20 +26,20 @@ Grammar
    13 VarList: VarList VarDeclaration
    14        | VarDeclaration
 
-   15 VarDeclaration: Type Identifier ';'
+   15 VarDeclaration: Type Identifier SEMICOLON
 
    16 MethodList: MethodList MethodDeclaration
    17           | MethodDeclaration
 
-   18 MethodDeclaration: PUBLIC VOID Identifier LP MethodParameterList RP '{' MethodBodyDeclaration '}'
-   19                  | PUBLIC Type Identifier LP MethodParameterList RP '{' MethodBodyDeclaration RETURN Expression ';' '}'
+   18 MethodDeclaration: PUBLIC VOID Identifier LP MethodParameterList RP LMP MethodBodyDeclaration RMP
+   19                  | PUBLIC Type Identifier LP MethodParameterList RP LMP MethodBodyDeclaration RETURN Expression SEMICOLON RMP
 
    20 MethodBodyDeclaration: VarList StatementList
    21                      | StatementList
    22                      | VarList
    23                      | %empty
 
-   24 MethodParameterList: MethodParameterList ',' MethodParameterDecl
+   24 MethodParameterList: MethodParameterList COMMA MethodParameterDecl
    25                    | MethodParameterDecl
    26                    | %empty
 
@@ -54,12 +54,12 @@ Grammar
    33              | Statement
 
    34 Statement: IF LP Expression RP Statement ELSE Statement
-   35          | '{' StatementList '}'
-   36          | WHILE LP Expression RP '{' StatementList '}'
-   37          | SYS_PRINTLN LP Expression RP ';'
-   38          | Identifier ASSIGN_OP Expression ';'
-   39          | Identifier LHKP Expression RHKP ASSIGN_OP Expression ';'
-   40          | Expression ';'
+   35          | LMP StatementList RMP
+   36          | WHILE LP Expression RP LMP StatementList RMP
+   37          | SYS_PRINTLN LP Expression RP SEMICOLON
+   38          | Identifier ASSIGN_OP Expression SEMICOLON
+   39          | Identifier LHKP Expression RHKP ASSIGN_OP Expression SEMICOLON
+   40          | Expression SEMICOLON
 
    41 Expression: Expression AND Expression
    42           | Expression OR Expression
@@ -83,7 +83,7 @@ Grammar
    60           | T_False
    61           | THIS
 
-   62 FunctionArgumentList: FunctionArgumentList ',' Expression
+   62 FunctionArgumentList: FunctionArgumentList COMMA Expression
    63                     | Expression
    64                     | %empty
 
@@ -93,10 +93,6 @@ Grammar
 Terminals, with rules where they appear
 
     $end (0) 0
-    ',' (44) 24 62
-    ';' (59) 15 19 37 38 39 40
-    '{' (123) 3 6 7 8 9 18 19 35 36
-    '}' (125) 3 6 7 8 9 18 19 35 36
     error (256)
     INTEGER_LITERAL <std::string> (258) 58
     IDENTIFIER <std::string> (259) 65
@@ -135,6 +131,10 @@ Terminals, with rules where they appear
     RHKP (292) 3 29 39 50 53
     LP (293) 3 18 19 34 36 37 52 54 56
     RP (294) 3 18 19 34 36 37 52 54 56
+    LMP (295) 3 6 7 8 9 18 19 35 36
+    RMP (296) 3 6 7 8 9 18 19 35 36
+    COMMA (297) 24 62
+    SEMICOLON (298) 15 19 37 38 39 40
 
 
 Nonterminals, with rules where they appear
@@ -209,7 +209,7 @@ State 0
 
 State 1
 
-    3 MainClass: CLASS . Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP '{' Statement '}' '}'
+    3 MainClass: CLASS . Identifier LMP PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP LMP Statement RMP RMP
 
     IDENTIFIER  shift, and go to state 4
 
@@ -245,9 +245,9 @@ State 4
 
 State 5
 
-    3 MainClass: CLASS Identifier . '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP '{' Statement '}' '}'
+    3 MainClass: CLASS Identifier . LMP PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP LMP Statement RMP RMP
 
-    '{'  shift, and go to state 10
+    LMP  shift, and go to state 10
 
 
 State 6
@@ -259,10 +259,10 @@ State 6
 
 State 7
 
-    6 ClassDeclaration: CLASS . Identifier '{' ClassBody '}'
-    7                 | CLASS . Identifier EXTENDS Identifier '{' ClassBody '}'
-    8                 | CLASS . Identifier '{' '}'
-    9                 | CLASS . Identifier EXTENDS Identifier '{' '}'
+    6 ClassDeclaration: CLASS . Identifier LMP ClassBody RMP
+    7                 | CLASS . Identifier EXTENDS Identifier LMP ClassBody RMP
+    8                 | CLASS . Identifier LMP RMP
+    9                 | CLASS . Identifier EXTENDS Identifier LMP RMP
 
     IDENTIFIER  shift, and go to state 4
 
@@ -290,20 +290,20 @@ State 9
 
 State 10
 
-    3 MainClass: CLASS Identifier '{' . PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP '{' Statement '}' '}'
+    3 MainClass: CLASS Identifier LMP . PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP LMP Statement RMP RMP
 
     PUBLIC  shift, and go to state 13
 
 
 State 11
 
-    6 ClassDeclaration: CLASS Identifier . '{' ClassBody '}'
-    7                 | CLASS Identifier . EXTENDS Identifier '{' ClassBody '}'
-    8                 | CLASS Identifier . '{' '}'
-    9                 | CLASS Identifier . EXTENDS Identifier '{' '}'
+    6 ClassDeclaration: CLASS Identifier . LMP ClassBody RMP
+    7                 | CLASS Identifier . EXTENDS Identifier LMP ClassBody RMP
+    8                 | CLASS Identifier . LMP RMP
+    9                 | CLASS Identifier . EXTENDS Identifier LMP RMP
 
     EXTENDS  shift, and go to state 14
-    '{'      shift, and go to state 15
+    LMP      shift, and go to state 15
 
 
 State 12
@@ -315,15 +315,15 @@ State 12
 
 State 13
 
-    3 MainClass: CLASS Identifier '{' PUBLIC . STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP '{' Statement '}' '}'
+    3 MainClass: CLASS Identifier LMP PUBLIC . STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP LMP Statement RMP RMP
 
     STATIC  shift, and go to state 16
 
 
 State 14
 
-    7 ClassDeclaration: CLASS Identifier EXTENDS . Identifier '{' ClassBody '}'
-    9                 | CLASS Identifier EXTENDS . Identifier '{' '}'
+    7 ClassDeclaration: CLASS Identifier EXTENDS . Identifier LMP ClassBody RMP
+    9                 | CLASS Identifier EXTENDS . Identifier LMP RMP
 
     IDENTIFIER  shift, and go to state 4
 
@@ -332,14 +332,14 @@ State 14
 
 State 15
 
-    6 ClassDeclaration: CLASS Identifier '{' . ClassBody '}'
-    8                 | CLASS Identifier '{' . '}'
+    6 ClassDeclaration: CLASS Identifier LMP . ClassBody RMP
+    8                 | CLASS Identifier LMP . RMP
 
     IDENTIFIER  shift, and go to state 4
     PUBLIC      shift, and go to state 18
     T_Int       shift, and go to state 19
     T_Bool      shift, and go to state 20
-    '}'         shift, and go to state 21
+    RMP         shift, and go to state 21
 
     ClassBody          go to state 22
     VarList            go to state 23
@@ -352,23 +352,23 @@ State 15
 
 State 16
 
-    3 MainClass: CLASS Identifier '{' PUBLIC STATIC . VOID MAIN LP STRING LHKP RHKP Identifier RP '{' Statement '}' '}'
+    3 MainClass: CLASS Identifier LMP PUBLIC STATIC . VOID MAIN LP STRING LHKP RHKP Identifier RP LMP Statement RMP RMP
 
     VOID  shift, and go to state 29
 
 
 State 17
 
-    7 ClassDeclaration: CLASS Identifier EXTENDS Identifier . '{' ClassBody '}'
-    9                 | CLASS Identifier EXTENDS Identifier . '{' '}'
+    7 ClassDeclaration: CLASS Identifier EXTENDS Identifier . LMP ClassBody RMP
+    9                 | CLASS Identifier EXTENDS Identifier . LMP RMP
 
-    '{'  shift, and go to state 30
+    LMP  shift, and go to state 30
 
 
 State 18
 
-   18 MethodDeclaration: PUBLIC . VOID Identifier LP MethodParameterList RP '{' MethodBodyDeclaration '}'
-   19                  | PUBLIC . Type Identifier LP MethodParameterList RP '{' MethodBodyDeclaration RETURN Expression ';' '}'
+   18 MethodDeclaration: PUBLIC . VOID Identifier LP MethodParameterList RP LMP MethodBodyDeclaration RMP
+   19                  | PUBLIC . Type Identifier LP MethodParameterList RP LMP MethodBodyDeclaration RETURN Expression SEMICOLON RMP
 
     IDENTIFIER  shift, and go to state 4
     VOID        shift, and go to state 31
@@ -398,16 +398,16 @@ State 20
 
 State 21
 
-    8 ClassDeclaration: CLASS Identifier '{' '}' .
+    8 ClassDeclaration: CLASS Identifier LMP RMP .
 
     $default  reduce using rule 8 (ClassDeclaration)
 
 
 State 22
 
-    6 ClassDeclaration: CLASS Identifier '{' ClassBody . '}'
+    6 ClassDeclaration: CLASS Identifier LMP ClassBody . RMP
 
-    '}'  shift, and go to state 34
+    RMP  shift, and go to state 34
 
 
 State 23
@@ -458,7 +458,7 @@ State 26
 
 State 27
 
-   15 VarDeclaration: Type . Identifier ';'
+   15 VarDeclaration: Type . Identifier SEMICOLON
 
     IDENTIFIER  shift, and go to state 4
 
@@ -474,21 +474,21 @@ State 28
 
 State 29
 
-    3 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID . MAIN LP STRING LHKP RHKP Identifier RP '{' Statement '}' '}'
+    3 MainClass: CLASS Identifier LMP PUBLIC STATIC VOID . MAIN LP STRING LHKP RHKP Identifier RP LMP Statement RMP RMP
 
     MAIN  shift, and go to state 39
 
 
 State 30
 
-    7 ClassDeclaration: CLASS Identifier EXTENDS Identifier '{' . ClassBody '}'
-    9                 | CLASS Identifier EXTENDS Identifier '{' . '}'
+    7 ClassDeclaration: CLASS Identifier EXTENDS Identifier LMP . ClassBody RMP
+    9                 | CLASS Identifier EXTENDS Identifier LMP . RMP
 
     IDENTIFIER  shift, and go to state 4
     PUBLIC      shift, and go to state 18
     T_Int       shift, and go to state 19
     T_Bool      shift, and go to state 20
-    '}'         shift, and go to state 40
+    RMP         shift, and go to state 40
 
     ClassBody          go to state 41
     VarList            go to state 23
@@ -501,7 +501,7 @@ State 30
 
 State 31
 
-   18 MethodDeclaration: PUBLIC VOID . Identifier LP MethodParameterList RP '{' MethodBodyDeclaration '}'
+   18 MethodDeclaration: PUBLIC VOID . Identifier LP MethodParameterList RP LMP MethodBodyDeclaration RMP
 
     IDENTIFIER  shift, and go to state 4
 
@@ -510,7 +510,7 @@ State 31
 
 State 32
 
-   19 MethodDeclaration: PUBLIC Type . Identifier LP MethodParameterList RP '{' MethodBodyDeclaration RETURN Expression ';' '}'
+   19 MethodDeclaration: PUBLIC Type . Identifier LP MethodParameterList RP LMP MethodBodyDeclaration RETURN Expression SEMICOLON RMP
 
     IDENTIFIER  shift, and go to state 4
 
@@ -526,7 +526,7 @@ State 33
 
 State 34
 
-    6 ClassDeclaration: CLASS Identifier '{' ClassBody '}' .
+    6 ClassDeclaration: CLASS Identifier LMP ClassBody RMP .
 
     $default  reduce using rule 6 (ClassDeclaration)
 
@@ -559,42 +559,42 @@ State 37
 
 State 38
 
-   15 VarDeclaration: Type Identifier . ';'
+   15 VarDeclaration: Type Identifier . SEMICOLON
 
-    ';'  shift, and go to state 45
+    SEMICOLON  shift, and go to state 45
 
 
 State 39
 
-    3 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN . LP STRING LHKP RHKP Identifier RP '{' Statement '}' '}'
+    3 MainClass: CLASS Identifier LMP PUBLIC STATIC VOID MAIN . LP STRING LHKP RHKP Identifier RP LMP Statement RMP RMP
 
     LP  shift, and go to state 46
 
 
 State 40
 
-    9 ClassDeclaration: CLASS Identifier EXTENDS Identifier '{' '}' .
+    9 ClassDeclaration: CLASS Identifier EXTENDS Identifier LMP RMP .
 
     $default  reduce using rule 9 (ClassDeclaration)
 
 
 State 41
 
-    7 ClassDeclaration: CLASS Identifier EXTENDS Identifier '{' ClassBody . '}'
+    7 ClassDeclaration: CLASS Identifier EXTENDS Identifier LMP ClassBody . RMP
 
-    '}'  shift, and go to state 47
+    RMP  shift, and go to state 47
 
 
 State 42
 
-   18 MethodDeclaration: PUBLIC VOID Identifier . LP MethodParameterList RP '{' MethodBodyDeclaration '}'
+   18 MethodDeclaration: PUBLIC VOID Identifier . LP MethodParameterList RP LMP MethodBodyDeclaration RMP
 
     LP  shift, and go to state 48
 
 
 State 43
 
-   19 MethodDeclaration: PUBLIC Type Identifier . LP MethodParameterList RP '{' MethodBodyDeclaration RETURN Expression ';' '}'
+   19 MethodDeclaration: PUBLIC Type Identifier . LP MethodParameterList RP LMP MethodBodyDeclaration RETURN Expression SEMICOLON RMP
 
     LP  shift, and go to state 49
 
@@ -608,28 +608,28 @@ State 44
 
 State 45
 
-   15 VarDeclaration: Type Identifier ';' .
+   15 VarDeclaration: Type Identifier SEMICOLON .
 
     $default  reduce using rule 15 (VarDeclaration)
 
 
 State 46
 
-    3 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP . STRING LHKP RHKP Identifier RP '{' Statement '}' '}'
+    3 MainClass: CLASS Identifier LMP PUBLIC STATIC VOID MAIN LP . STRING LHKP RHKP Identifier RP LMP Statement RMP RMP
 
     STRING  shift, and go to state 50
 
 
 State 47
 
-    7 ClassDeclaration: CLASS Identifier EXTENDS Identifier '{' ClassBody '}' .
+    7 ClassDeclaration: CLASS Identifier EXTENDS Identifier LMP ClassBody RMP .
 
     $default  reduce using rule 7 (ClassDeclaration)
 
 
 State 48
 
-   18 MethodDeclaration: PUBLIC VOID Identifier LP . MethodParameterList RP '{' MethodBodyDeclaration '}'
+   18 MethodDeclaration: PUBLIC VOID Identifier LP . MethodParameterList RP LMP MethodBodyDeclaration RMP
 
     IDENTIFIER  shift, and go to state 4
     T_Int       shift, and go to state 19
@@ -645,7 +645,7 @@ State 48
 
 State 49
 
-   19 MethodDeclaration: PUBLIC Type Identifier LP . MethodParameterList RP '{' MethodBodyDeclaration RETURN Expression ';' '}'
+   19 MethodDeclaration: PUBLIC Type Identifier LP . MethodParameterList RP LMP MethodBodyDeclaration RETURN Expression SEMICOLON RMP
 
     IDENTIFIER  shift, and go to state 4
     T_Int       shift, and go to state 19
@@ -661,18 +661,18 @@ State 49
 
 State 50
 
-    3 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING . LHKP RHKP Identifier RP '{' Statement '}' '}'
+    3 MainClass: CLASS Identifier LMP PUBLIC STATIC VOID MAIN LP STRING . LHKP RHKP Identifier RP LMP Statement RMP RMP
 
     LHKP  shift, and go to state 55
 
 
 State 51
 
-   18 MethodDeclaration: PUBLIC VOID Identifier LP MethodParameterList . RP '{' MethodBodyDeclaration '}'
-   24 MethodParameterList: MethodParameterList . ',' MethodParameterDecl
+   18 MethodDeclaration: PUBLIC VOID Identifier LP MethodParameterList . RP LMP MethodBodyDeclaration RMP
+   24 MethodParameterList: MethodParameterList . COMMA MethodParameterDecl
 
-    RP   shift, and go to state 56
-    ','  shift, and go to state 57
+    RP     shift, and go to state 56
+    COMMA  shift, and go to state 57
 
 
 State 52
@@ -693,30 +693,30 @@ State 53
 
 State 54
 
-   19 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList . RP '{' MethodBodyDeclaration RETURN Expression ';' '}'
-   24 MethodParameterList: MethodParameterList . ',' MethodParameterDecl
+   19 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList . RP LMP MethodBodyDeclaration RETURN Expression SEMICOLON RMP
+   24 MethodParameterList: MethodParameterList . COMMA MethodParameterDecl
 
-    RP   shift, and go to state 59
-    ','  shift, and go to state 57
+    RP     shift, and go to state 59
+    COMMA  shift, and go to state 57
 
 
 State 55
 
-    3 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP . RHKP Identifier RP '{' Statement '}' '}'
+    3 MainClass: CLASS Identifier LMP PUBLIC STATIC VOID MAIN LP STRING LHKP . RHKP Identifier RP LMP Statement RMP RMP
 
     RHKP  shift, and go to state 60
 
 
 State 56
 
-   18 MethodDeclaration: PUBLIC VOID Identifier LP MethodParameterList RP . '{' MethodBodyDeclaration '}'
+   18 MethodDeclaration: PUBLIC VOID Identifier LP MethodParameterList RP . LMP MethodBodyDeclaration RMP
 
-    '{'  shift, and go to state 61
+    LMP  shift, and go to state 61
 
 
 State 57
 
-   24 MethodParameterList: MethodParameterList ',' . MethodParameterDecl
+   24 MethodParameterList: MethodParameterList COMMA . MethodParameterDecl
 
     IDENTIFIER  shift, and go to state 4
     T_Int       shift, and go to state 19
@@ -736,14 +736,14 @@ State 58
 
 State 59
 
-   19 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList RP . '{' MethodBodyDeclaration RETURN Expression ';' '}'
+   19 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList RP . LMP MethodBodyDeclaration RETURN Expression SEMICOLON RMP
 
-    '{'  shift, and go to state 63
+    LMP  shift, and go to state 63
 
 
 State 60
 
-    3 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP . Identifier RP '{' Statement '}' '}'
+    3 MainClass: CLASS Identifier LMP PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP . Identifier RP LMP Statement RMP RMP
 
     IDENTIFIER  shift, and go to state 4
 
@@ -752,7 +752,7 @@ State 60
 
 State 61
 
-   18 MethodDeclaration: PUBLIC VOID Identifier LP MethodParameterList RP '{' . MethodBodyDeclaration '}'
+   18 MethodDeclaration: PUBLIC VOID Identifier LP MethodParameterList RP LMP . MethodBodyDeclaration RMP
 
     INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
@@ -767,7 +767,7 @@ State 61
     NEW              shift, and go to state 72
     NOT              shift, and go to state 73
     LP               shift, and go to state 74
-    '{'              shift, and go to state 75
+    LMP              shift, and go to state 75
 
     $default  reduce using rule 23 (MethodBodyDeclaration)
 
@@ -783,14 +783,14 @@ State 61
 
 State 62
 
-   24 MethodParameterList: MethodParameterList ',' MethodParameterDecl .
+   24 MethodParameterList: MethodParameterList COMMA MethodParameterDecl .
 
     $default  reduce using rule 24 (MethodParameterList)
 
 
 State 63
 
-   19 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList RP '{' . MethodBodyDeclaration RETURN Expression ';' '}'
+   19 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList RP LMP . MethodBodyDeclaration RETURN Expression SEMICOLON RMP
 
     INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
@@ -805,7 +805,7 @@ State 63
     NEW              shift, and go to state 72
     NOT              shift, and go to state 73
     LP               shift, and go to state 74
-    '{'              shift, and go to state 75
+    LMP              shift, and go to state 75
 
     $default  reduce using rule 23 (MethodBodyDeclaration)
 
@@ -821,7 +821,7 @@ State 63
 
 State 64
 
-    3 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier . RP '{' Statement '}' '}'
+    3 MainClass: CLASS Identifier LMP PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier . RP LMP Statement RMP RMP
 
     RP  shift, and go to state 83
 
@@ -856,14 +856,14 @@ State 68
 
 State 69
 
-   36 Statement: WHILE . LP Expression RP '{' StatementList '}'
+   36 Statement: WHILE . LP Expression RP LMP StatementList RMP
 
     LP  shift, and go to state 85
 
 
 State 70
 
-   37 Statement: SYS_PRINTLN . LP Expression RP ';'
+   37 Statement: SYS_PRINTLN . LP Expression RP SEMICOLON
 
     LP  shift, and go to state 86
 
@@ -922,7 +922,7 @@ State 74
 
 State 75
 
-   35 Statement: '{' . StatementList '}'
+   35 Statement: LMP . StatementList RMP
 
     INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
@@ -935,7 +935,7 @@ State 75
     NEW              shift, and go to state 72
     NOT              shift, and go to state 73
     LP               shift, and go to state 74
-    '{'              shift, and go to state 75
+    LMP              shift, and go to state 75
 
     StatementList  go to state 92
     Statement      go to state 79
@@ -962,7 +962,7 @@ State 76
     NEW              shift, and go to state 72
     NOT              shift, and go to state 73
     LP               shift, and go to state 74
-    '{'              shift, and go to state 75
+    LMP              shift, and go to state 75
 
     $default  reduce using rule 22 (MethodBodyDeclaration)
 
@@ -976,9 +976,9 @@ State 76
 
 State 77
 
-   18 MethodDeclaration: PUBLIC VOID Identifier LP MethodParameterList RP '{' MethodBodyDeclaration . '}'
+   18 MethodDeclaration: PUBLIC VOID Identifier LP MethodParameterList RP LMP MethodBodyDeclaration . RMP
 
-    '}'  shift, and go to state 95
+    RMP  shift, and go to state 95
 
 
 State 78
@@ -997,7 +997,7 @@ State 78
     NEW              shift, and go to state 72
     NOT              shift, and go to state 73
     LP               shift, and go to state 74
-    '{'              shift, and go to state 75
+    LMP              shift, and go to state 75
 
     $default  reduce using rule 21 (MethodBodyDeclaration)
 
@@ -1015,7 +1015,7 @@ State 79
 
 State 80
 
-   40 Statement: Expression . ';'
+   40 Statement: Expression . SEMICOLON
    41 Expression: Expression . AND Expression
    42           | Expression . OR Expression
    43           | Expression . LT Expression
@@ -1029,25 +1029,25 @@ State 80
    51           | Expression . DOT LENGTH
    52           | Expression . DOT Identifier LP FunctionArgumentList RP
 
-    PLUSOP  shift, and go to state 97
-    MINOP   shift, and go to state 98
-    MULOP   shift, and go to state 99
-    DIVOP   shift, and go to state 100
-    AND     shift, and go to state 101
-    OR      shift, and go to state 102
-    EQ      shift, and go to state 103
-    LT      shift, and go to state 104
-    GT      shift, and go to state 105
-    DOT     shift, and go to state 106
-    LHKP    shift, and go to state 107
-    ';'     shift, and go to state 108
+    PLUSOP     shift, and go to state 97
+    MINOP      shift, and go to state 98
+    MULOP      shift, and go to state 99
+    DIVOP      shift, and go to state 100
+    AND        shift, and go to state 101
+    OR         shift, and go to state 102
+    EQ         shift, and go to state 103
+    LT         shift, and go to state 104
+    GT         shift, and go to state 105
+    DOT        shift, and go to state 106
+    LHKP       shift, and go to state 107
+    SEMICOLON  shift, and go to state 108
 
 
 State 81
 
    31 Type: Identifier .
-   38 Statement: Identifier . ASSIGN_OP Expression ';'
-   39          | Identifier . LHKP Expression RHKP ASSIGN_OP Expression ';'
+   38 Statement: Identifier . ASSIGN_OP Expression SEMICOLON
+   39          | Identifier . LHKP Expression RHKP ASSIGN_OP Expression SEMICOLON
    57 Expression: Identifier .
 
     ASSIGN_OP  shift, and go to state 109
@@ -1060,16 +1060,16 @@ State 81
 
 State 82
 
-   19 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList RP '{' MethodBodyDeclaration . RETURN Expression ';' '}'
+   19 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList RP LMP MethodBodyDeclaration . RETURN Expression SEMICOLON RMP
 
     RETURN  shift, and go to state 111
 
 
 State 83
 
-    3 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP . '{' Statement '}' '}'
+    3 MainClass: CLASS Identifier LMP PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP . LMP Statement RMP RMP
 
-    '{'  shift, and go to state 112
+    LMP  shift, and go to state 112
 
 
 State 84
@@ -1091,7 +1091,7 @@ State 84
 
 State 85
 
-   36 Statement: WHILE LP . Expression RP '{' StatementList '}'
+   36 Statement: WHILE LP . Expression RP LMP StatementList RMP
 
     INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
@@ -1108,7 +1108,7 @@ State 85
 
 State 86
 
-   37 Statement: SYS_PRINTLN LP . Expression RP ';'
+   37 Statement: SYS_PRINTLN LP . Expression RP SEMICOLON
 
     INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
@@ -1198,7 +1198,7 @@ State 91
 State 92
 
    32 StatementList: StatementList . Statement
-   35 Statement: '{' StatementList . '}'
+   35 Statement: LMP StatementList . RMP
 
     INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
@@ -1211,8 +1211,8 @@ State 92
     NEW              shift, and go to state 72
     NOT              shift, and go to state 73
     LP               shift, and go to state 74
-    '{'              shift, and go to state 75
-    '}'              shift, and go to state 119
+    LMP              shift, and go to state 75
+    RMP              shift, and go to state 119
 
     Statement   go to state 96
     Expression  go to state 80
@@ -1221,8 +1221,8 @@ State 92
 
 State 93
 
-   38 Statement: Identifier . ASSIGN_OP Expression ';'
-   39          | Identifier . LHKP Expression RHKP ASSIGN_OP Expression ';'
+   38 Statement: Identifier . ASSIGN_OP Expression SEMICOLON
+   39          | Identifier . LHKP Expression RHKP ASSIGN_OP Expression SEMICOLON
    57 Expression: Identifier .
 
     ASSIGN_OP  shift, and go to state 109
@@ -1248,7 +1248,7 @@ State 94
     NEW              shift, and go to state 72
     NOT              shift, and go to state 73
     LP               shift, and go to state 74
-    '{'              shift, and go to state 75
+    LMP              shift, and go to state 75
 
     $default  reduce using rule 20 (MethodBodyDeclaration)
 
@@ -1259,7 +1259,7 @@ State 94
 
 State 95
 
-   18 MethodDeclaration: PUBLIC VOID Identifier LP MethodParameterList RP '{' MethodBodyDeclaration '}' .
+   18 MethodDeclaration: PUBLIC VOID Identifier LP MethodParameterList RP LMP MethodBodyDeclaration RMP .
 
     $default  reduce using rule 18 (MethodDeclaration)
 
@@ -1454,14 +1454,14 @@ State 107
 
 State 108
 
-   40 Statement: Expression ';' .
+   40 Statement: Expression SEMICOLON .
 
     $default  reduce using rule 40 (Statement)
 
 
 State 109
 
-   38 Statement: Identifier ASSIGN_OP . Expression ';'
+   38 Statement: Identifier ASSIGN_OP . Expression SEMICOLON
 
     INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
@@ -1478,7 +1478,7 @@ State 109
 
 State 110
 
-   39 Statement: Identifier LHKP . Expression RHKP ASSIGN_OP Expression ';'
+   39 Statement: Identifier LHKP . Expression RHKP ASSIGN_OP Expression SEMICOLON
 
     INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
@@ -1495,7 +1495,7 @@ State 110
 
 State 111
 
-   19 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList RP '{' MethodBodyDeclaration RETURN . Expression ';' '}'
+   19 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList RP LMP MethodBodyDeclaration RETURN . Expression SEMICOLON RMP
 
     INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
@@ -1512,7 +1512,7 @@ State 111
 
 State 112
 
-    3 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP '{' . Statement '}' '}'
+    3 MainClass: CLASS Identifier LMP PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP LMP . Statement RMP RMP
 
     INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
@@ -1525,7 +1525,7 @@ State 112
     NEW              shift, and go to state 72
     NOT              shift, and go to state 73
     LP               shift, and go to state 74
-    '{'              shift, and go to state 75
+    LMP              shift, and go to state 75
 
     Statement   go to state 135
     Expression  go to state 80
@@ -1564,7 +1564,7 @@ State 113
 
 State 114
 
-   36 Statement: WHILE LP Expression . RP '{' StatementList '}'
+   36 Statement: WHILE LP Expression . RP LMP StatementList RMP
    41 Expression: Expression . AND Expression
    42           | Expression . OR Expression
    43           | Expression . LT Expression
@@ -1594,7 +1594,7 @@ State 114
 
 State 115
 
-   37 Statement: SYS_PRINTLN LP Expression . RP ';'
+   37 Statement: SYS_PRINTLN LP Expression . RP SEMICOLON
    41 Expression: Expression . AND Expression
    42           | Expression . OR Expression
    43           | Expression . LT Expression
@@ -1655,7 +1655,7 @@ State 118
 
 State 119
 
-   35 Statement: '{' StatementList '}' .
+   35 Statement: LMP StatementList RMP .
 
     $default  reduce using rule 35 (Statement)
 
@@ -1923,7 +1923,7 @@ State 131
 
 State 132
 
-   38 Statement: Identifier ASSIGN_OP Expression . ';'
+   38 Statement: Identifier ASSIGN_OP Expression . SEMICOLON
    41 Expression: Expression . AND Expression
    42           | Expression . OR Expression
    43           | Expression . LT Expression
@@ -1937,23 +1937,23 @@ State 132
    51           | Expression . DOT LENGTH
    52           | Expression . DOT Identifier LP FunctionArgumentList RP
 
-    PLUSOP  shift, and go to state 97
-    MINOP   shift, and go to state 98
-    MULOP   shift, and go to state 99
-    DIVOP   shift, and go to state 100
-    AND     shift, and go to state 101
-    OR      shift, and go to state 102
-    EQ      shift, and go to state 103
-    LT      shift, and go to state 104
-    GT      shift, and go to state 105
-    DOT     shift, and go to state 106
-    LHKP    shift, and go to state 107
-    ';'     shift, and go to state 143
+    PLUSOP     shift, and go to state 97
+    MINOP      shift, and go to state 98
+    MULOP      shift, and go to state 99
+    DIVOP      shift, and go to state 100
+    AND        shift, and go to state 101
+    OR         shift, and go to state 102
+    EQ         shift, and go to state 103
+    LT         shift, and go to state 104
+    GT         shift, and go to state 105
+    DOT        shift, and go to state 106
+    LHKP       shift, and go to state 107
+    SEMICOLON  shift, and go to state 143
 
 
 State 133
 
-   39 Statement: Identifier LHKP Expression . RHKP ASSIGN_OP Expression ';'
+   39 Statement: Identifier LHKP Expression . RHKP ASSIGN_OP Expression SEMICOLON
    41 Expression: Expression . AND Expression
    42           | Expression . OR Expression
    43           | Expression . LT Expression
@@ -1983,7 +1983,7 @@ State 133
 
 State 134
 
-   19 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList RP '{' MethodBodyDeclaration RETURN Expression . ';' '}'
+   19 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList RP LMP MethodBodyDeclaration RETURN Expression . SEMICOLON RMP
    41 Expression: Expression . AND Expression
    42           | Expression . OR Expression
    43           | Expression . LT Expression
@@ -1997,25 +1997,25 @@ State 134
    51           | Expression . DOT LENGTH
    52           | Expression . DOT Identifier LP FunctionArgumentList RP
 
-    PLUSOP  shift, and go to state 97
-    MINOP   shift, and go to state 98
-    MULOP   shift, and go to state 99
-    DIVOP   shift, and go to state 100
-    AND     shift, and go to state 101
-    OR      shift, and go to state 102
-    EQ      shift, and go to state 103
-    LT      shift, and go to state 104
-    GT      shift, and go to state 105
-    DOT     shift, and go to state 106
-    LHKP    shift, and go to state 107
-    ';'     shift, and go to state 145
+    PLUSOP     shift, and go to state 97
+    MINOP      shift, and go to state 98
+    MULOP      shift, and go to state 99
+    DIVOP      shift, and go to state 100
+    AND        shift, and go to state 101
+    OR         shift, and go to state 102
+    EQ         shift, and go to state 103
+    LT         shift, and go to state 104
+    GT         shift, and go to state 105
+    DOT        shift, and go to state 106
+    LHKP       shift, and go to state 107
+    SEMICOLON  shift, and go to state 145
 
 
 State 135
 
-    3 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP '{' Statement . '}' '}'
+    3 MainClass: CLASS Identifier LMP PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP LMP Statement . RMP RMP
 
-    '}'  shift, and go to state 146
+    RMP  shift, and go to state 146
 
 
 State 136
@@ -2033,7 +2033,7 @@ State 136
     NEW              shift, and go to state 72
     NOT              shift, and go to state 73
     LP               shift, and go to state 74
-    '{'              shift, and go to state 75
+    LMP              shift, and go to state 75
 
     Statement   go to state 147
     Expression  go to state 80
@@ -2042,16 +2042,16 @@ State 136
 
 State 137
 
-   36 Statement: WHILE LP Expression RP . '{' StatementList '}'
+   36 Statement: WHILE LP Expression RP . LMP StatementList RMP
 
-    '{'  shift, and go to state 148
+    LMP  shift, and go to state 148
 
 
 State 138
 
-   37 Statement: SYS_PRINTLN LP Expression RP . ';'
+   37 Statement: SYS_PRINTLN LP Expression RP . SEMICOLON
 
-    ';'  shift, and go to state 149
+    SEMICOLON  shift, and go to state 149
 
 
 State 139
@@ -2120,30 +2120,30 @@ State 142
 
 State 143
 
-   38 Statement: Identifier ASSIGN_OP Expression ';' .
+   38 Statement: Identifier ASSIGN_OP Expression SEMICOLON .
 
     $default  reduce using rule 38 (Statement)
 
 
 State 144
 
-   39 Statement: Identifier LHKP Expression RHKP . ASSIGN_OP Expression ';'
+   39 Statement: Identifier LHKP Expression RHKP . ASSIGN_OP Expression SEMICOLON
 
     ASSIGN_OP  shift, and go to state 153
 
 
 State 145
 
-   19 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList RP '{' MethodBodyDeclaration RETURN Expression ';' . '}'
+   19 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList RP LMP MethodBodyDeclaration RETURN Expression SEMICOLON . RMP
 
-    '}'  shift, and go to state 154
+    RMP  shift, and go to state 154
 
 
 State 146
 
-    3 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP '{' Statement '}' . '}'
+    3 MainClass: CLASS Identifier LMP PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP LMP Statement RMP . RMP
 
-    '}'  shift, and go to state 155
+    RMP  shift, and go to state 155
 
 
 State 147
@@ -2155,7 +2155,7 @@ State 147
 
 State 148
 
-   36 Statement: WHILE LP Expression RP '{' . StatementList '}'
+   36 Statement: WHILE LP Expression RP LMP . StatementList RMP
 
     INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
@@ -2168,7 +2168,7 @@ State 148
     NEW              shift, and go to state 72
     NOT              shift, and go to state 73
     LP               shift, and go to state 74
-    '{'              shift, and go to state 75
+    LMP              shift, and go to state 75
 
     StatementList  go to state 157
     Statement      go to state 79
@@ -2178,7 +2178,7 @@ State 148
 
 State 149
 
-   37 Statement: SYS_PRINTLN LP Expression RP ';' .
+   37 Statement: SYS_PRINTLN LP Expression RP SEMICOLON .
 
     $default  reduce using rule 37 (Statement)
 
@@ -2224,15 +2224,15 @@ State 151
 State 152
 
    52 Expression: Expression DOT Identifier LP FunctionArgumentList . RP
-   62 FunctionArgumentList: FunctionArgumentList . ',' Expression
+   62 FunctionArgumentList: FunctionArgumentList . COMMA Expression
 
-    RP   shift, and go to state 158
-    ','  shift, and go to state 159
+    RP     shift, and go to state 158
+    COMMA  shift, and go to state 159
 
 
 State 153
 
-   39 Statement: Identifier LHKP Expression RHKP ASSIGN_OP . Expression ';'
+   39 Statement: Identifier LHKP Expression RHKP ASSIGN_OP . Expression SEMICOLON
 
     INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
@@ -2249,14 +2249,14 @@ State 153
 
 State 154
 
-   19 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList RP '{' MethodBodyDeclaration RETURN Expression ';' '}' .
+   19 MethodDeclaration: PUBLIC Type Identifier LP MethodParameterList RP LMP MethodBodyDeclaration RETURN Expression SEMICOLON RMP .
 
     $default  reduce using rule 19 (MethodDeclaration)
 
 
 State 155
 
-    3 MainClass: CLASS Identifier '{' PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP '{' Statement '}' '}' .
+    3 MainClass: CLASS Identifier LMP PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP LMP Statement RMP RMP .
 
     $default  reduce using rule 3 (MainClass)
 
@@ -2276,7 +2276,7 @@ State 156
     NEW              shift, and go to state 72
     NOT              shift, and go to state 73
     LP               shift, and go to state 74
-    '{'              shift, and go to state 75
+    LMP              shift, and go to state 75
 
     Statement   go to state 161
     Expression  go to state 80
@@ -2286,7 +2286,7 @@ State 156
 State 157
 
    32 StatementList: StatementList . Statement
-   36 Statement: WHILE LP Expression RP '{' StatementList . '}'
+   36 Statement: WHILE LP Expression RP LMP StatementList . RMP
 
     INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
@@ -2299,8 +2299,8 @@ State 157
     NEW              shift, and go to state 72
     NOT              shift, and go to state 73
     LP               shift, and go to state 74
-    '{'              shift, and go to state 75
-    '}'              shift, and go to state 162
+    LMP              shift, and go to state 75
+    RMP              shift, and go to state 162
 
     Statement   go to state 96
     Expression  go to state 80
@@ -2316,7 +2316,7 @@ State 158
 
 State 159
 
-   62 FunctionArgumentList: FunctionArgumentList ',' . Expression
+   62 FunctionArgumentList: FunctionArgumentList COMMA . Expression
 
     INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
@@ -2333,7 +2333,7 @@ State 159
 
 State 160
 
-   39 Statement: Identifier LHKP Expression RHKP ASSIGN_OP Expression . ';'
+   39 Statement: Identifier LHKP Expression RHKP ASSIGN_OP Expression . SEMICOLON
    41 Expression: Expression . AND Expression
    42           | Expression . OR Expression
    43           | Expression . LT Expression
@@ -2347,18 +2347,18 @@ State 160
    51           | Expression . DOT LENGTH
    52           | Expression . DOT Identifier LP FunctionArgumentList RP
 
-    PLUSOP  shift, and go to state 97
-    MINOP   shift, and go to state 98
-    MULOP   shift, and go to state 99
-    DIVOP   shift, and go to state 100
-    AND     shift, and go to state 101
-    OR      shift, and go to state 102
-    EQ      shift, and go to state 103
-    LT      shift, and go to state 104
-    GT      shift, and go to state 105
-    DOT     shift, and go to state 106
-    LHKP    shift, and go to state 107
-    ';'     shift, and go to state 164
+    PLUSOP     shift, and go to state 97
+    MINOP      shift, and go to state 98
+    MULOP      shift, and go to state 99
+    DIVOP      shift, and go to state 100
+    AND        shift, and go to state 101
+    OR         shift, and go to state 102
+    EQ         shift, and go to state 103
+    LT         shift, and go to state 104
+    GT         shift, and go to state 105
+    DOT        shift, and go to state 106
+    LHKP       shift, and go to state 107
+    SEMICOLON  shift, and go to state 164
 
 
 State 161
@@ -2370,7 +2370,7 @@ State 161
 
 State 162
 
-   36 Statement: WHILE LP Expression RP '{' StatementList '}' .
+   36 Statement: WHILE LP Expression RP LMP StatementList RMP .
 
     $default  reduce using rule 36 (Statement)
 
@@ -2389,7 +2389,7 @@ State 163
    50           | Expression . LHKP Expression RHKP
    51           | Expression . DOT LENGTH
    52           | Expression . DOT Identifier LP FunctionArgumentList RP
-   62 FunctionArgumentList: FunctionArgumentList ',' Expression .
+   62 FunctionArgumentList: FunctionArgumentList COMMA Expression .
 
     PLUSOP  shift, and go to state 97
     MINOP   shift, and go to state 98
@@ -2408,6 +2408,6 @@ State 163
 
 State 164
 
-   39 Statement: Identifier LHKP Expression RHKP ASSIGN_OP Expression ';' .
+   39 Statement: Identifier LHKP Expression RHKP ASSIGN_OP Expression SEMICOLON .
 
     $default  reduce using rule 39 (Statement)

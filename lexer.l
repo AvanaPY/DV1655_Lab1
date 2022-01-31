@@ -40,7 +40,8 @@
 "="                 { return yy::parser::make_ASSIGN_OP(); }
 
 "."                 { return yy::parser::make_DOT(); }
-
+","                 { return yy::parser::make_COMMA(); }
+";"                 { return yy::parser::make_SEMICOLON(); }
 "&&"                { return yy::parser::make_AND(); }
 "||"                { return yy::parser::make_OR(); }
 "=="                { return yy::parser::make_EQ(); }
@@ -52,13 +53,14 @@
 ")"                 { return yy::parser::make_RP(); }
 "["                 { return yy::parser::make_LHKP(); }
 "]"                 { return yy::parser::make_RHKP(); }
+"{"                 { return yy::parser::make_LMP(); }
+"}"                 { return yy::parser::make_RMP(); }
 
-[\{\}\(\)\[\]\,\.\;] { return yytext[0]; }
 [ \t]+               {}
 \/\/.+               { }
 "\n"                 { lineno++;}
 [a-zA-Z_]+[0-9]*     { return yy::parser::make_IDENTIFIER(yytext); }
 0|[1-9][0-9]*        { return yy::parser::make_INTEGER_LITERAL(yytext); }
 
-.                   { return yytext[0]; }
+.                    { printf("\nLexical error: Unknown sign \"%s\"\n", yytext); }
 %%
