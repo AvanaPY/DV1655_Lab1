@@ -7,7 +7,7 @@ class Main {
 }
 
 class Abcyeee extends Abc{
-   int[] a;
+   int[] a = 5;
    int b;
    public void m(){
       int a;
@@ -15,17 +15,5 @@ class Abcyeee extends Abc{
    }
    public void p(int a, int b){
       a = true;
-   }
-}
-
-class ClassTwo {
-   int[] value;
-   public void function(boolean v){
-      if(a == b){
-         a = b;
-         b = a;
-         c = d;
-      } else
-         a = b;
    }
 }
