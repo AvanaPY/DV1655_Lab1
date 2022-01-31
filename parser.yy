@@ -239,19 +239,19 @@ StatementList       :   StatementList Statement {
                         }
                     ;
 
-Statement           :   IF LP Expression RP Statement ELSE Statement {
+Statement           :   LMP StatementList RMP {
+                                $$ = $2;
+                            }
+                    |   IF LP Expression RP Statement ELSE Statement {
                                 $$ = new Node("IF", "");
                                 $$->children.push_back($3);
                                 $$->children.push_back($5);
                                 $$->children.push_back($7);
                             }
-                    |   LMP StatementList RMP {
-                            $$ = $2;
-                        }
-                    |   WHILE LP Expression RP LMP StatementList RMP {
+                    |   WHILE LP Expression RP Statement {
                                 $$ = new Node("While", "");
                                 $$->children.push_back($3);
-                                $$->children.push_back($6);
+                                $$->children.push_back($5);
                             }
                     |   SYS_PRINTLN LP Expression RP SEMICOLON {
                                 $$ = new Node("SYS_PRINTLN", "");
