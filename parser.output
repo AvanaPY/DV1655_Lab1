@@ -55,7 +55,7 @@ Grammar
 
    34 Statement: IF LP Expression RP Statement ELSE Statement
    35          | LMP StatementList RMP
-   36          | WHILE LP Expression RP LMP StatementList RMP
+   36          | WHILE LP Expression RP Statement
    37          | SYS_PRINTLN LP Expression RP SEMICOLON
    38          | Identifier ASSIGN_OP Expression SEMICOLON
    39          | Identifier LHKP Expression RHKP ASSIGN_OP Expression SEMICOLON
@@ -131,8 +131,8 @@ Terminals, with rules where they appear
     RHKP (292) 3 29 39 50 53
     LP (293) 3 18 19 34 36 37 52 54 56
     RP (294) 3 18 19 34 36 37 52 54 56
-    LMP (295) 3 6 7 8 9 18 19 35 36
-    RMP (296) 3 6 7 8 9 18 19 35 36
+    LMP (295) 3 6 7 8 9 18 19 35
+    RMP (296) 3 6 7 8 9 18 19 35
     COMMA (297) 24 62
     SEMICOLON (298) 15 19 37 38 39 40
 
@@ -182,10 +182,10 @@ Nonterminals, with rules where they appear
         on right: 15 19 27
     StatementList <Node *> (58)
         on left: 32 33
-        on right: 20 21 32 35 36
+        on right: 20 21 32 35
     Statement <Node *> (59)
         on left: 34 35 36 37 38 39 40
-        on right: 3 32 33 34
+        on right: 3 32 33 34 36
     Expression <Node *> (60)
         on left: 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61
         on right: 19 34 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 55 56 62 63
@@ -856,7 +856,7 @@ State 68
 
 State 69
 
-   36 Statement: WHILE . LP Expression RP LMP StatementList RMP
+   36 Statement: WHILE . LP Expression RP Statement
 
     LP  shift, and go to state 85
 
@@ -1091,7 +1091,7 @@ State 84
 
 State 85
 
-   36 Statement: WHILE LP . Expression RP LMP StatementList RMP
+   36 Statement: WHILE LP . Expression RP Statement
 
     INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
@@ -1564,7 +1564,7 @@ State 113
 
 State 114
 
-   36 Statement: WHILE LP Expression . RP LMP StatementList RMP
+   36 Statement: WHILE LP Expression . RP Statement
    41 Expression: Expression . AND Expression
    42           | Expression . OR Expression
    43           | Expression . LT Expression
@@ -2042,9 +2042,24 @@ State 136
 
 State 137
 
-   36 Statement: WHILE LP Expression RP . LMP StatementList RMP
+   36 Statement: WHILE LP Expression RP . Statement
 
-    LMP  shift, and go to state 148
+    INTEGER_LITERAL  shift, and go to state 65
+    IDENTIFIER       shift, and go to state 4
+    T_True           shift, and go to state 66
+    T_False          shift, and go to state 67
+    IF               shift, and go to state 68
+    WHILE            shift, and go to state 69
+    SYS_PRINTLN      shift, and go to state 70
+    THIS             shift, and go to state 71
+    NEW              shift, and go to state 72
+    NOT              shift, and go to state 73
+    LP               shift, and go to state 74
+    LMP              shift, and go to state 75
+
+    Statement   go to state 148
+    Expression  go to state 80
+    Identifier  go to state 93
 
 
 State 138
@@ -2155,25 +2170,9 @@ State 147
 
 State 148
 
-   36 Statement: WHILE LP Expression RP LMP . StatementList RMP
+   36 Statement: WHILE LP Expression RP Statement .
 
-    INTEGER_LITERAL  shift, and go to state 65
-    IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 66
-    T_False          shift, and go to state 67
-    IF               shift, and go to state 68
-    WHILE            shift, and go to state 69
-    SYS_PRINTLN      shift, and go to state 70
-    THIS             shift, and go to state 71
-    NEW              shift, and go to state 72
-    NOT              shift, and go to state 73
-    LP               shift, and go to state 74
-    LMP              shift, and go to state 75
-
-    StatementList  go to state 157
-    Statement      go to state 79
-    Expression     go to state 80
-    Identifier     go to state 93
+    $default  reduce using rule 36 (Statement)
 
 
 State 149
@@ -2226,8 +2225,8 @@ State 152
    52 Expression: Expression DOT Identifier LP FunctionArgumentList . RP
    62 FunctionArgumentList: FunctionArgumentList . COMMA Expression
 
-    RP     shift, and go to state 158
-    COMMA  shift, and go to state 159
+    RP     shift, and go to state 157
+    COMMA  shift, and go to state 158
 
 
 State 153
@@ -2243,7 +2242,7 @@ State 153
     NOT              shift, and go to state 73
     LP               shift, and go to state 74
 
-    Expression  go to state 160
+    Expression  go to state 159
     Identifier  go to state 90
 
 
@@ -2278,43 +2277,19 @@ State 156
     LP               shift, and go to state 74
     LMP              shift, and go to state 75
 
-    Statement   go to state 161
+    Statement   go to state 160
     Expression  go to state 80
     Identifier  go to state 93
 
 
 State 157
 
-   32 StatementList: StatementList . Statement
-   36 Statement: WHILE LP Expression RP LMP StatementList . RMP
-
-    INTEGER_LITERAL  shift, and go to state 65
-    IDENTIFIER       shift, and go to state 4
-    T_True           shift, and go to state 66
-    T_False          shift, and go to state 67
-    IF               shift, and go to state 68
-    WHILE            shift, and go to state 69
-    SYS_PRINTLN      shift, and go to state 70
-    THIS             shift, and go to state 71
-    NEW              shift, and go to state 72
-    NOT              shift, and go to state 73
-    LP               shift, and go to state 74
-    LMP              shift, and go to state 75
-    RMP              shift, and go to state 162
-
-    Statement   go to state 96
-    Expression  go to state 80
-    Identifier  go to state 93
-
-
-State 158
-
    52 Expression: Expression DOT Identifier LP FunctionArgumentList RP .
 
     $default  reduce using rule 52 (Expression)
 
 
-State 159
+State 158
 
    62 FunctionArgumentList: FunctionArgumentList COMMA . Expression
 
@@ -2327,11 +2302,11 @@ State 159
     NOT              shift, and go to state 73
     LP               shift, and go to state 74
 
-    Expression  go to state 163
+    Expression  go to state 161
     Identifier  go to state 90
 
 
-State 160
+State 159
 
    39 Statement: Identifier LHKP Expression RHKP ASSIGN_OP Expression . SEMICOLON
    41 Expression: Expression . AND Expression
@@ -2358,24 +2333,17 @@ State 160
     GT         shift, and go to state 105
     DOT        shift, and go to state 106
     LHKP       shift, and go to state 107
-    SEMICOLON  shift, and go to state 164
+    SEMICOLON  shift, and go to state 162
 
 
-State 161
+State 160
 
    34 Statement: IF LP Expression RP Statement ELSE Statement .
 
     $default  reduce using rule 34 (Statement)
 
 
-State 162
-
-   36 Statement: WHILE LP Expression RP LMP StatementList RMP .
-
-    $default  reduce using rule 36 (Statement)
-
-
-State 163
+State 161
 
    41 Expression: Expression . AND Expression
    42           | Expression . OR Expression
@@ -2406,7 +2374,7 @@ State 163
     $default  reduce using rule 62 (FunctionArgumentList)
 
 
-State 164
+State 162
 
    39 Statement: Identifier LHKP Expression RHKP ASSIGN_OP Expression SEMICOLON .
 
