@@ -1078,7 +1078,7 @@ YY_RULE_SETUP
 case 45:
 YY_RULE_SETUP
 #line 65 "lexer.l"
-{ printf("Lexical error: Unknown sign \"%s\"\n", yytext); }
+{ printf("Lexical error: Unknown character \"%s\"\n", yytext); }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP

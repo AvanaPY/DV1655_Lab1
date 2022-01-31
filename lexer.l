@@ -62,5 +62,5 @@
 [a-zA-Z_]+[0-9]*     { return yy::parser::make_IDENTIFIER(yytext); }
 0|[1-9][0-9]*        { return yy::parser::make_INTEGER_LITERAL(yytext); }
 
-.                    { printf("Lexical error: Unknown sign \"%s\"\n", yytext); }
+.                    { printf("Lexical error: Unknown character \"%s\"\n", yytext); }
 %%
