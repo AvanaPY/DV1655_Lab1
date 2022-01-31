@@ -61,12 +61,11 @@ Statement StatementList
 Expression 
 FunctionArgumentList 
 Identifier
-MBD
 
 // definition of the production rules. All production rules are of type Node
 
 %%
-Goal                : MainClass OptionalClassList {
+Goal                :   MainClass OptionalClassList {
                             $$ = new Node("Program", "");
                             $$->children.push_back($1);
                             $$->children.push_back($2);
@@ -192,25 +191,25 @@ MethodDeclaration   :   PUBLIC VOID Identifier LP MethodParameterList RP '{' Met
                         }
                     ;
 
-MethodBodyDeclaration       :   MethodBodyDeclaration MBD {
+MethodBodyDeclaration       :   VarList StatementList {
                                     $1->children.push_back($2);
                                     $$=$1;
                                     printf("r10 ");
                                 }
-                            |   MBD {
+                            |   StatementList {
                                     $$ = new Node("Method Body", "");
                                     $$->children.push_back($1);
-                                    printf("r10 ");
+                                    printf("r11 ");
+                                }
+                            |   VarList {
+                                    $$ = new Node("Method Body", "");
+                                    $$->children.push_back($1);
+                                    printf("r12 ");
+                                }
+                            |   %empty {
+                                    $$ = new Node("Method Body", "Empty");
                                 }
                             ;
-                            
-MBD     :   VarList {
-                $$ = $1;
-            }
-        |   StatementList  {
-                $$=$1;
-            }
-        ;
 
 MethodParameterList :  MethodParameterList ',' MethodParameterDecl{
                             $1->children.push_back($3);
@@ -265,17 +264,17 @@ StatementList       :   StatementList Statement {
                         }
                     ;
 
-Statement           :  IF LP Expression RP '{' StatementList '}' ELSE '{' StatementList '}' {
+Statement           :   IF LP Expression RP Statement ELSE Statement {
                                 $$ = new Node("IF", "");
                                 $$->children.push_back($3);
-                                $$->children.push_back($6);
-
-                                Node* else_node = new Node("ELSE", "");
-                                else_node->children.push_back($10);
-                                $$->children.push_back(else_node);
+                                $$->children.push_back($5);
+                                $$->children.push_back($7);
                                 printf("r29 ");
                             }
-                    |   WHILE LP Expression RP  '{' StatementList '}' {
+                    |   '{' StatementList '}' {
+                            $$ = $2;
+                        }
+                    |   WHILE LP Expression RP '{' StatementList '}' {
                                 $$ = new Node("While", "");
                                 $$->children.push_back($3);
                                 $$->children.push_back($6);
