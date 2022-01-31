@@ -172,6 +172,7 @@ MethodDeclaration   :   PUBLIC VOID Identifier LP MethodParameterList RP LMP Met
                         }
                     |   PUBLIC Type Identifier LP MethodParameterList RP LMP MethodBodyDeclaration RETURN Expression SEMICOLON RMP {
                             $$ = new Node("Method", $3->value);
+                            $$->children.push_back(new Node("Type", $2->type));
                             $$->children.push_back($5);
                             $$->children.push_back($8);
                             $$->children.push_back(new Node("Returns", $10->value));
@@ -179,8 +180,9 @@ MethodDeclaration   :   PUBLIC VOID Identifier LP MethodParameterList RP LMP Met
                     ;
 
 MethodBodyDeclaration       :   VarList StatementList {
-                                    $1->children.push_back($2);
-                                    $$=$1;
+                                    $$ = new Node("Method Body", "");
+                                    $$->children.push_back($1);
+                                    $$->children.push_back($2);
                                 }
                             |   StatementList {
                                     $$ = new Node("Method Body", "");
