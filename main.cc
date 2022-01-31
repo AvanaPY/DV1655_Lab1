@@ -8,7 +8,7 @@ int lineno=1;
 
 void yy::parser::error(std::string const&err)
 {
-  std::cout << "\nCannot generate a syntax tree for this input: " << err << "\n   Line no: " << lineno << "\n   YYtext: " << yytext << std::endl;
+  std::cout << "Cannot generate a syntax tree for this input: " << err << "\n   Line no: " << lineno << "\n   YYtext: " << yytext << "\n" << std::endl;
 }
 
 int main(int argc, char **argv)
