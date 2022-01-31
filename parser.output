@@ -53,8 +53,8 @@ Grammar
    32 StatementList: StatementList Statement
    33              | Statement
 
-   34 Statement: IF LP Expression RP Statement ELSE Statement
-   35          | LMP StatementList RMP
+   34 Statement: LMP StatementList RMP
+   35          | IF LP Expression RP Statement ELSE Statement
    36          | WHILE LP Expression RP Statement
    37          | SYS_PRINTLN LP Expression RP SEMICOLON
    38          | Identifier ASSIGN_OP Expression SEMICOLON
@@ -109,8 +109,8 @@ Terminals, with rules where they appear
     T_False <std::string> (270) 60
     RETURN (271) 19
     LENGTH (272) 51
-    IF (273) 34
-    ELSE (274) 34
+    IF (273) 35
+    ELSE (274) 35
     WHILE (275) 36
     SYS_PRINTLN (276) 37
     THIS (277) 61
@@ -129,10 +129,10 @@ Terminals, with rules where they appear
     NOT (290) 55
     LHKP (291) 3 29 39 50 53
     RHKP (292) 3 29 39 50 53
-    LP (293) 3 18 19 34 36 37 52 54 56
-    RP (294) 3 18 19 34 36 37 52 54 56
-    LMP (295) 3 6 7 8 9 18 19 35
-    RMP (296) 3 6 7 8 9 18 19 35
+    LP (293) 3 18 19 35 36 37 52 54 56
+    RP (294) 3 18 19 35 36 37 52 54 56
+    LMP (295) 3 6 7 8 9 18 19 34
+    RMP (296) 3 6 7 8 9 18 19 34
     COMMA (297) 24 62
     SEMICOLON (298) 15 19 37 38 39 40
 
@@ -182,13 +182,13 @@ Nonterminals, with rules where they appear
         on right: 15 19 27
     StatementList <Node *> (58)
         on left: 32 33
-        on right: 20 21 32 35
+        on right: 20 21 32 34
     Statement <Node *> (59)
         on left: 34 35 36 37 38 39 40
-        on right: 3 32 33 34 36
+        on right: 3 32 33 35 36
     Expression <Node *> (60)
         on left: 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61
-        on right: 19 34 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 55 56 62 63
+        on right: 19 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 55 56 62 63
     FunctionArgumentList <Node *> (61)
         on left: 62 63 64
         on right: 52 62
@@ -849,7 +849,7 @@ State 67
 
 State 68
 
-   34 Statement: IF . LP Expression RP Statement ELSE Statement
+   35 Statement: IF . LP Expression RP Statement ELSE Statement
 
     LP  shift, and go to state 84
 
@@ -922,7 +922,7 @@ State 74
 
 State 75
 
-   35 Statement: LMP . StatementList RMP
+   34 Statement: LMP . StatementList RMP
 
     INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
@@ -1074,7 +1074,7 @@ State 83
 
 State 84
 
-   34 Statement: IF LP . Expression RP Statement ELSE Statement
+   35 Statement: IF LP . Expression RP Statement ELSE Statement
 
     INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
@@ -1198,7 +1198,7 @@ State 91
 State 92
 
    32 StatementList: StatementList . Statement
-   35 Statement: LMP StatementList . RMP
+   34 Statement: LMP StatementList . RMP
 
     INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
@@ -1534,7 +1534,7 @@ State 112
 
 State 113
 
-   34 Statement: IF LP Expression . RP Statement ELSE Statement
+   35 Statement: IF LP Expression . RP Statement ELSE Statement
    41 Expression: Expression . AND Expression
    42           | Expression . OR Expression
    43           | Expression . LT Expression
@@ -1655,9 +1655,9 @@ State 118
 
 State 119
 
-   35 Statement: LMP StatementList RMP .
+   34 Statement: LMP StatementList RMP .
 
-    $default  reduce using rule 35 (Statement)
+    $default  reduce using rule 34 (Statement)
 
 
 State 120
@@ -2020,7 +2020,7 @@ State 135
 
 State 136
 
-   34 Statement: IF LP Expression RP . Statement ELSE Statement
+   35 Statement: IF LP Expression RP . Statement ELSE Statement
 
     INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
@@ -2163,7 +2163,7 @@ State 146
 
 State 147
 
-   34 Statement: IF LP Expression RP Statement . ELSE Statement
+   35 Statement: IF LP Expression RP Statement . ELSE Statement
 
     ELSE  shift, and go to state 156
 
@@ -2262,7 +2262,7 @@ State 155
 
 State 156
 
-   34 Statement: IF LP Expression RP Statement ELSE . Statement
+   35 Statement: IF LP Expression RP Statement ELSE . Statement
 
     INTEGER_LITERAL  shift, and go to state 65
     IDENTIFIER       shift, and go to state 4
@@ -2338,9 +2338,9 @@ State 159
 
 State 160
 
-   34 Statement: IF LP Expression RP Statement ELSE Statement .
+   35 Statement: IF LP Expression RP Statement ELSE Statement .
 
-    $default  reduce using rule 34 (Statement)
+    $default  reduce using rule 35 (Statement)
 
 
 State 161
