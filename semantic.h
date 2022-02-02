@@ -36,13 +36,45 @@ explore_node(Node* node, ST* scope)
         scope = child;
     } 
     else if(node->type == "Variable" || node->type == "Parameter"){ /* Skip variable and parameter declarations */ return; }
+    else if(node->type == "Function Call") 
+    {
+        std::list<Node*>::iterator it = node->children.begin();
+        Node* id1 = *it; std::advance(it, 1);
+        Node* id2 = *it;  std::advance(it, 1);
+        Node* args = *it;
+
+        // If the first identifier in a function call is THIS then we don't have to update our scope
+        if(id1->type != "THIS")
+        {
+            ST* id1_scope = scope->find_scope(id1->value);
+            if(id1_scope == nullptr) {
+                error("Cannot find symbol " + id1->value + " in scope (" + scope->name + ")");
+                return;
+            }
+            scope = id1_scope;
+        }
+
+        // Find the symbol in the current scope
+        Symbol* sym = scope->find_symbol(id2->value);
+        if(sym == nullptr){
+            error("Cannot find symbol " + id2->value + " in scope (" + scope->name + ")");
+            return;
+        }
+        
+        // And make sure it is a method, we cannot call on a non-method type
+        if(sym->type != "Method")
+        {
+            error("Symbol " + sym->symbol + " is not a method");
+            return;
+        }
+        return;
+    }
     else if(node->type == "Identifier")
     {
         Symbol* sym = scope->find_symbol(node->value);
         if(sym == nullptr)
             error("Cannot find symbol " + node->value + " in scope (" + scope->name + ")");
-        else
-            std::cout << "Found symbol " << sym->symbol << "\n";
+        return;
     }
     else {
         //std::cout << "Exploring node " << node->type << "\n";

@@ -121,6 +121,14 @@ public:
         return nullptr;
     }
 
+    ST* find_scope(string name)
+    {
+        ST* scope = get_child(name);
+        if(parent != nullptr && scope == nullptr)
+            scope = parent->find_scope(name);
+        return scope;
+    }
+
     void print_table(int depth=0){
         for(int i = 0; i < depth; i++)
             cout << "   ";
