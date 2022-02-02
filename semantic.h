@@ -36,11 +36,16 @@ explore_node(Node* node, ST* scope)
         scope = child;
 
         Node* return_type = node->children.back();
-
-        if(return_type->value != "Identifier")
-            return;
-
         Node* type = node->children.front();
+
+        if(return_type->value != "Identifier"){
+            if(return_type->value != type->value)
+            {
+                error("Invalid return type, Cannot convert " + return_type->value + " to " + type->value + " in method " + node->value);
+            }
+            return;
+        }
+
 
         Node* identifier = return_type->children.front();
         Symbol* symbol = scope->find_symbol(identifier->value);

@@ -83,6 +83,7 @@ Goal                :   MainClass OptionalClassList {
 MainClass           : CLASS Identifier LMP PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP LMP Statement RMP RMP {
                                                                     $$ = new Node("MainClass", $2->value);
                                                                     Node* n = new Node("Method", "Main");
+                                                                    n->children.push_back(new Node("Type", "Void"));
                                                                     n->children.push_back($15);
                                                                     n->children.push_back(new Node("Returns", "Void"));
                                                                     $$->children.push_back(n);
@@ -105,11 +106,11 @@ OptionalClassList   : OptionalClassList ClassDeclaration {
                         }
                     ;
 
-ClassDeclaration    : CLASS Identifier LMP ClassBody RMP {
+ClassDeclaration    :   CLASS Identifier LMP ClassBody RMP {
                             $$ = new Node("Class", $2->value);
                             $$->children.push_back($4);
                         }
-                    | CLASS Identifier EXTENDS Identifier LMP ClassBody RMP{
+                    |   CLASS Identifier EXTENDS Identifier LMP ClassBody RMP{
                             $$ = new Node("Class", $2->value);
 
                             $$->children.push_back(new Node("Class Extends", $4->value));
@@ -118,7 +119,7 @@ ClassDeclaration    : CLASS Identifier LMP ClassBody RMP {
                     |   CLASS Identifier LMP RMP {
                             $$ = new Node("Class", $2->value);
                         }
-                    | CLASS Identifier EXTENDS Identifier LMP RMP {
+                    |   CLASS Identifier EXTENDS Identifier LMP RMP {
                             $$ = new Node("Class", $2->value);
                             $$->children.push_back(new Node("Class Extends", $4->value));
                         }
@@ -168,6 +169,7 @@ MethodList          :   MethodList MethodDeclaration {
 
 MethodDeclaration   :   PUBLIC VOID Identifier LP MethodParameterList RP LMP MethodBodyDeclaration RMP {
                             $$ = new Node("Method", $3->value);
+                            $$->children.push_back(new Node("Type", "Void"));
                             $$->children.push_back($5);
                             $$->children.push_back($8);
                             $$->children.push_back(new Node("Returns", "Void"));
@@ -361,7 +363,7 @@ Expression          : Expression AND Expression {
                                 $$ = new Node("Identifier", $1->value);
                             }
                     | INTEGER_LITERAL{
-                                $$ = new Node("Integer", $1);
+                                $$ = new Node("Int", $1);
                             }
                     | T_True{
                                 $$ = new Node("Bool", $1);
