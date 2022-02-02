@@ -48,8 +48,7 @@ evaluate_expression_type(Node* expr_node, ST* scope)
             error("Cannot find symbol " + expr_node->value + " in scope (" + scope->name + ")");
         else
             return sym->type;
-        return nullptr;
-        
+        return "Unknown";
     }
     else {
         error("Expression Evaluation: " + expr_node->type + " is not implemented.");

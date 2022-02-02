@@ -19,11 +19,11 @@ class BigBrain{
       if(!false)
       {
       } else {
-      }
-      while(value)
-      {
-         abc = 5;
-         value = false;
+         while(vfalue)
+         {
+            abc = 5;
+            value = false;
+         }
       }
       return abc;
    }
