@@ -21,16 +21,18 @@ error(string err)
 string
 evaluate_expression_type(Node* expr_node, ST* scope)
 {
-    if (expr_node->type == "PLUS")
+    if (expr_node->type == "PLUS" || expr_node->type == "MINUS" || expr_node->type == "MULT" || expr_node->type == "DIV")
     {
         string right_typ = evaluate_expression_type(expr_node->children.back(), scope);
         string left_typ = evaluate_expression_type(expr_node->children.front(), scope);
 
         if(right_typ == left_typ){
             return right_typ;
+        } else {
+            error("Cannot match types " + right_typ + " and " + left_typ + " in assign statement");
         }
-        return "Unknown";
-    } 
+        return right_typ;
+    }   
     else if(expr_node->type == "Int" || expr_node->type == "Bool")
     {
         return expr_node->type; 
@@ -64,12 +66,7 @@ evaluate_statements(Node* stmt_node, ST* scope)
                 error("Cannot find symbol " + identifier->value + " in scope (" + scope->name + ")");
             
             Node* expr_node = (*n)->children.back();
-            string expr_type = evaluate_expression_type(expr_node, scope);
-
-            if(expr_type != id_sym->type)
-            {
-                error("Invalid return type, Cannot convert type " + expr_type + " to " + id_sym->type);
-            }
+            evaluate_expression_type(expr_node, scope);
         }
     }
 }

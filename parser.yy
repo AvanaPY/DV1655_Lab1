@@ -41,7 +41,7 @@
 %token COMMA SEMICOLON 
 
 %left PLUSOP MINOP 
-%left MULOP  DIVOP
+%left DIVOP MULOP  
 
 %left AND OR NOT EQ LT GT DOT
 

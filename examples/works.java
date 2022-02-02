@@ -13,7 +13,7 @@ class BigBrain{
    }
    public int doAdvancedMaths(){
       int a;
-      a = 1 + 2 + 3 + false;
+      a = 1 + 2 - 3 * false / 4;
       return a;
    }
    public boolean returnFalse()
