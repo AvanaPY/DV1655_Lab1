@@ -387,7 +387,7 @@ FunctionArgumentList : FunctionArgumentList COMMA Expression {
                                 $$->children.push_back($1);
                             }
                         |   %empty {
-                                $$ = new Node("Function Argument List", "Empty");
+                                $$ = new Node("Function Arguments", "Empty");
                             }
                         ;
 Identifier          :   IDENTIFIER {

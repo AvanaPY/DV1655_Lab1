@@ -108,6 +108,26 @@ public:
             error("A symbol of name " + sym->symbol + " already exists");
     }
 
+    int num_param_symbols()
+    {
+        int params = 0;
+        for(auto s = symbols.begin(); s != symbols.end(); s++)
+        {
+            if((*s)->attr == "Param")
+                params++;
+        }
+        return params;
+    }
+
+    void get_params(list<Symbol*>* params)
+    {
+        for(auto s = symbols.begin(); s != symbols.end(); s++)
+        {
+            if((*s)->attr == "Param")
+                params->push_back((*s));
+        }
+    }
+
     Symbol* find_local_symbol(string symname)
     {
         for(auto sym = symbols.begin(); sym != symbols.end(); sym++)

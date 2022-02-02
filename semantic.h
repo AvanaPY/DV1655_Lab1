@@ -142,9 +142,9 @@ evaluate_statement(Node* stmt_node, ST* scope)
         Node* id1 = *it; std::advance(it, 1);
         Node* id2 = *it;  std::advance(it, 1);
         Node* args = *it;
+        ST* org_scope = scope;
 
         // If the first identifier in a function call is THIS then we don't have to update our scope
-        std::cout << id1->type << "\n";
         if(id1->type != "THIS")
         {
             ST* id1_scope = scope->find_scope(id1->value);
@@ -153,14 +153,12 @@ evaluate_statement(Node* stmt_node, ST* scope)
                 return;
             }
             scope = id1_scope;
-            std::cout << "Setting scope to " << scope->name << "\n";
         }  else {
             scope = scope->parent;
-            std::cout << "Setting scope to " << scope->name << "\n";
         }
 
         // Find the symbol in the current scope
-        Symbol* sym = scope->find_symbol(id2->value);
+        Symbol* sym = scope->find_local_symbol(id2->value);
         if(sym == nullptr){
             error("10 Cannot find symbol " + id2->value + " in scope (" + scope->name + ")");
             return;
@@ -180,8 +178,40 @@ evaluate_statement(Node* stmt_node, ST* scope)
         }
 
         scope = method_scope;
-        std::cout << "Setting scope to " << scope->name << "\n";
-        
+
+        int input_arg_count = stmt_node->children.back()->children.size();
+        int param_count = scope->num_param_symbols();
+
+        if(input_arg_count != param_count)
+        {
+            error("12.1 Arguments and parameters not matching in function call. Expected: " + to_string(param_count) + ", Got: " + to_string(input_arg_count));
+            return;
+        }
+
+        list<Symbol*>* params = new list<Symbol *>();
+        scope->get_params(params);
+
+        auto param_it = params->begin();
+        auto arg_it   = stmt_node->children.back()->children.begin();
+
+        for(int i = 0; i < param_count; i++)
+        {
+            string arg_type = (*arg_it)->type;
+            if(arg_type == "Identifier")
+            {
+                Symbol* s = org_scope->find_symbol((*arg_it)->value);
+                if(s == nullptr)
+                    error("Cannot find symbol " + s->symbol);
+                else
+                    arg_type = s->type;
+            }
+
+            if((*param_it)->type != arg_type){
+                error("Cannot match arguments " + (*param_it)->type + " to " + arg_type);
+            }
+            std::advance(param_it, 1);
+            std::advance(arg_it, 1);
+        }
 
         return;
     }
