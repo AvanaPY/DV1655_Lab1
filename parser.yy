@@ -367,6 +367,9 @@ Expression          : Expression AND Expression {
                     | INTEGER_LITERAL{
                                 $$ = new Node("Int", $1);
                             }
+                    |   MINOP INTEGER_LITERAL {
+                                $$ = new Node("Int", "-" + $2);
+                        }
                     | T_True{
                                 $$ = new Node("Bool", $1);
                             }

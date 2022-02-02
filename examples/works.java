@@ -12,10 +12,6 @@ class BigBrain{
    public void run2()
    {
       int a;
-      while(a < 5)
-         a = 5;
-      while(a < 5){
-         a = 5;
-      }
+      a = 5 + -2;
    }
 }
