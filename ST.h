@@ -99,6 +99,28 @@ public:
         symbols.push_back(sym);
     }
 
+    Symbol* find_symbol(string symname)
+    {
+        for(auto sym = symbols.begin(); sym != symbols.end(); sym++)
+        {
+            if((*sym)->symbol == symname)
+                return (*sym);
+        }
+        if(parent == nullptr)
+            return nullptr;
+        return parent->find_symbol(symname);
+    }
+
+    ST* get_child(string name)
+    {
+        for(auto c = children.begin(); c != children.end(); c++)
+        {
+            if((*c)->name == name)
+                return (*c);
+        }
+        return nullptr;
+    }
+
     void print_table(int depth=0){
         for(int i = 0; i < depth; i++)
             cout << "   ";
