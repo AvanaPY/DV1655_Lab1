@@ -356,10 +356,10 @@ Expression          : Expression AND Expression {
                                 $$ = new Node("Integer", $1);
                             }
                     | T_True{
-                                $$ = new Node("True", $1);
+                                $$ = new Node("Bool", $1);
                             }
                     | T_False {
-                                $$ = new Node("False", $1);
+                                $$ = new Node("Bool", $1);
                             }
                     | THIS {
                                 $$ = new Node("THIS", "");

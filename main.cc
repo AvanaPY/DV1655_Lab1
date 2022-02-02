@@ -1,4 +1,5 @@
 #include<iostream>
+#include "ST.h"
 #include "parser.tab.hh"
 
 extern Node* root;
@@ -22,10 +23,15 @@ int main(int argc, char **argv)
         }
     }
 
+
     yy::parser parser;
     if(!parser.parse()) {
-        root->print_tree();
-        root->generate_tree();
+        ST* symbol_table = new ST("Root");
+        symbol_table->explore(root);
+        symbol_table->print_table();
+        // root->print_tree();
+        // root->generate_tree();
+
     }
   
   return 0;
