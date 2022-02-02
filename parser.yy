@@ -247,8 +247,11 @@ StatementList       :   StatementList Statement {
                     ;
 
 Statement           :   LMP StatementList RMP {
-                                $$ = $2;
-                            }
+                            $$ = $2;
+                        }
+                    |   LMP RMP {
+                            $$ = new Node("Empty", "");                        
+                        }
                     |   IF LP Expression RP Statement ELSE Statement {
                                 $$ = new Node("IF", "");
                                 $$->children.push_back($3);
