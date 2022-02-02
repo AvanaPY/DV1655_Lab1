@@ -84,6 +84,7 @@ MainClass           : CLASS Identifier LMP PUBLIC STATIC VOID MAIN LP STRING LHK
                                                                     $$ = new Node("MainClass", $2->value);
                                                                     Node* n = new Node("Method", "Main");
                                                                     n->children.push_back($15);
+                                                                    n->children.push_back(new Node("Returns", "Void"));
                                                                     $$->children.push_back(n);
                                                                 }
                     ;
@@ -169,13 +170,17 @@ MethodDeclaration   :   PUBLIC VOID Identifier LP MethodParameterList RP LMP Met
                             $$ = new Node("Method", $3->value);
                             $$->children.push_back($5);
                             $$->children.push_back($8);
+                            $$->children.push_back(new Node("Returns", "Void"));
                         }
                     |   PUBLIC Type Identifier LP MethodParameterList RP LMP MethodBodyDeclaration RETURN Expression SEMICOLON RMP {
                             $$ = new Node("Method", $3->value);
                             $$->children.push_back(new Node("Type", $2->type));
                             $$->children.push_back($5);
                             $$->children.push_back($8);
-                            $$->children.push_back(new Node("Returns", $10->value));
+
+                            Node* return_node = new Node("Returns", $10->type);
+                            return_node->children.push_back($10);
+                            $$->children.push_back(return_node);
                         }
                     ;
 

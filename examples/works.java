@@ -10,12 +10,24 @@ class BigBrain{
       this.p(4);
    }
    public int p(int c){
-      c = this.doAdvancedMaths();
-      return c;
+      return 0;
    }
    public int doAdvancedMaths(){
       int a;
-      a = 2 + 2;
+      return a;
+   }
+   public boolean returnTrue()
+   {
+      return true;
+   }
+   public boolean returnFalse()
+   {
+      return false;
+   }
+   public boolean returnIdentifier()
+   {
+      int a;
+      a = 5;
       return a;
    }
 }

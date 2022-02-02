@@ -34,6 +34,22 @@ explore_node(Node* node, ST* scope)
         if(child == nullptr)
             error("Cannot find method " + node->value + " in scope " + scope->name);
         scope = child;
+
+        Node* return_type = node->children.back();
+
+        if(return_type->value != "Identifier")
+            return;
+
+        Node* type = node->children.front();
+
+        Node* identifier = return_type->children.front();
+        Symbol* symbol = scope->find_symbol(identifier->value);
+
+        if(type->value != symbol->type)
+        {
+            error("Invalid return type, Cannot convert " + symbol->type + " to " + type->value + " in method " + node->value);
+        }
+
     } 
     else if(node->type == "Variable" || node->type == "Parameter"){ /* Skip variable and parameter declarations */ return; }
     else if(node->type == "Function Call") 
