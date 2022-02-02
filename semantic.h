@@ -18,6 +18,62 @@ error(string err)
     std::cout << "Semantic error: " << err << "\n";
 }
 
+string
+evaluate_expression_type(Node* expr_node, ST* scope)
+{
+    if (expr_node->type == "PLUS")
+    {
+        string right_typ = evaluate_expression_type(expr_node->children.back(), scope);
+        string left_typ = evaluate_expression_type(expr_node->children.front(), scope);
+
+        if(right_typ == left_typ){
+            return right_typ;
+        }
+        return "Unknown";
+    } 
+    else if(expr_node->type == "Int" || expr_node->type == "Bool")
+    {
+        return expr_node->type; 
+    } 
+    else if(expr_node->type == "Identifier")
+    {
+        Symbol* sym = scope->find_symbol(expr_node->value);
+        if(sym == nullptr)
+            error("Cannot find symbol " + expr_node->value + " in scope (" + scope->name + ")");
+        else
+            return sym->type;
+        return nullptr;
+        
+    }
+    else {
+        error(expr_node->type + " is not implemented.");
+    }
+    return "Unknown";
+}
+
+void
+evaluate_statements(Node* stmt_node, ST* scope)
+{
+    for(auto n = stmt_node->children.begin(); n != stmt_node->children.end(); n++)
+    {
+        if((*n)->type == "Assign"){
+
+            Node* identifier = (*n)->children.front();
+            Symbol* id_sym   = scope->find_symbol(identifier->value);
+            if(id_sym == nullptr)
+                error("Cannot find symbol " + identifier->value + " in scope (" + scope->name + ")");
+            
+            Node* expr_node = (*n)->children.back();
+            string expr_type = evaluate_expression_type(expr_node, scope);
+
+            if(expr_type != id_sym->type)
+            {
+                error("Invalid return type, Cannot convert type " + expr_type + " to " + id_sym->type);
+            }
+        }
+    }
+}
+
 void
 explore_node(Node* node, ST* scope)
 {
@@ -45,7 +101,6 @@ explore_node(Node* node, ST* scope)
             }
             return;
         }
-
 
         Node* identifier = return_type->children.front();
         Symbol* symbol = scope->find_symbol(identifier->value);
@@ -95,6 +150,11 @@ explore_node(Node* node, ST* scope)
         Symbol* sym = scope->find_symbol(node->value);
         if(sym == nullptr)
             error("Cannot find symbol " + node->value + " in scope (" + scope->name + ")");
+        return;
+    }
+    else if(node->type == "Statement List")
+    {
+        evaluate_statements(node, scope);
         return;
     }
     else {

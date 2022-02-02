@@ -13,17 +13,11 @@ class BigBrain{
    }
    public int doAdvancedMaths(){
       int a;
+      a = 1 + 2 + 3 + false;
       return a;
    }
    public boolean returnFalse()
    {
-      return 0;
-   }
-   public int ret()
-   {
       return false;
-   }
-   public int ret2(){
-      return BigBrain;
    }
 }
