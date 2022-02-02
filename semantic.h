@@ -201,13 +201,13 @@ evaluate_statement(Node* stmt_node, ST* scope)
             {
                 Symbol* s = org_scope->find_symbol((*arg_it)->value);
                 if(s == nullptr)
-                    error("Cannot find symbol " + s->symbol);
+                    error("12.2 Cannot find symbol " + s->symbol);
                 else
                     arg_type = s->type;
             }
 
             if((*param_it)->type != arg_type){
-                error("Cannot match arguments " + (*param_it)->type + " to " + arg_type);
+                error("12.3 Cannot match arguments " + (*param_it)->type + " to " + arg_type);
             }
             std::advance(param_it, 1);
             std::advance(arg_it, 1);
