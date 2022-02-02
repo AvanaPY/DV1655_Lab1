@@ -14,27 +14,7 @@ class BigBrain{
    public int doAdvancedMaths(){
       int abc;
       boolean value;
-      abc = true + 5 + false + 5;
-      value = false;
-      if(abc < 5)
-      {
-      } else {
-      }
-      if(abc > abc)
-      {
-      } else {
-      }
-      if(abc == 0)
-      {
-      } else {
-      }if(value && false)
-      {
-      } else {
-      }
-      if(5 || true)
-      {
-      } else {
-      }
+      System.out.println(afdasf);
       return abc;
    }
    public boolean returnFalse()

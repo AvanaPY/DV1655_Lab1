@@ -119,6 +119,19 @@ evaluate_statement(Node* stmt_node, ST* scope)
         for(auto c = statements->children.begin(); c != statements->children.end(); c++)
             evaluate_statement(*c, scope);
     }
+    else if(stmt_node->type == "SYS_PRINTLN")
+    {
+        Node* identifier = stmt_node->children.front();
+        Symbol* sym = scope->find_symbol(identifier->value);
+        if(sym == nullptr) {
+            error("Cannot find symbol " + identifier->value + " in scope (" + scope->name + ")");
+            return;
+        }
+        if(sym->type != "Int"){
+            error("Cannot print non-integer values");
+            return;
+        }
+    }
     else {
         error("Statement Evaluation : " + stmt_node->type + " is not implemented");
     }
