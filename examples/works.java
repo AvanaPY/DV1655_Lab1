@@ -11,7 +11,11 @@ class BigBrain{
    }
    public void run2()
    {
-      int[] value;
-      this.run(1, 2, value);
+      int a;
+      while(a < 5)
+         a = 5;
+      while(a < 5){
+         a = 5;
+      }
    }
 }

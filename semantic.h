@@ -102,10 +102,17 @@ evaluate_statement(Node* stmt_node, ST* scope)
         std::advance(it, 1); Node* if_node = *it;
         std::advance(it, 1); Node* else_node = *it;
 
-        for(auto c = if_node->children.begin(); c != if_node->children.end(); c++)
-            evaluate_statement(*c, scope);
-        for(auto c = else_node->children.begin(); c != else_node->children.end(); c++)
-            evaluate_statement(*c, scope);
+        if(if_node->type == "Statement List")
+            for(auto c = if_node->children.begin(); c != if_node->children.end(); c++)
+                evaluate_statement(*c, scope);
+        else
+            evaluate_statement(if_node, scope);
+
+        if(else_node->type == "Statement List")
+            for(auto c = else_node->children.begin(); c != else_node->children.end(); c++)
+                evaluate_statement(*c, scope);
+        else
+            evaluate_statement(else_node, scope);
     }
     else if(stmt_node->type == "WHILE")
     {
@@ -116,9 +123,12 @@ evaluate_statement(Node* stmt_node, ST* scope)
             error("6 Expression is not of type Bool in WHILE statement");
 
         Node* statements = stmt_node->children.back();
-        for(auto c = statements->children.begin(); c != statements->children.end(); c++)
-            evaluate_statement(*c, scope);
-    }
+        if(statements->type == "Statement List")
+            for(auto c = statements->children.begin(); c != statements->children.end(); c++)
+                evaluate_statement(*c, scope);
+        else
+            evaluate_statement(statements, scope);
+    }   
     else if(stmt_node->type == "SYS_PRINTLN")
     {
         Node* identifier = stmt_node->children.front();
