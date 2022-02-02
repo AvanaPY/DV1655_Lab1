@@ -1,24 +1,17 @@
 class Main {
    public static void main(String[] args){
-      BigBrain.run();
+      BigBrain.run(1, 2);
+      System.out.println(5);
    }
 }
 
 class BigBrain{
    int var1;
-   public void run(){
+   public void run(int a, int b, int c){
+      
    }
-   public int p(int c){
-      return c;
-   }
-   public int doAdvancedMaths(){
-      int abc;
-      boolean value;
-      System.out.println(afdasf);
-      return abc;
-   }
-   public boolean returnFalse()
+   public void run3()
    {
-      return false;
+      this.run(1, 2, 3);
    }
 }

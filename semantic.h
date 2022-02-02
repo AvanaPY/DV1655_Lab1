@@ -63,13 +63,13 @@ evaluate_expression_type(Node* expr_node, ST* scope)
     {
         Symbol* sym = scope->find_symbol(expr_node->value);
         if(sym == nullptr)
-            error("Cannot find symbol " + expr_node->value + " in scope (" + scope->name + ")");
+            error("1 Cannot find symbol " + expr_node->value + " in scope (" + scope->name + ")");
         else
             return sym->type;
         return "Unknown";
     }
     else {
-        error("Expression Evaluation: " + expr_node->type + " is not implemented.");
+        error("2 Expression Evaluation: " + expr_node->type + " is not implemented.");
     }
     return "Unknown";
 }
@@ -82,12 +82,12 @@ evaluate_statement(Node* stmt_node, ST* scope)
         Node* identifier = stmt_node->children.front();
         Symbol* id_sym   = scope->find_symbol(identifier->value);
         if(id_sym == nullptr)
-            error("Cannot find symbol " + identifier->value + " in scope (" + scope->name + ")");
+            error("3 Cannot find symbol " + identifier->value + " in scope (" + scope->name + ")");
         
         Node* expr_node = stmt_node->children.back();
         string typ = evaluate_expression_type(expr_node, scope);
         if (typ != id_sym->type){
-            error("Cannot match type " + id_sym->type + " to " + typ);
+            error("4 Cannot match type " + id_sym->type + " to " + typ);
         }
     }
     else if(stmt_node->type == "IF") 
@@ -96,7 +96,7 @@ evaluate_statement(Node* stmt_node, ST* scope)
         string cond_type = evaluate_expression_type(cond_node, scope);
 
         if(cond_type != "Bool")
-            error("Expression is not of type Bool in IF statement");
+            error("5 Expression is not of type Bool in IF statement");
 
         auto it = stmt_node->children.begin();
         std::advance(it, 1); Node* if_node = *it;
@@ -113,7 +113,7 @@ evaluate_statement(Node* stmt_node, ST* scope)
         string cond_type = evaluate_expression_type(cond_node, scope);
 
         if(cond_type != "Bool")
-            error("Expression is not of type Bool in WHILE statement");
+            error("6 Expression is not of type Bool in WHILE statement");
 
         Node* statements = stmt_node->children.back();
         for(auto c = statements->children.begin(); c != statements->children.end(); c++)
@@ -122,18 +122,71 @@ evaluate_statement(Node* stmt_node, ST* scope)
     else if(stmt_node->type == "SYS_PRINTLN")
     {
         Node* identifier = stmt_node->children.front();
+
+        if(identifier->type == "Int")
+            return;
+
         Symbol* sym = scope->find_symbol(identifier->value);
         if(sym == nullptr) {
-            error("Cannot find symbol " + identifier->value + " in scope (" + scope->name + ")");
+            error("7 Cannot find symbol " + identifier->value + " in scope (" + scope->name + ")");
             return;
         }
         if(sym->type != "Int"){
-            error("Cannot print non-integer values");
+            error("8 Cannot print non-integer values");
             return;
         }
     }
+    else if(stmt_node->type == "Function Call")
+    {
+        std::list<Node*>::iterator it = stmt_node->children.begin();
+        Node* id1 = *it; std::advance(it, 1);
+        Node* id2 = *it;  std::advance(it, 1);
+        Node* args = *it;
+
+        // If the first identifier in a function call is THIS then we don't have to update our scope
+        std::cout << id1->type << "\n";
+        if(id1->type != "THIS")
+        {
+            ST* id1_scope = scope->find_scope(id1->value);
+            if(id1_scope == nullptr) {
+                error("9 Cannot find symbol " + id1->value + " in scope (" + scope->name + ")");
+                return;
+            }
+            scope = id1_scope;
+            std::cout << "Setting scope to " << scope->name << "\n";
+        }  else {
+            scope = scope->parent;
+            std::cout << "Setting scope to " << scope->name << "\n";
+        }
+
+        // Find the symbol in the current scope
+        Symbol* sym = scope->find_symbol(id2->value);
+        if(sym == nullptr){
+            error("10 Cannot find symbol " + id2->value + " in scope (" + scope->name + ")");
+            return;
+        }
+        
+        // And make sure it is a method, we cannot call on a non-method type
+        if(sym->type != "Method")
+        {
+            error("11 Symbol " + sym->symbol + " is not a method");
+            return;
+        }
+
+        ST* method_scope = scope->find_scope(sym->symbol);
+        if(method_scope == nullptr){
+            error("12 Cannot find a scope for " + sym->symbol);
+            return;
+        }
+
+        scope = method_scope;
+        std::cout << "Setting scope to " << scope->name << "\n";
+        
+
+        return;
+    }
     else {
-        error("Statement Evaluation : " + stmt_node->type + " is not implemented");
+        error("13 Statement Evaluation : " + stmt_node->type + " is not implemented");
     }
 }
 
@@ -144,14 +197,14 @@ explore_node(Node* node, ST* scope)
     {
         ST* child = scope->get_child(node->value);
         if(child == nullptr)
-            error("Cannot find method " + node->value + " in scope " + scope->name);
+            error("14 Cannot find method " + node->value + " in scope " + scope->name);
         scope = child;
     }
     else if(node->type == "Method")
     {
         ST* child = scope->get_child(node->value);
         if(child == nullptr)
-            error("Cannot find method " + node->value + " in scope " + scope->name);
+            error("15 Cannot find method " + node->value + " in scope " + scope->name);
         scope = child;
 
         Node* return_type = node->children.back();
@@ -159,57 +212,29 @@ explore_node(Node* node, ST* scope)
 
         if(return_type->value != "Identifier"){
             if(return_type->value != type->value)
-                error("Invalid return type, Cannot convert " + return_type->value + " to " + type->value + " in method " + node->value);
+                error("16 Invalid return type, Cannot convert " + return_type->value + " to " + type->value + " in method " + node->value);
 
         } else {
             Node* identifier = return_type->children.front();
             Symbol* symbol = scope->find_symbol(identifier->value);
 
             if(symbol == nullptr)
-                error("Cannot find symbol " + identifier->value + " in scope (" + scope->name + ")");
+                error("17 Cannot find symbol " + identifier->value + " in scope (" + scope->name + ")");
             else if(type->value != symbol->type)
-                error("Invalid return type, Cannot convert " + symbol->type + " to " + type->value + " in method " + node->value);
+                error("18 Invalid return type, Cannot convert " + symbol->type + " to " + type->value + " in method " + node->value);
         }
     } 
     else if(node->type == "Variable" || node->type == "Parameter"){ /* Skip variable and parameter declarations */ return; }
     else if(node->type == "Function Call") 
     {
-        std::list<Node*>::iterator it = node->children.begin();
-        Node* id1 = *it; std::advance(it, 1);
-        Node* id2 = *it;  std::advance(it, 1);
-        Node* args = *it;
-
-        // If the first identifier in a function call is THIS then we don't have to update our scope
-        if(id1->type != "THIS")
-        {
-            ST* id1_scope = scope->find_scope(id1->value);
-            if(id1_scope == nullptr) {
-                error("Cannot find symbol " + id1->value + " in scope (" + scope->name + ")");
-                return;
-            }
-            scope = id1_scope;
-        }
-
-        // Find the symbol in the current scope
-        Symbol* sym = scope->find_symbol(id2->value);
-        if(sym == nullptr){
-            error("Cannot find symbol " + id2->value + " in scope (" + scope->name + ")");
-            return;
-        }
-        
-        // And make sure it is a method, we cannot call on a non-method type
-        if(sym->type != "Method")
-        {
-            error("Symbol " + sym->symbol + " is not a method");
-            return;
-        }
+        // evaluate_statement(node, scope);
         return;
     }
     else if(node->type == "Identifier")
     {
         Symbol* sym = scope->find_symbol(node->value);
         if(sym == nullptr)
-            error("Cannot find symbol " + node->value + " in scope (" + scope->name + ")");
+            error("19 Cannot find symbol " + node->value + " in scope (" + scope->name + ")");
         return;
     }
     else if(node->type == "Statement List")

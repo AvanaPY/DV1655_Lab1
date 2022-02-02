@@ -80,7 +80,7 @@ Goal                :   MainClass OptionalClassList {
                         }
                     ;
 
-MainClass           : CLASS Identifier LMP PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP LMP Statement RMP RMP {
+MainClass           : CLASS Identifier LMP PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP LMP StatementList RMP RMP {
                                                                     $$ = new Node("MainClass", $2->value);
                                                                     Node* n = new Node("Method", "Main");
                                                                     n->children.push_back(new Node("Type", "Void"));
@@ -390,6 +390,9 @@ FunctionArgumentList : FunctionArgumentList COMMA Expression {
                                 $$ = new Node("Function Argument List", "Empty");
                             }
                         ;
-Identifier          : IDENTIFIER {
+Identifier          :   IDENTIFIER {
                                 $$ = new Node("Identifier", $1);
+                            }
+                    |   MAIN    {
+                                $$ = new Node("Identifier", "Main");
                             }
