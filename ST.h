@@ -43,6 +43,11 @@ public:
         parent = nullptr;
     }
 
+    void error(string err)
+    {
+        cout << "Symbol Error: " << err << "\n";
+    }
+
     void explore(Node* root){
         explore_node(root, this);
     }
@@ -96,7 +101,21 @@ public:
 
     void add_symbol(Symbol* sym)
     {
-        symbols.push_back(sym);
+        Symbol* local = find_local_symbol(sym->symbol);
+        if(local == nullptr)
+            symbols.push_back(sym);
+        else
+            error("A symbol of name " + sym->symbol + " already exists");
+    }
+
+    Symbol* find_local_symbol(string symname)
+    {
+        for(auto sym = symbols.begin(); sym != symbols.end(); sym++)
+        {
+            if((*sym)->symbol == symname)
+                return (*sym);
+        }
+        return nullptr;
     }
 
     Symbol* find_symbol(string symname)

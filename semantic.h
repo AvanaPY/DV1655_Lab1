@@ -89,7 +89,6 @@ explore_node(Node* node, ST* scope)
 void
 semantic_analysis(Node* root, ST* symbols)
 {
-    std::cout << "Beginning semantic analysis\n";
     explore_node(root, symbols);
 }
 
