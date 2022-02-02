@@ -27,7 +27,7 @@ evaluate_expression_type(Node* expr_node, ST* scope)
         string left_typ = evaluate_expression_type(expr_node->children.front(), scope);
 
         if(right_typ != left_typ){
-            error("Cannot match types " + right_typ + " and " + left_typ + " in expression");
+            return right_typ + "/" + left_typ;
         }
         return right_typ;
     }   
@@ -35,7 +35,25 @@ evaluate_expression_type(Node* expr_node, ST* scope)
     {
         string child_typ = evaluate_expression_type(expr_node->children.front(), scope);
         return child_typ;
-        
+    } 
+    else if(expr_node->type == "LT" || expr_node->type == "GT" || expr_node->type == "EQ")
+    {
+        string right_typ = evaluate_expression_type(expr_node->children.back(), scope);
+        string left_typ = evaluate_expression_type(expr_node->children.front(), scope);
+
+        if(right_typ != "Int" || left_typ != "Int"){
+            return "Unknown";
+        }
+        return "Bool";
+    }
+    else if(expr_node->type == "AND" || expr_node->type == "OR")
+    {
+        string right_typ = evaluate_expression_type(expr_node->children.back(), scope);
+        string left_typ = evaluate_expression_type(expr_node->children.front(), scope);
+        if(right_typ != "Bool" || left_typ != "Bool"){
+            return "Unknown";
+        }
+        return "Bool";
     }
     else if(expr_node->type == "Int" || expr_node->type == "Bool")
     {

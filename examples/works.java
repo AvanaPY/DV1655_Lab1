@@ -14,16 +14,26 @@ class BigBrain{
    public int doAdvancedMaths(){
       int abc;
       boolean value;
-      abc = 5;
+      abc = true + 5 + false + 5;
       value = false;
-      if(!false)
+      if(abc < 5)
       {
       } else {
-         while(vfalue)
-         {
-            abc = 5;
-            value = false;
-         }
+      }
+      if(abc > abc)
+      {
+      } else {
+      }
+      if(abc == 0)
+      {
+      } else {
+      }if(value && false)
+      {
+      } else {
+      }
+      if(5 || true)
+      {
+      } else {
       }
       return abc;
    }

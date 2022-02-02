@@ -296,17 +296,17 @@ Expression          : Expression AND Expression {
                                 $$->children.push_back($3);
                             }
                     | Expression LT Expression {
-                                $$ = new Node("LESS THAN", "");
+                                $$ = new Node("LT", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($3);
                             }
                     | Expression GT Expression {
-                                $$ = new Node("GREATER THAN", "");
+                                $$ = new Node("GT", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($3);
                             }
                     | Expression EQ Expression {
-                                $$ = new Node("EQUALS", "");
+                                $$ = new Node("EQ", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($3);
                             }
