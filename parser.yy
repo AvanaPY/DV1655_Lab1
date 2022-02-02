@@ -261,7 +261,7 @@ Statement           :   LMP StatementList RMP {
                                 $$->children.push_back($7);
                             }
                     |   WHILE LP Expression RP Statement {
-                                $$ = new Node("While", "");
+                                $$ = new Node("WHILE", "");
                                 $$->children.push_back($3);
                                 $$->children.push_back($5);
                             }
@@ -280,7 +280,9 @@ Statement           :   LMP StatementList RMP {
                                 $$->children.push_back($3);
                                 $$->children.push_back($6);
                             }
-                    |   Expression SEMICOLON
+                    |   Expression SEMICOLON {
+                            $$ = $1;
+                        }
                     ;
 
 Expression          : Expression AND Expression {
@@ -352,7 +354,7 @@ Expression          : Expression AND Expression {
                                 $$->children.push_back($2);
                             }
                     | NOT Expression {
-                                $$ = new Node("Negate", "");
+                                $$ = new Node("NOT", "");
                                 $$->children.push_back($2);
                             }
                     | LP Expression RP{

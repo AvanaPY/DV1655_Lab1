@@ -26,13 +26,17 @@ evaluate_expression_type(Node* expr_node, ST* scope)
         string right_typ = evaluate_expression_type(expr_node->children.back(), scope);
         string left_typ = evaluate_expression_type(expr_node->children.front(), scope);
 
-        if(right_typ == left_typ){
-            return right_typ;
-        } else {
-            error("Cannot match types " + right_typ + " and " + left_typ + " in assign statement");
+        if(right_typ != left_typ){
+            error("Cannot match types " + right_typ + " and " + left_typ + " in expression");
         }
         return right_typ;
     }   
+    else if (expr_node->type == "NOT")
+    {
+        string child_typ = evaluate_expression_type(expr_node->children.front(), scope);
+        return child_typ;
+        
+    }
     else if(expr_node->type == "Int" || expr_node->type == "Bool")
     {
         return expr_node->type; 
@@ -48,26 +52,58 @@ evaluate_expression_type(Node* expr_node, ST* scope)
         
     }
     else {
-        error(expr_node->type + " is not implemented.");
+        error("Expression Evaluation: " + expr_node->type + " is not implemented.");
     }
     return "Unknown";
 }
 
 void
-evaluate_statements(Node* stmt_node, ST* scope)
+evaluate_statement(Node* stmt_node, ST* scope)
 {
-    for(auto n = stmt_node->children.begin(); n != stmt_node->children.end(); n++)
-    {
-        if((*n)->type == "Assign"){
+    if(stmt_node->type == "Assign"){
 
-            Node* identifier = (*n)->children.front();
-            Symbol* id_sym   = scope->find_symbol(identifier->value);
-            if(id_sym == nullptr)
-                error("Cannot find symbol " + identifier->value + " in scope (" + scope->name + ")");
-            
-            Node* expr_node = (*n)->children.back();
-            evaluate_expression_type(expr_node, scope);
+        Node* identifier = stmt_node->children.front();
+        Symbol* id_sym   = scope->find_symbol(identifier->value);
+        if(id_sym == nullptr)
+            error("Cannot find symbol " + identifier->value + " in scope (" + scope->name + ")");
+        
+        Node* expr_node = stmt_node->children.back();
+        string typ = evaluate_expression_type(expr_node, scope);
+        if (typ != id_sym->type){
+            error("Cannot match type " + id_sym->type + " to " + typ);
         }
+    }
+    else if(stmt_node->type == "IF") 
+    {
+        Node* cond_node = stmt_node->children.front();
+        string cond_type = evaluate_expression_type(cond_node, scope);
+
+        if(cond_type != "Bool")
+            error("Expression is not of type Bool in IF statement");
+
+        auto it = stmt_node->children.begin();
+        std::advance(it, 1); Node* if_node = *it;
+        std::advance(it, 1); Node* else_node = *it;
+
+        for(auto c = if_node->children.begin(); c != if_node->children.end(); c++)
+            evaluate_statement(*c, scope);
+        for(auto c = else_node->children.begin(); c != else_node->children.end(); c++)
+            evaluate_statement(*c, scope);
+    }
+    else if(stmt_node->type == "WHILE")
+    {
+        Node* cond_node = stmt_node->children.front();
+        string cond_type = evaluate_expression_type(cond_node, scope);
+
+        if(cond_type != "Bool")
+            error("Expression is not of type Bool in WHILE statement");
+
+        Node* statements = stmt_node->children.back();
+        for(auto c = statements->children.begin(); c != statements->children.end(); c++)
+            evaluate_statement(*c, scope);
+    }
+    else {
+        error("Statement Evaluation : " + stmt_node->type + " is not implemented");
     }
 }
 
@@ -93,20 +129,17 @@ explore_node(Node* node, ST* scope)
 
         if(return_type->value != "Identifier"){
             if(return_type->value != type->value)
-            {
                 error("Invalid return type, Cannot convert " + return_type->value + " to " + type->value + " in method " + node->value);
-            }
-            return;
+
+        } else {
+            Node* identifier = return_type->children.front();
+            Symbol* symbol = scope->find_symbol(identifier->value);
+
+            if(symbol == nullptr)
+                error("Cannot find symbol " + identifier->value + " in scope (" + scope->name + ")");
+            else if(type->value != symbol->type)
+                error("Invalid return type, Cannot convert " + symbol->type + " to " + type->value + " in method " + node->value);
         }
-
-        Node* identifier = return_type->children.front();
-        Symbol* symbol = scope->find_symbol(identifier->value);
-
-        if(type->value != symbol->type)
-        {
-            error("Invalid return type, Cannot convert " + symbol->type + " to " + type->value + " in method " + node->value);
-        }
-
     } 
     else if(node->type == "Variable" || node->type == "Parameter"){ /* Skip variable and parameter declarations */ return; }
     else if(node->type == "Function Call") 
@@ -150,9 +183,11 @@ explore_node(Node* node, ST* scope)
         return;
     }
     else if(node->type == "Statement List")
-    {
-        evaluate_statements(node, scope);
-        return;
+    {    
+        for(auto n = node->children.begin(); n != node->children.end(); n++)
+        {
+            evaluate_statement((*n), scope);
+        }
     }
     else {
         //std::cout << "Exploring node " << node->type << "\n";

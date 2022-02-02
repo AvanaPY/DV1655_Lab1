@@ -12,9 +12,20 @@ class BigBrain{
       return c;
    }
    public int doAdvancedMaths(){
-      int a;
-      a = 1 + 2 - 3 * false / 4;
-      return a;
+      int abc;
+      boolean value;
+      abc = 5;
+      value = false;
+      if(!false)
+      {
+      } else {
+      }
+      while(value)
+      {
+         abc = 5;
+         value = false;
+      }
+      return abc;
    }
    public boolean returnFalse()
    {
