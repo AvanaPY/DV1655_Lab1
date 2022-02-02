@@ -6,7 +6,7 @@ class Main {
    }
 }
 
-class Abc extends Abc{
+class Abc{
    int[] a;
    int b;
    public void m(){
@@ -16,5 +16,13 @@ class Abc extends Abc{
    public void p(int param1, int param2){
       int var1;
       a = true;
+   }
+}
+
+class Def {
+   int d;
+   public void main2(){
+      int b;
+      a = 5;
    }
 }

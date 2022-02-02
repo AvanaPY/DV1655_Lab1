@@ -56,27 +56,22 @@ public:
             {
                 Symbol* new_symbol = new Symbol(c->value, "Class", scope->name, "Identifier");
                 scope->add_symbol(new_symbol);
-                // Since it's a class, create a new Symbol Table
 
+                // Since it's a class, create a new Symbol Table
                 ST* st = new ST(c->value);
                 st->parent = scope;
-
                 scope->children.push_back(st);
-
                 explore_node(c, st);
-
             }
             else if(c->type == "Method")
             {
                 Symbol* new_symbol = new Symbol(c->value, "Method", scope->name, "Identifier");
                 scope->add_symbol(new_symbol);
-                // Since it's a class, create a new Symbol Table
 
+                // Since it's a method, create a new Symbol Table
                 ST* st = new ST(c->value);
                 st->parent = scope;
-
                 scope->children.push_back(st);
-
                 explore_node(c, st);
             }
             else if(c->type == "Variable")
