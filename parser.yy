@@ -43,7 +43,10 @@
 %left PLUSOP MINOP 
 %left DIVOP MULOP  
 
-%left AND OR NOT EQ LT GT DOT
+%left AND
+%left OR
+%left NOT
+%left EQ LT GT DOT
 
 %left T_Int T_Bool
 %left IDENTIFIER
