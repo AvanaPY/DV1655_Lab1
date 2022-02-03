@@ -43,9 +43,9 @@
 %left PLUSOP MINOP 
 %left MULOP  DIVOP
 
-%left NOT
 %left AND
 %left OR
+%left NOT
 %left EQ LT GT DOT
 
 %left T_Int T_Bool
@@ -247,6 +247,9 @@ StatementList       :   StatementList Statement {
 Statement           :   LMP StatementList RMP {
                                 $$ = $2;
                             }
+                    |   LMP RMP {
+                            $$ = new Node("Empty", "");                        
+                        }
                     |   IF LP Expression RP Statement ELSE Statement {
                                 $$ = new Node("IF", "");
                                 $$->children.push_back($3);
