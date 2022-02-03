@@ -225,6 +225,11 @@ evaluate_statement(Node* stmt_node, ST* scope)
 
         return;
     }
+    else if(stmt_node->value == "Empty")
+    {
+        std::cout << "Error Checking: 12.4 Found Empty Statement, not doing anything\n";
+        return;
+    }
     else {
         error("13 Statement Evaluation : " + stmt_node->type + " is not implemented");
     }

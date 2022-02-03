@@ -11,9 +11,14 @@ class BigBrain{
    {
       int a;
       int b;
-      int[] c;
-      c = 2;
-      this.run2(a, b, c);
+      int c;
+      int d;
+      boolean e;
+      if(a < b && c > d || !e){
+
+      } else {
+         
+      }
    }
    public void run2(int a, int b, int[] c)
    {

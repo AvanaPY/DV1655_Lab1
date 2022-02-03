@@ -255,7 +255,7 @@ Statement           :   LMP StatementList RMP {
                             $$ = $2;
                         }
                     |   LMP RMP {
-                            $$ = new Node("Empty", "");                        
+                            $$ = new Node("Statement", "Empty");                        
                         }
                     |   IF LP Expression RP Statement ELSE Statement {
                                 $$ = new Node("IF", "");
