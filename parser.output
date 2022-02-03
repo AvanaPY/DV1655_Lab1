@@ -1153,6 +1153,12 @@ State 89
    52           | Expression . DOT Identifier LP FunctionArgumentList RP
    55           | NOT Expression .
 
+    AND   shift, and go to state 101
+    OR    shift, and go to state 102
+    EQ    shift, and go to state 103
+    LT    shift, and go to state 104
+    GT    shift, and go to state 105
+    DOT   shift, and go to state 106
     LHKP  shift, and go to state 107
 
     $default  reduce using rule 55 (Expression)
@@ -1788,6 +1794,11 @@ State 124
    51           | Expression . DOT LENGTH
    52           | Expression . DOT Identifier LP FunctionArgumentList RP
 
+    OR    shift, and go to state 102
+    EQ    shift, and go to state 103
+    LT    shift, and go to state 104
+    GT    shift, and go to state 105
+    DOT   shift, and go to state 106
     LHKP  shift, and go to state 107
 
     $default  reduce using rule 41 (Expression)
@@ -1809,6 +1820,10 @@ State 125
    51           | Expression . DOT LENGTH
    52           | Expression . DOT Identifier LP FunctionArgumentList RP
 
+    EQ    shift, and go to state 103
+    LT    shift, and go to state 104
+    GT    shift, and go to state 105
+    DOT   shift, and go to state 106
     LHKP  shift, and go to state 107
 
     $default  reduce using rule 42 (Expression)
