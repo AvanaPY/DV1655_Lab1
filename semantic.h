@@ -111,6 +111,7 @@ evaluate_statement(Node* stmt_node, ST* scope)
         if(else_node->type == "Statement List")
             for(auto c = else_node->children.begin(); c != else_node->children.end(); c++)
                 evaluate_statement(*c, scope);
+            
         else
             evaluate_statement(else_node, scope);
     }
@@ -227,7 +228,12 @@ evaluate_statement(Node* stmt_node, ST* scope)
     }
     else if(stmt_node->value == "Empty")
     {
-        std::cout << "Error Checking: 12.4 Found Empty Statement, not doing anything\n";
+        return;
+    }
+    else if(stmt_node->type == "Statement List")
+    {
+        for(auto n = stmt_node->children.begin(); n != stmt_node->children.end(); n++)
+            evaluate_statement((*n), scope);
         return;
     }
     else {
@@ -285,9 +291,9 @@ explore_node(Node* node, ST* scope)
     else if(node->type == "Statement List")
     {    
         for(auto n = node->children.begin(); n != node->children.end(); n++)
-        {
             evaluate_statement((*n), scope);
-        }
+            
+        return;
     }
     else {
         //std::cout << "Exploring node " << node->type << "\n";

@@ -14,11 +14,8 @@ class BigBrain{
       int c;
       int d;
       boolean e;
-      if(a < b && c > d || !e){
+      {{{{{{{e=false;}}}}}}}
 
-      } else {
-         
-      }
    }
    public void run2(int a, int b, int[] c)
    {
