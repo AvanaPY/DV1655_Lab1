@@ -81,9 +81,10 @@ evaluate_statement(Node* stmt_node, ST* scope)
 
         Node* identifier = stmt_node->children.front();
         Symbol* id_sym   = scope->find_symbol(identifier->value);
-        if(id_sym == nullptr)
+        if(id_sym == nullptr){
             error("3 Cannot find symbol " + identifier->value + " in scope (" + scope->name + ")");
-        
+            return;
+        }
         Node* expr_node = stmt_node->children.back();
         string typ = evaluate_expression_type(expr_node, scope);
         if (typ != id_sym->type){
@@ -275,19 +276,6 @@ explore_node(Node* node, ST* scope)
                 error("18 Invalid return type, Cannot convert " + symbol->type + " to " + type->value + " in method " + node->value);
         }
     } 
-    else if(node->type == "Variable" || node->type == "Parameter"){ /* Skip variable and parameter declarations */ return; }
-    else if(node->type == "Function Call") 
-    {
-        // evaluate_statement(node, scope);
-        return;
-    }
-    else if(node->type == "Identifier")
-    {
-        Symbol* sym = scope->find_symbol(node->value);
-        if(sym == nullptr)
-            error("19 Cannot find symbol " + node->value + " in scope (" + scope->name + ")");
-        return;
-    }
     else if(node->type == "Statement List")
     {    
         for(auto n = node->children.begin(); n != node->children.end(); n++)
@@ -295,14 +283,20 @@ explore_node(Node* node, ST* scope)
             
         return;
     }
-    else {
-        //std::cout << "Exploring node " << node->type << "\n";
+    else if(node->type == "Identifier")
+    {
+        std::cout << "Looking for identifiers, but I think this might be a case that is not used, so if you see this message then I was very wrong and should most likely get an F on this assignment.\n";
+        Symbol* sym = scope->find_symbol(node->value);
+        if(sym == nullptr)
+            error("19 Cannot find symbol " + node->value + " in scope (" + scope->name + ")");
+        return;
     }
+    else if(node->type == "Variable")  { /* Skip variable and parameter declarations */ return; }
+    else if(node->type == "Parameter") { /* Skip variable and parameter declarations */ return; }
+    else if(node->type == "Function Call") { /* evaluate_statement(node, scope); */ return; }
 
     for(auto c = node->children.begin(); c != node->children.end(); c++)
-    {
         explore_node((*c), scope);
-    }
 }
 
 void
