@@ -1,16 +1,16 @@
-class Main {
-   public static void main(String[] args){
-      System.out.println(5);
-      BigBrain.run();
-   }
+class Factorial{
+    public static void main(String[] a){
+		System.out.println(5);
+    }
 }
 
-class BigBrain{
-   public void run()
-   {
-      int[] a;
-      a = new int[4];
-      a[a.length-2] = 0;
-      System.out.println(a.length);
-   }
+class Fac {
+    public int ComputeFac(int num){
+		int num_aux ;
+		if (num < 1)
+			num_aux = 1 ;
+		else 
+			num_aux = num * (this.ComputeFac(num-1));
+		return num_aux ;
+    }
 }

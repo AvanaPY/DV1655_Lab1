@@ -12,6 +12,12 @@
 
 namespace Semantic {
 
+
+string evaluate_function_call(Node* node, ST* scope);
+string evaluate_expression_type(Node* node, ST* scope);
+void evaluate_statement(Node* node, ST* scope);
+void explore_node(Node* node, ST* scope);
+
 void 
 error(string err)
 {
@@ -21,7 +27,6 @@ error(string err)
 string
 evaluate_function_call(Node* node, ST* scope)
 {
-    
     std::list<Node*>::iterator it = node->children.begin();
     Node* id1 = *it; std::advance(it, 1);
     Node* id2 = *it;  std::advance(it, 1);
@@ -80,7 +85,7 @@ evaluate_function_call(Node* node, ST* scope)
 
     for(int i = 0; i < param_count; i++)
     {
-        string arg_type = (*arg_it)->type;
+        string arg_type = evaluate_expression_type(*arg_it, scope);
         if(arg_type == "Identifier")
         {
             Symbol* s = org_scope->find_symbol((*arg_it)->value);
@@ -180,6 +185,10 @@ evaluate_expression_type(Node* expr_node, ST* scope)
         else if(sym->type == "Int[]")
             return "Int";
         return "Unknown";
+    }
+    else if(expr_node->type == "Statement")
+    {
+        return evaluate_expression_type(expr_node->children.front(), scope);
     }
     else {
         error("2 Expression Evaluation: " + expr_node->type + " is not implemented.");
