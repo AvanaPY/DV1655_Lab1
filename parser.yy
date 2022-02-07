@@ -350,7 +350,7 @@ Expression          :   Expression AND Expression {
                                 $$->children.push_back($3);
                             }
                     |   Expression DOT LENGTH {
-                                $$ = new Node("Length Of", "");
+                                $$ = new Node("LENGTH", "");
                                 $$->children.push_back($1);
                             }
                     |   Expression DOT Identifier LP FunctionArgumentList RP{

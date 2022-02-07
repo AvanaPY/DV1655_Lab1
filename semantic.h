@@ -171,6 +171,16 @@ evaluate_expression_type(Node* expr_node, ST* scope)
         }
         return "Int[]";
     }
+    else if(expr_node->type == "LENGTH")
+    {
+        Node* identifier = expr_node->children.front();
+        Symbol* sym = scope->find_symbol(identifier->value);
+        if(sym == nullptr)
+            error("Cannot find symbol " + identifier->value);
+        else if(sym->type == "Int[]")
+            return "Int";
+        return "Unknown";
+    }
     else {
         error("2 Expression Evaluation: " + expr_node->type + " is not implemented.");
     }
@@ -241,13 +251,9 @@ evaluate_statement(Node* stmt_node, ST* scope)
         if(identifier->type == "Int")
             return;
 
-        Symbol* sym = scope->find_symbol(identifier->value);
-        if(sym == nullptr) {
-            error("7 Cannot find symbol " + identifier->value + " in scope (" + scope->name + ")");
-            return;
-        }
-        if(sym->type != "Int"){
-            error("8 Cannot print non-integer values");
+        string expr_type = evaluate_expression_type(identifier, scope);
+        if(expr_type != "Int"){
+            error("8 Cannot print type " + expr_type + ", expected Integer");
             return;
         }
     }
@@ -284,11 +290,10 @@ evaluate_statement(Node* stmt_node, ST* scope)
             error("Cannot assign non-integer value to type int[]");
     }
     else if(stmt_node->value == "Empty")
-    {
-        return;
-    }
+    { return; }
     else {
-        error("13 Statement Evaluation : " + stmt_node->type + " is not implemented");
+        evaluate_expression_type(stmt_node, scope);
+        //error("13 Statement Evaluation : " + stmt_node->type + " is not implemented");
     }
 }
 

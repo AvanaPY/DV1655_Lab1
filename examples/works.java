@@ -9,7 +9,8 @@ class BigBrain{
    public void run()
    {
       int[] a;
-      a = new int[BigBrain];
-      a[2] = 0;
+      a = new int[4];
+      a[a.length-2] = 0;
+      System.out.println(a.length);
    }
 }
