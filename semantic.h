@@ -151,7 +151,25 @@ evaluate_expression_type(Node* expr_node, ST* scope)
     }
     else if(expr_node->type == "Function Call")
     {
-        return evaluate_function_call(expr_node, scope);
+        string typ = evaluate_function_call(expr_node, scope);
+        return typ;
+    }
+    else if(expr_node->type == "new()")
+    {
+        Node* id_node = *expr_node->children.begin();
+        return id_node->value;
+    }
+    else if(expr_node->type == "new[]")
+    {
+        Node* array_len_node = expr_node->children.front();
+        if(array_len_node->type != "Int")
+        {
+            if(array_len_node->type == "Identifier")
+                error(array_len_node->value + " is an invalid type for array length assignment, expected Integer");
+            else
+                error(array_len_node->type + " is an invalid type for array length assignment, expected Integer");
+        }
+        return "Int[]";
     }
     else {
         error("2 Expression Evaluation: " + expr_node->type + " is not implemented.");
@@ -253,13 +271,9 @@ evaluate_statement(Node* stmt_node, ST* scope)
 
         Symbol* id_sym = scope->find_symbol(identifier->value);
         if(id_sym == nullptr)
-        {
             error("12.4 Cannot find symbol " + identifier->value);
-        } 
         else if(id_sym->type != "Int[]")
-        {
             error("Cannot index assign non-array type (" + id_sym->type + ")");
-        }
 
         string index_expr_type = evaluate_expression_type(assign_index_node, scope);
         if(index_expr_type != "Int")
@@ -298,19 +312,22 @@ explore_node(Node* node, ST* scope)
         Node* return_type = node->children.back();
         Node* type = node->children.front();
 
+        type = type->children.front();
+        string method_type = type->type == "Identifier" ? type->value : type->type;
         if(return_type->value != "Identifier"){
-            if(return_type->value != type->value)
-                error("16 Invalid return type, Cannot convert " + return_type->value + " to " + type->value + " in method " + node->value);
-
-        } else {
+            if(return_type->value != method_type)
+                error("16 Invalid return type, Cannot convert " + return_type->value + " to " + method_type + " in method " + node->value);
+        } 
+        else {
             Node* identifier = return_type->children.front();
             Symbol* symbol = scope->find_symbol(identifier->value);
 
             if(symbol == nullptr)
                 error("17 Cannot find symbol " + identifier->value + " in scope (" + scope->name + ")");
-            else if(type->value != symbol->type)
-                error("18 Invalid return type, Cannot convert " + symbol->type + " to " + type->value + " in method " + node->value);
+            else if(method_type != symbol->type)
+                error("18 Invalid return type, Cannot convert " + symbol->type + " to " + method_type + " in method " + node->value);
         }
+        
     } 
     else if(node->type == "Statement List")
     {    
@@ -322,8 +339,8 @@ explore_node(Node* node, ST* scope)
     else if(node->type == "Identifier")
     {
         // This part might mostly be to catch return statements where we return an identifier
-        std::cout << "Looking for identifiers, but I think this might be a case that is not used, so if you see this message then I was very wrong and should most likely get an F on this assignment.";
-        std::cout << " (" << node->type << ", " << node->value << ")\n";
+        // std::cout << "Looking for identifiers, but I think this might be a case that is not used, so if you see this message then I was very wrong and should most likely get an F on this assignment.";
+        // std::cout << " (" << node->type << ", " << node->value << ")\n";
         Symbol* sym = scope->find_symbol(node->value);
         if(sym == nullptr)
             error("19 Cannot find symbol " + node->value + " in scope (" + scope->name + ")");

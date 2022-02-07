@@ -86,7 +86,11 @@ Goal                :   MainClass OptionalClassList {
 MainClass           : CLASS Identifier LMP PUBLIC STATIC VOID MAIN LP STRING LHKP RHKP Identifier RP LMP StatementList RMP RMP {
                                                                     $$ = new Node("MainClass", $2->value);
                                                                     Node* n = new Node("Method", "Main");
-                                                                    n->children.push_back(new Node("Type", "Void"));
+
+                                                                    Node* type = new Node("Type", "");
+                                                                    type->children.push_back(new Node("Void", ""));
+
+                                                                    n->children.push_back(type);
                                                                     n->children.push_back($15);
                                                                     n->children.push_back(new Node("Returns", "Void"));
                                                                     $$->children.push_back(n);
@@ -172,14 +176,21 @@ MethodList          :   MethodList MethodDeclaration {
 
 MethodDeclaration   :   PUBLIC VOID Identifier LP MethodParameterList RP LMP MethodBodyDeclaration RMP {
                             $$ = new Node("Method", $3->value);
-                            $$->children.push_back(new Node("Type", "Void"));
+
+                            Node* type_node = new Node("Type", "");
+                            type_node->children.push_back(new Node("Void", ""));
+
+                            $$->children.push_back(type_node);
                             $$->children.push_back($5);
                             $$->children.push_back($8);
                             $$->children.push_back(new Node("Returns", "Void"));
                         }
                     |   PUBLIC Type Identifier LP MethodParameterList RP LMP MethodBodyDeclaration RETURN Expression SEMICOLON RMP {
                             $$ = new Node("Method", $3->value);
-                            $$->children.push_back(new Node("Type", $2->type));
+                            Node* type_node = new Node("Type", "");
+                            type_node->children.push_back($2);
+
+                            $$->children.push_back(type_node);
                             $$->children.push_back($5);
                             $$->children.push_back($8);
 
@@ -288,98 +299,98 @@ Statement           :   LMP StatementList RMP {
                         }
                     ;
 
-Expression          : Expression AND Expression {
+Expression          :   Expression AND Expression {
                                 $$ = new Node("AND", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($3);
                             }
-                    | Expression OR Expression {
+                    |   Expression OR Expression {
                                 $$ = new Node("OR", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($3);
                             }
-                    | Expression LT Expression {
+                    |   Expression LT Expression {
                                 $$ = new Node("LT", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($3);
                             }
-                    | Expression GT Expression {
+                    |   Expression GT Expression {
                                 $$ = new Node("GT", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($3);
                             }
-                    | Expression EQ Expression {
+                    |   Expression EQ Expression {
                                 $$ = new Node("EQ", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($3);
                             }
-                    | Expression PLUSOP Expression {
+                    |   Expression PLUSOP Expression {
                                 $$ = new Node("PLUS", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($3);
                             }
-                    | Expression MINOP Expression {
+                    |   Expression MINOP Expression {
                                 $$ = new Node("MINUS", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($3);
                             }
-                    | Expression MULOP Expression {
+                    |   Expression MULOP Expression {
                                 $$ = new Node("MULT", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($3);
                             }
-                    | Expression DIVOP Expression {
+                    |   Expression DIVOP Expression {
                                 $$ = new Node("DIV", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($3);
                             }
-                    | Expression LHKP Expression RHKP {
+                    |   Expression LHKP Expression RHKP {
                                 $$ = new Node("Indexing", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($3);
                             }
-                    | Expression DOT LENGTH {
+                    |   Expression DOT LENGTH {
                                 $$ = new Node("Length Of", "");
                                 $$->children.push_back($1);
                             }
-                    | Expression DOT Identifier LP FunctionArgumentList RP{
+                    |   Expression DOT Identifier LP FunctionArgumentList RP{
                                 $$ = new Node("Function Call", "");
                                 $$->children.push_back($1);
                                 $$->children.push_back($3);
                                 $$->children.push_back($5);
                             }
-                    | NEW T_Int LHKP Expression RHKP{
+                    |   NEW T_Int LHKP Expression RHKP{
                                 $$ = new Node("new[]", $2);
                                 $$->children.push_back($4);
                             }
-                    | NEW Identifier LP RP{
+                    |   NEW Identifier LP RP{
                                 $$ = new Node("new()", "");
                                 $$->children.push_back($2);
                             }
-                    | NOT Expression {
+                    |   NOT Expression {
                                 $$ = new Node("NOT", "");
                                 $$->children.push_back($2);
                             }
-                    | LP Expression RP{
+                    |   LP Expression RP{
                                 $$ = new Node("Statement", "");
                                 $$->children.push_back($2);
                             }
-                    | Identifier {
+                    |   Identifier {
                                 $$ = new Node("Identifier", $1->value);
                             }
-                    | INTEGER_LITERAL{
+                    |   INTEGER_LITERAL{
                                 $$ = new Node("Int", $1);
                             }
                     |   MINOP INTEGER_LITERAL {
                                 $$ = new Node("Int", "-" + $2);
                         }
-                    | T_True{
+                    |   T_True{
                                 $$ = new Node("Bool", $1);
                             }
-                    | T_False {
+                    |   T_False {
                                 $$ = new Node("Bool", $1);
                             }
-                    | THIS {
+                    |   THIS {
                                 $$ = new Node("THIS", "");
                             }
                     ;

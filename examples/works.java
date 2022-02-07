@@ -6,14 +6,10 @@ class Main {
 }
 
 class BigBrain{
-   int[] var;
    public void run()
    {
-      this.key();
-      var[this.key()] = 0;
-   }
-   public int key()
-   {
-      return 0;
+      int[] a;
+      a = new int[BigBrain];
+      a[2] = 0;
    }
 }

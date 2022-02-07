@@ -70,9 +70,12 @@ public:
             }
             else if(c->type == "Method")
             {
-                Symbol* new_symbol = new Symbol(c->value, c->type, scope->name, (*c->children.begin())->value);
-                scope->add_symbol(new_symbol);
+                Node* method_type = c->children.front()->children.front();
+                string type = method_type->type == "Identifier" ? method_type->value : method_type->type;  
 
+                Symbol* new_symbol = new Symbol(c->value, c->type, scope->name, type);
+                scope->add_symbol(new_symbol);
+                
                 // Since it's a method, create a new Symbol Table
                 ST* st = new ST(c->value);
                 st->parent = scope;
@@ -83,8 +86,15 @@ public:
             {
                 Node* identifier = c->children.front();
                 Node* type       = c->children.back();
-                Symbol* var_symbol = new Symbol(identifier->value, type->type, scope->name, "Variable");
-                scope->add_symbol(var_symbol);
+                if(type->type == "Identifier")
+                {
+                    Symbol* var_symbol = new Symbol(identifier->value, type->value, scope->name, "Variable");
+                    scope->add_symbol(var_symbol);
+                } else
+                {
+                    Symbol* var_symbol = new Symbol(identifier->value, type->type, scope->name, "Variable");
+                    scope->add_symbol(var_symbol);
+                }
             }
             else if(c->type == "Parameter") 
             {
