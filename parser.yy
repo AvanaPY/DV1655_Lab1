@@ -294,9 +294,6 @@ Statement           :   LMP StatementList RMP {
                                 $$->children.push_back($3);
                                 $$->children.push_back($6);
                             }
-                    |   Expression SEMICOLON {
-                            $$ = $1;
-                        }
                     ;
 
 Expression          :   Expression AND Expression {

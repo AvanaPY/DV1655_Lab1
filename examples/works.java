@@ -1,17 +1,27 @@
-class Main{
-    public static void main(String[] a){
-       new Element();
-    }
+class Main 
+{
+   public static void main(String[] args)
+   {
+      System.out.println(BigBrain.main(1, 2));
+   }
 }
 
-class Element {
-   public Element abc(){
+class BigBrain 
+{
+   public int abc(){
+      return 0;
+   }
+   public int main(int a, int b)
+   {
       int[] var;
-      int sz;
-      sz = 1;
-      var = new int[sz];
-      var[sz] = 0;
-      System.out.println(var[sz]);
-      return new Element();
+      int a;
+
+      var = new int[5];
+      var[4] = this.v();
+      a = var[4];
+      return a + b;
+   }
+   public int v(){
+      return 0;
    }
 }
