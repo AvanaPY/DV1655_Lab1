@@ -5,6 +5,9 @@ class Main
       System.out.println(BigBrain.main(1, 2));
    }
 }
+
+class Element{}
+
 class BigBrain 
 {
    int a;
@@ -19,6 +22,6 @@ class BigBrain
    }
    public int v(){
       int a;
-      return d;
+      return 0;
    }
 }

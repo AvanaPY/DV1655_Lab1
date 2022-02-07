@@ -28,8 +28,8 @@ int main(int argc, char **argv)
     if(!parser.parse()) {
         ST* symbol_table = new ST("Root");
         symbol_table->explore(root);
+        // symbol_table->print_table();
       
-        symbol_table->print_table();
         Semantic::semantic_analysis(root, symbol_table);
         // root->print_tree();
         root->generate_tree();

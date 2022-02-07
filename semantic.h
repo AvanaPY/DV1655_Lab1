@@ -13,6 +13,7 @@
 
 namespace Semantic {
 
+bool errored;
 string evaluate_function_call(Node* node, ST* scope);
 string evaluate_expression_type(Node* node, ST* scope);
 void evaluate_statement(Node* node, ST* scope);
@@ -22,6 +23,7 @@ void
 error(string err)
 {
     std::cout << "Semantic error: " << err << "\n";
+    errored = true;
 }
 
 string
@@ -454,9 +456,10 @@ void
 semantic_analysis(Node* root, ST* symbols)
 {
     explore_node(root, symbols);
-
-    std::cout << "\n";
     verify_identifier_types(root, symbols);
+
+    if(!errored)
+        std::cout << "No errors, your code is beautiful just like you <3\n";
 }
 
 }
