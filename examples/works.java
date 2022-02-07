@@ -1,16 +1,23 @@
-class Factorial{
+class Main{
     public static void main(String[] a){
-		System.out.println(5);
+		System.out.println(new Fac().calc(1, 2, 3, 4));
     }
 }
 
 class Fac {
-    public int ComputeFac(int num){
-		int num_aux ;
-		if (num < 1)
-			num_aux = 1 ;
-		else 
-			num_aux = num * (this.ComputeFac(num-1));
-		return num_aux ;
-    }
+   public void yeee(){
+
+   }
+   public int calc(int a, int b, int c, int d){
+      return a + b + c + d;
+   }
+   public int abc()
+   {
+      int a;
+      return a;
+   }
+   public boolean a()
+   {
+      return false;
+   }
 }

@@ -34,16 +34,20 @@ evaluate_function_call(Node* node, ST* scope)
     ST* org_scope = scope;
 
     // If the first identifier in a function call is THIS then we don't have to update our scope
-    if(id1->type != "THIS")
+    if(id1->type == "THIS")
     {
-        ST* id1_scope = scope->find_scope(id1->value);
+        scope = scope->parent;
+    }  
+    else {
+        string expr_type = evaluate_expression_type(id1, scope);
+
+        ST* id1_scope = scope->find_scope(expr_type);
         if(id1_scope == nullptr) {
-            error("9 Cannot find symbol " + id1->value + " in scope (" + scope->name + ")");
+            error("9 Cannot find scope " + expr_type + " in scope (" + scope->name + ")");
             return "Unknown";
         }
+
         scope = id1_scope;
-    }  else {
-        scope = scope->parent;
     }
 
     // Find the symbol in the current scope
@@ -94,6 +98,7 @@ evaluate_function_call(Node* node, ST* scope)
             else
                 arg_type = s->type;
         }
+
 
         if((*param_it)->type != arg_type){
             error("12.3 Cannot match arguments " + (*param_it)->type + " to " + arg_type);
@@ -150,6 +155,8 @@ evaluate_expression_type(Node* expr_node, ST* scope)
         Symbol* sym = scope->find_symbol(expr_node->value);
         if(sym == nullptr)
             error("1 Cannot find symbol " + expr_node->value + " in scope (" + scope->name + ")");
+        else if(sym->type == "Class")
+            return sym->symbol;
         else
             return sym->type;
         return "Unknown";
@@ -323,24 +330,15 @@ explore_node(Node* node, ST* scope)
             error("15 Cannot find method " + node->value + " in scope " + scope->name);
         scope = child;
 
+        Node* type = node->children.front()->children.front();
         Node* return_type = node->children.back();
-        Node* type = node->children.front();
+        
+        if(return_type->value == "Void")
+            return;
 
-        type = type->children.front();
-        string method_type = type->type == "Identifier" ? type->value : type->type;
-        if(return_type->value != "Identifier"){
-            if(return_type->value != method_type)
-                error("16 Invalid return type, Cannot convert " + return_type->value + " to " + method_type + " in method " + node->value);
-        } 
-        else {
-            Node* identifier = return_type->children.front();
-            Symbol* symbol = scope->find_symbol(identifier->value);
-
-            if(symbol == nullptr)
-                error("17 Cannot find symbol " + identifier->value + " in scope (" + scope->name + ")");
-            else if(method_type != symbol->type)
-                error("18 Invalid return type, Cannot convert " + symbol->type + " to " + method_type + " in method " + node->value);
-        }
+        string expr_type = evaluate_expression_type(return_type->children.front(), scope);
+        if(type->type != expr_type)
+            error("Cannot convert " + expr_type + " to " + type->type + " in method " + scope->name);
         
     } 
     else if(node->type == "Statement List")

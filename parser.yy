@@ -194,7 +194,7 @@ MethodDeclaration   :   PUBLIC VOID Identifier LP MethodParameterList RP LMP Met
                             $$->children.push_back($5);
                             $$->children.push_back($8);
 
-                            Node* return_node = new Node("Returns", $10->type);
+                            Node* return_node = new Node("Returns", "Expression");
                             return_node->children.push_back($10);
                             $$->children.push_back(return_node);
                         }

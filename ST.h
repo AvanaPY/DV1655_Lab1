@@ -100,7 +100,9 @@ public:
             {
                 Node* type       = c->children.front();
                 Node* identifier = c->children.back();
-                Symbol* var_symbol = new Symbol(identifier->value, type->type, scope->name, "Param");
+                Symbol* var_symbol = new Symbol(identifier->value, 
+                                                type->type == "Identifier" ? type->value : type->type, 
+                                                scope->name, "Param");
                 scope->add_symbol(var_symbol);
             }
             else {
