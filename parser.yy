@@ -41,7 +41,7 @@
 %token COMMA SEMICOLON 
 
 %left PLUSOP MINOP 
-%left DIVOP MULOP  
+%left DIVOP MULOP
 
 %left AND
 %left OR

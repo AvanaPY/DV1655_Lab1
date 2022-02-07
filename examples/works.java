@@ -6,18 +6,14 @@ class Main {
 }
 
 class BigBrain{
-   int var1;
+   int[] var;
    public void run()
    {
-      int a;
-      int b;
-      int c;
-      int d;
-      boolean e;
-      f = 5;
-      {{{{{{{e=false;}}}}}}}
+      this.key();
+      var[this.key()] = 0;
    }
-   public void run2(int a, int b, int[] c)
+   public int key()
    {
+      return 0;
    }
 }

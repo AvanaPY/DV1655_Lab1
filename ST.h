@@ -70,7 +70,7 @@ public:
             }
             else if(c->type == "Method")
             {
-                Symbol* new_symbol = new Symbol(c->value, "Method", scope->name, "Identifier");
+                Symbol* new_symbol = new Symbol(c->value, c->type, scope->name, (*c->children.begin())->value);
                 scope->add_symbol(new_symbol);
 
                 // Since it's a method, create a new Symbol Table

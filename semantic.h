@@ -19,6 +19,87 @@ error(string err)
 }
 
 string
+evaluate_function_call(Node* node, ST* scope)
+{
+    
+    std::list<Node*>::iterator it = node->children.begin();
+    Node* id1 = *it; std::advance(it, 1);
+    Node* id2 = *it;  std::advance(it, 1);
+    Node* args = *it;
+    ST* org_scope = scope;
+
+    // If the first identifier in a function call is THIS then we don't have to update our scope
+    if(id1->type != "THIS")
+    {
+        ST* id1_scope = scope->find_scope(id1->value);
+        if(id1_scope == nullptr) {
+            error("9 Cannot find symbol " + id1->value + " in scope (" + scope->name + ")");
+            return "Unknown";
+        }
+        scope = id1_scope;
+    }  else {
+        scope = scope->parent;
+    }
+
+    // Find the symbol in the current scope
+    Symbol* sym = scope->find_local_symbol(id2->value);
+    if(sym == nullptr){
+        error("10 Cannot find symbol " + id2->value + " in scope (" + scope->name + ")");
+        return "Unknown";
+    }
+    
+    // And make sure it is a method, we cannot call on a non-method type
+    if(sym->type != "Method")
+    {
+        error("11 Symbol " + sym->symbol + " is not a method");
+        return "Unknown";
+    }
+
+    ST* method_scope = scope->find_scope(sym->symbol);
+    if(method_scope == nullptr){
+        error("12 Cannot find a scope for " + sym->symbol);
+        return "Unknown";
+    }
+
+    scope = method_scope;
+
+    int input_arg_count = node->children.back()->children.size();
+    int param_count = scope->num_param_symbols();
+
+    if(input_arg_count != param_count)
+    {
+        error("12.1 Arguments and parameters not matching in function call. Expected: " + to_string(param_count) + ", Got: " + to_string(input_arg_count));
+        return "Unknown";
+    }
+
+    list<Symbol*>* params = new list<Symbol *>();
+    scope->get_params(params);
+
+    auto param_it = params->begin();
+    auto arg_it   = node->children.back()->children.begin();
+
+    for(int i = 0; i < param_count; i++)
+    {
+        string arg_type = (*arg_it)->type;
+        if(arg_type == "Identifier")
+        {
+            Symbol* s = org_scope->find_symbol((*arg_it)->value);
+            if(s == nullptr)
+                error("12.2 Cannot find symbol " + s->symbol);
+            else
+                arg_type = s->type;
+        }
+
+        if((*param_it)->type != arg_type){
+            error("12.3 Cannot match arguments " + (*param_it)->type + " to " + arg_type);
+        }
+        std::advance(param_it, 1);
+        std::advance(arg_it, 1);
+    }
+    return sym->attr;
+}
+
+string
 evaluate_expression_type(Node* expr_node, ST* scope)
 {
     if (expr_node->type == "PLUS" || expr_node->type == "MINUS" || expr_node->type == "MULT" || expr_node->type == "DIV")
@@ -67,6 +148,10 @@ evaluate_expression_type(Node* expr_node, ST* scope)
         else
             return sym->type;
         return "Unknown";
+    }
+    else if(expr_node->type == "Function Call")
+    {
+        return evaluate_function_call(expr_node, scope);
     }
     else {
         error("2 Expression Evaluation: " + expr_node->type + " is not implemented.");
@@ -150,91 +235,42 @@ evaluate_statement(Node* stmt_node, ST* scope)
     }
     else if(stmt_node->type == "Function Call")
     {
-        std::list<Node*>::iterator it = stmt_node->children.begin();
-        Node* id1 = *it; std::advance(it, 1);
-        Node* id2 = *it;  std::advance(it, 1);
-        Node* args = *it;
-        ST* org_scope = scope;
-
-        // If the first identifier in a function call is THIS then we don't have to update our scope
-        if(id1->type != "THIS")
-        {
-            ST* id1_scope = scope->find_scope(id1->value);
-            if(id1_scope == nullptr) {
-                error("9 Cannot find symbol " + id1->value + " in scope (" + scope->name + ")");
-                return;
-            }
-            scope = id1_scope;
-        }  else {
-            scope = scope->parent;
-        }
-
-        // Find the symbol in the current scope
-        Symbol* sym = scope->find_local_symbol(id2->value);
-        if(sym == nullptr){
-            error("10 Cannot find symbol " + id2->value + " in scope (" + scope->name + ")");
-            return;
-        }
-        
-        // And make sure it is a method, we cannot call on a non-method type
-        if(sym->type != "Method")
-        {
-            error("11 Symbol " + sym->symbol + " is not a method");
-            return;
-        }
-
-        ST* method_scope = scope->find_scope(sym->symbol);
-        if(method_scope == nullptr){
-            error("12 Cannot find a scope for " + sym->symbol);
-            return;
-        }
-
-        scope = method_scope;
-
-        int input_arg_count = stmt_node->children.back()->children.size();
-        int param_count = scope->num_param_symbols();
-
-        if(input_arg_count != param_count)
-        {
-            error("12.1 Arguments and parameters not matching in function call. Expected: " + to_string(param_count) + ", Got: " + to_string(input_arg_count));
-            return;
-        }
-
-        list<Symbol*>* params = new list<Symbol *>();
-        scope->get_params(params);
-
-        auto param_it = params->begin();
-        auto arg_it   = stmt_node->children.back()->children.begin();
-
-        for(int i = 0; i < param_count; i++)
-        {
-            string arg_type = (*arg_it)->type;
-            if(arg_type == "Identifier")
-            {
-                Symbol* s = org_scope->find_symbol((*arg_it)->value);
-                if(s == nullptr)
-                    error("12.2 Cannot find symbol " + s->symbol);
-                else
-                    arg_type = s->type;
-            }
-
-            if((*param_it)->type != arg_type){
-                error("12.3 Cannot match arguments " + (*param_it)->type + " to " + arg_type);
-            }
-            std::advance(param_it, 1);
-            std::advance(arg_it, 1);
-        }
-
-        return;
-    }
-    else if(stmt_node->value == "Empty")
-    {
+        evaluate_function_call(stmt_node, scope);
         return;
     }
     else if(stmt_node->type == "Statement List")
     {
         for(auto n = stmt_node->children.begin(); n != stmt_node->children.end(); n++)
             evaluate_statement((*n), scope);
+        return;
+    }
+    else if(stmt_node->type == "Assign[]") 
+    {
+        auto it = stmt_node->children.begin();
+        Node* identifier = *it;        std::advance(it, 1);
+        Node* assign_index_node = *it; std::advance(it, 1);
+        Node* assign_value_node = *it;
+
+        Symbol* id_sym = scope->find_symbol(identifier->value);
+        if(id_sym == nullptr)
+        {
+            error("12.4 Cannot find symbol " + identifier->value);
+        } 
+        else if(id_sym->type != "Int[]")
+        {
+            error("Cannot index assign non-array type (" + id_sym->type + ")");
+        }
+
+        string index_expr_type = evaluate_expression_type(assign_index_node, scope);
+        if(index_expr_type != "Int")
+            error("Cannot index with non-integer value");
+
+        string assign_value_type = evaluate_expression_type(assign_value_node, scope);
+        if(assign_value_type != "Int")
+            error("Cannot assign non-integer value to type int[]");
+    }
+    else if(stmt_node->value == "Empty")
+    {
         return;
     }
     else {
@@ -285,7 +321,9 @@ explore_node(Node* node, ST* scope)
     }
     else if(node->type == "Identifier")
     {
-        std::cout << "Looking for identifiers, but I think this might be a case that is not used, so if you see this message then I was very wrong and should most likely get an F on this assignment.\n";
+        // This part might mostly be to catch return statements where we return an identifier
+        std::cout << "Looking for identifiers, but I think this might be a case that is not used, so if you see this message then I was very wrong and should most likely get an F on this assignment.";
+        std::cout << " (" << node->type << ", " << node->value << ")\n";
         Symbol* sym = scope->find_symbol(node->value);
         if(sym == nullptr)
             error("19 Cannot find symbol " + node->value + " in scope (" + scope->name + ")");
