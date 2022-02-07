@@ -6,10 +6,12 @@ class Main{
 
 class Element {
    public Element abc(){
-      Element e;
-      Element e2;
-      e = new Element();
-      e2 = this;
-      return e2;
+      int[] var;
+      int sz;
+      sz = 1;
+      var = new int[sz];
+      var[sz] = 0;
+      System.out.println(var[sz]);
+      return new Element();
    }
 }
