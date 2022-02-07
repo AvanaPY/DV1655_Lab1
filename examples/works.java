@@ -1,23 +1,15 @@
 class Main{
     public static void main(String[] a){
-		System.out.println(new Fac().calc(1, 2, 3, 4));
+       new Element();
     }
 }
 
-class Fac {
-   public void yeee(){
-
-   }
-   public int calc(int a, int b, int c, int d){
-      return a + b + c + d;
-   }
-   public int abc()
-   {
-      int a;
-      return a;
-   }
-   public boolean a()
-   {
-      return false;
+class Element {
+   public Element abc(){
+      Element e;
+      Element e2;
+      e = new Element();
+      e2 = this;
+      return e2;
    }
 }

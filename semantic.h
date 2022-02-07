@@ -89,7 +89,7 @@ evaluate_function_call(Node* node, ST* scope)
 
     for(int i = 0; i < param_count; i++)
     {
-        string arg_type = evaluate_expression_type(*arg_it, scope);
+        string arg_type = evaluate_expression_type(*arg_it, org_scope);
         if(arg_type == "Identifier")
         {
             Symbol* s = org_scope->find_symbol((*arg_it)->value);
@@ -98,7 +98,6 @@ evaluate_function_call(Node* node, ST* scope)
             else
                 arg_type = s->type;
         }
-
 
         if((*param_it)->type != arg_type){
             error("12.3 Cannot match arguments " + (*param_it)->type + " to " + arg_type);
@@ -188,7 +187,7 @@ evaluate_expression_type(Node* expr_node, ST* scope)
         Node* identifier = expr_node->children.front();
         Symbol* sym = scope->find_symbol(identifier->value);
         if(sym == nullptr)
-            error("Cannot find symbol " + identifier->value);
+            error("1.1 Cannot find symbol " + identifier->value);
         else if(sym->type == "Int[]")
             return "Int";
         return "Unknown";
@@ -196,6 +195,10 @@ evaluate_expression_type(Node* expr_node, ST* scope)
     else if(expr_node->type == "Statement")
     {
         return evaluate_expression_type(expr_node->children.front(), scope);
+    }
+    else if (expr_node->type == "THIS")
+    {
+        return scope->parent->name;
     }
     else {
         error("2 Expression Evaluation: " + expr_node->type + " is not implemented.");
@@ -217,7 +220,7 @@ evaluate_statement(Node* stmt_node, ST* scope)
         Node* expr_node = stmt_node->children.back();
         string typ = evaluate_expression_type(expr_node, scope);
         if (typ != id_sym->type){
-            error("4 Cannot match type " + id_sym->type + " to " + typ);
+            error("4 Cannot match type " + id_sym->type + " to " + typ + " on node (" + expr_node->type + " , " + expr_node->value + ")");
         }
     }
     else if(stmt_node->type == "IF") 
@@ -295,15 +298,15 @@ evaluate_statement(Node* stmt_node, ST* scope)
         if(id_sym == nullptr)
             error("12.4 Cannot find symbol " + identifier->value);
         else if(id_sym->type != "Int[]")
-            error("Cannot index assign non-array type (" + id_sym->type + ")");
+            error("12.5 Cannot index assign non-array type (" + id_sym->type + ")");
 
         string index_expr_type = evaluate_expression_type(assign_index_node, scope);
         if(index_expr_type != "Int")
-            error("Cannot index with non-integer value");
+            error("12.6 Cannot index with non-integer value");
 
         string assign_value_type = evaluate_expression_type(assign_value_node, scope);
         if(assign_value_type != "Int")
-            error("Cannot assign non-integer value to type int[]");
+            error("12.7 Cannot assign non-integer value to type int[]");
     }
     else if(stmt_node->value == "Empty")
     { return; }
@@ -332,13 +335,18 @@ explore_node(Node* node, ST* scope)
 
         Node* type = node->children.front()->children.front();
         Node* return_type = node->children.back();
-        
+
         if(return_type->value == "Void")
             return;
 
-        string expr_type = evaluate_expression_type(return_type->children.front(), scope);
-        if(type->type != expr_type)
-            error("Cannot convert " + expr_type + " to " + type->type + " in method " + scope->name);
+        string ret_expr_type = evaluate_expression_type(return_type->children.front(), scope);
+
+        if(type->type == "Identifier"){
+            if(type->value != ret_expr_type)
+                error("15.1 Cannot convert " + ret_expr_type + " to " + type->type + " in method " + scope->name);
+        }
+        else if(type->type != ret_expr_type)
+            error("15.1 Cannot convert " + ret_expr_type + " to " + type->type + " in method " + scope->name);
         
     } 
     else if(node->type == "Statement List")
