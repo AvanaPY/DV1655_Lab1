@@ -13,7 +13,6 @@
 
 namespace Semantic {
 
-
 string evaluate_function_call(Node* node, ST* scope);
 string evaluate_expression_type(Node* node, ST* scope);
 void evaluate_statement(Node* node, ST* scope);
@@ -422,9 +421,42 @@ explore_node(Node* node, ST* scope)
 }
 
 void
+verify_identifier_types(Node* node, ST* scope)
+{
+    if(node->type == "MainClass" || node->type == "Class") 
+    {
+        ST* child = scope->get_child(node->value);
+        if(child == nullptr)
+            error("14 Cannot find method " + node->value + " in scope " + scope->name);
+        scope = child;
+    }
+    else if(node->type == "Method")
+    {
+        ST* child = scope->get_child(node->value);
+        if(child == nullptr)
+            error("15 Cannot find method " + node->value + " in scope " + scope->name);
+        scope = child;
+    }
+    else if(node->type == "Identifier"){
+        Symbol* sym = scope->find_symbol(node->value);
+        if(sym == nullptr){
+            error("No symbol found for " + node->value);
+        }
+        return;
+    }
+    for(auto it = node->children.begin(); it != node->children.end(); it++)
+    {
+        verify_identifier_types(*it, scope);
+    }
+}
+
+void
 semantic_analysis(Node* root, ST* symbols)
 {
     explore_node(root, symbols);
+
+    std::cout << "\n";
+    verify_identifier_types(root, symbols);
 }
 
 }

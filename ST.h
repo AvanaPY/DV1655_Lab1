@@ -16,7 +16,7 @@ static int symbol_table_count = 0;
 class Symbol {
 public:
 	string symbol, type, scope, attr;
-    Symbol(string sy, string typ, string sc, string at) : symbol(sy), type(typ), scope(sc), attr(at){}
+    Symbol(string sy, string typ, string sc, string at) :  symbol(sy), type(typ), scope(sc), attr(at){}
 
     void print(){
         cout << "     (" << symbol << ", " << type << ", " << scope << ", " << attr << ")\n";
