@@ -6,6 +6,8 @@ class Main
    }
 }
 
+class Element{}
+
 class BigBrain 
 {
    int a;
