@@ -32,7 +32,7 @@ int main(int argc, char **argv)
       
         Semantic::semantic_analysis(root, symbol_table);
         // root->print_tree();
-        // root->generate_tree();
+        root->generate_tree();
     }
   
   return 0;

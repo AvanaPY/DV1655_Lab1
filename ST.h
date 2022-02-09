@@ -64,11 +64,20 @@ public:
                 Symbol* new_symbol = new Symbol(c->value, "Class", scope->name, "Identifier");
                 scope->add_symbol(new_symbol);
 
-                // Since it's a class, create a new Symbol Table
-                ST* st = new ST(c->value);
-                st->parent = scope;
-                scope->children.push_back(st);
-                explore_node(c, st);
+                Node* front = c->children.front();
+                std::cout << "Checking if " << c->value << " extends...\n";
+                if(front->type == "Class Extends")
+                {
+                    ST* st = scope->find_scope(front->value);
+                    std::cout << "Found parent scope " << st->name << "\n";
+                } else
+                {
+                    // Since it's a class, create a new Symbol Table
+                    ST* st = new ST(c->value);
+                    st->parent = scope;
+                    scope->children.push_back(st);
+                    explore_node(c, st);
+                }
             }
             else if(c->type == "Method")
             {

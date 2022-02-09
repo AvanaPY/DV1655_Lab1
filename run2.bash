@@ -20,7 +20,17 @@ REVERSE=$(tput smso)
 UNDERLINE=$(tput smul)
 normal=$(tput sgr0)
 
+printf "\n%10s" "${RED}Running some test files"
 for filename in ./semantics_tests/*
+do
+    printf "\n%10s" "${MAGENTA}Running "
+    printf "%40s\n" "${CYAN}$filename${POWDER_BLUE}"
+    ./compiler < $filename    
+done
+
+
+printf "\n%10s" "${RED}Running Cambrige Files"
+for filename in ./java/*
 do
     printf "\n%10s" "${MAGENTA}Running "
     printf "%40s\n" "${CYAN}$filename${POWDER_BLUE}"

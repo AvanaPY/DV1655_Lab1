@@ -8,10 +8,13 @@ class Main
 
 class BigBrain 
 {
-   public int main(boolean aboolean){
-      int[] a;
-      int b;
-      b = a[2];
+   int size;
+}
+
+class SmallBrain extends BigBrain
+{
+   int a;
+   public int b(){
       return 0;
    }
 }
