@@ -23,6 +23,6 @@ normal=$(tput sgr0)
 for filename in ./semantics_tests/*
 do
     printf "\n%10s" "${MAGENTA}Running "
-    printf "%40s\n" "${CYAN}$filename ${normal}"
+    printf "%40s\n" "${CYAN}$filename${POWDER_BLUE}"
     ./compiler < $filename    
 done
