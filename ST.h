@@ -84,24 +84,17 @@ public:
             }
             else if(c->type == "Variable")
             {
-                Node* identifier = c->children.front();
-                Node* type       = c->children.back();
-                if(type->type == "Identifier")
-                {
-                    Symbol* var_symbol = new Symbol(identifier->value, type->value, scope->name, "Variable");
-                    scope->add_symbol(var_symbol);
-                } else
-                {
-                    Symbol* var_symbol = new Symbol(identifier->value, type->type, scope->name, "Variable");
-                    scope->add_symbol(var_symbol);
-                }
+                Node* type       = c->children.front();
+                Node* identifier = c->children.back();
+                Symbol* var_symbol = new Symbol(identifier->value, type->value, scope->name, "Variable");
+                scope->add_symbol(var_symbol);
             }
             else if(c->type == "Parameter") 
             {
                 Node* type       = c->children.front();
                 Node* identifier = c->children.back();
                 Symbol* var_symbol = new Symbol(identifier->value, 
-                                                type->type == "Identifier" ? type->value : type->type, 
+                                                type->value,
                                                 scope->name, "Param");
                 scope->add_symbol(var_symbol);
             }

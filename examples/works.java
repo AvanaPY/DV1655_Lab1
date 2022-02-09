@@ -6,22 +6,23 @@ class Main
    }
 }
 
-class Element{}
-
 class BigBrain 
 {
    int a;
+   Element b;
    public int abc(){
       return 0;
    }
-   public int main(int a, int b)
+   public int main2(Element a, int b)
    {
       Element c;
+      int d;
       c = new Element();
       return 0;
    }
-   public int v(){
-      int a;
-      return 0;
+   public Element v(Element c){
+      Element e;
+      e = new Element();
+      return e;
    }
 }

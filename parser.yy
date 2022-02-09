@@ -159,8 +159,11 @@ VarList             :   VarList VarDeclaration {
 
 VarDeclaration      : Type Identifier SEMICOLON {
                             $$ = new Node("Variable", "");
+                            if($1->type == "Identifier")
+                                $$->children.push_back($1);
+                            else
+                                $$->children.push_back(new Node("Type", $1->type));
                             $$->children.push_back($2);
-                            $$->children.push_back($1);
                         }
                     ;
 
@@ -174,18 +177,7 @@ MethodList          :   MethodList MethodDeclaration {
                         }
                     ;
 
-MethodDeclaration   :   PUBLIC VOID Identifier LP MethodParameterList RP LMP MethodBodyDeclaration RMP {
-                            $$ = new Node("Method", $3->value);
-
-                            Node* type_node = new Node("Type", "");
-                            type_node->children.push_back(new Node("Void", ""));
-
-                            $$->children.push_back(type_node);
-                            $$->children.push_back($5);
-                            $$->children.push_back($8);
-                            $$->children.push_back(new Node("Returns", "Void"));
-                        }
-                    |   PUBLIC Type Identifier LP MethodParameterList RP LMP MethodBodyDeclaration RETURN Expression SEMICOLON RMP {
+MethodDeclaration   :   PUBLIC Type Identifier LP MethodParameterList RP LMP MethodBodyDeclaration RETURN Expression SEMICOLON RMP {
                             $$ = new Node("Method", $3->value);
                             Node* type_node = new Node("Type", "");
                             type_node->children.push_back($2);
@@ -233,7 +225,10 @@ MethodParameterList :  MethodParameterList COMMA MethodParameterDecl{
 
 MethodParameterDecl :   Type Identifier{
                             $$ = new Node("Parameter", "");
-                            $$->children.push_back($1);
+                            if($1->type == "Identifier")
+                                $$->children.push_back($1);
+                            else
+                                $$->children.push_back(new Node("Type", $1->type));
                             $$->children.push_back($2);
                         }
                     ;

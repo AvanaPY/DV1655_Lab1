@@ -18,6 +18,7 @@ string evaluate_function_call(Node* node, ST* scope);
 string evaluate_expression_type(Node* node, ST* scope);
 void evaluate_statement(Node* node, ST* scope);
 void explore_node(Node* node, ST* scope);
+void verify_variable_parameter_type(Node* var_node, ST* scope);
 
 void 
 error(string err)
@@ -365,6 +366,19 @@ evaluate_statement(Node* stmt_node, ST* scope)
 }
 
 void
+verify_variable_parameter_type(Node* var_node, ST* scope)
+{
+    Node* type = var_node->children.front();
+    Node* id   = var_node->children.back();
+    if(type->type == "Type")
+        return;
+    
+    Symbol* sym = scope->find_symbol(type->value);
+    if(sym == nullptr)
+        error("Cannot find symbol for type " + type->value + " (" + var_node->type + " " + id->value + " in scope " + scope->name + ")");
+}
+
+void
 explore_node(Node* node, ST* scope)
 {
     if(node->type == "MainClass" || node->type == "Class") 
@@ -404,6 +418,10 @@ explore_node(Node* node, ST* scope)
             
         return;
     }
+    else if(node->type == "Variable" || node->type == "Parameter")  {
+        verify_variable_parameter_type(node, scope);
+        return; 
+    }
     else if(node->type == "Identifier")
     {
         // This part might mostly be to catch return statements where we return an identifier
@@ -414,8 +432,6 @@ explore_node(Node* node, ST* scope)
             error("19 Cannot find symbol " + node->value + " in scope (" + scope->name + ")");
         return;
     }
-    else if(node->type == "Variable")  { /* Skip variable and parameter declarations */ return; }
-    else if(node->type == "Parameter") { /* Skip variable and parameter declarations */ return; }
     else if(node->type == "Function Call") { /* evaluate_statement(node, scope); */ return; }
 
     for(auto c = node->children.begin(); c != node->children.end(); c++)
@@ -423,40 +439,9 @@ explore_node(Node* node, ST* scope)
 }
 
 void
-verify_identifier_types(Node* node, ST* scope)
-{
-    if(node->type == "MainClass" || node->type == "Class") 
-    {
-        ST* child = scope->get_child(node->value);
-        if(child == nullptr)
-            error("14 Cannot find method " + node->value + " in scope " + scope->name);
-        scope = child;
-    }
-    else if(node->type == "Method")
-    {
-        ST* child = scope->get_child(node->value);
-        if(child == nullptr)
-            error("15 Cannot find method " + node->value + " in scope " + scope->name);
-        scope = child;
-    }
-    else if(node->type == "Identifier"){
-        Symbol* sym = scope->find_symbol(node->value);
-        if(sym == nullptr){
-            error("No symbol found for " + node->value);
-        }
-        return;
-    }
-    for(auto it = node->children.begin(); it != node->children.end(); it++)
-    {
-        verify_identifier_types(*it, scope);
-    }
-}
-
-void
 semantic_analysis(Node* root, ST* symbols)
 {
     explore_node(root, symbols);
-    verify_identifier_types(root, symbols);
 
     if(!errored)
         std::cout << "No errors, your code is beautiful just like you <3\n";

@@ -9,11 +9,13 @@ class Main {
 class Abcyeee extends Abc{
    int[] a;
    int b;
-   public void m(){
+   public int m(){
       int a:;
       int b^;
+      return b;
    }""
-   public void p(int a, int b){
+   public int p(int a, int b){
       a = true;
+      return 0;
    }; // This semi colon is here to give a syntax error
 }
