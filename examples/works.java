@@ -15,13 +15,14 @@ class BigBrain
    public int abc(){
       return 0;
    }
-   public int main2(Element a, int b)
+   public int main2(int a, int b)
    {
       Element c;
       int d;
       c = new Element();
       return 0;
    }
+   public int main3(){return 0;}
    public Element v(Element c){
       Element e;
       e = new Element();

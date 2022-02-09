@@ -11,6 +11,7 @@
 
 using namespace std;
 
+extern bool errored;
 static int symbol_table_count = 0;
 
 class Symbol {
@@ -46,6 +47,7 @@ public:
     void error(string err)
     {
         cout << "Symbol Error: " << err << "\n";
+        errored = true;
     }
 
     void explore(Node* root){

@@ -11,9 +11,10 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
+bool errored;
+
 namespace Semantic {
 
-bool errored;
 string evaluate_function_call(Node* node, ST* scope);
 string evaluate_expression_type(Node* node, ST* scope);
 void evaluate_statement(Node* node, ST* scope);
