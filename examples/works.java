@@ -2,30 +2,16 @@ class Main
 {
    public static void main(String[] args)
    {
-      System.out.println(BigBrain.main(1, 2));
+      System.out.println(BigBrain.main(true));
    }
 }
 
-class Element{}
-
 class BigBrain 
 {
-   int a;
-   Element b;
-   public int abc(){
+   public int main(boolean aboolean){
+      int[] a;
+      int b;
+      b = a[2];
       return 0;
-   }
-   public int main2(int a, int b)
-   {
-      Element c;
-      int d;
-      c = new Element();
-      return 0;
-   }
-   public int main3(){return 0;}
-   public Element v(Element c){
-      Element e;
-      e = new Element();
-      return e;
    }
 }

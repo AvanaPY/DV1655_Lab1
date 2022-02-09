@@ -204,6 +204,8 @@ evaluate_expression_type(Node* expr_node, ST* scope)
             error("1.1 Cannot find symbol " + identifier->value);
         else if(sym->type == "Int[]")
             return "Int";
+        else
+            error("Cannot call .length on non-int[] type");
         return T_UNKNOWN;
     }
     else if(expr_node->type == "Statement")
@@ -270,7 +272,7 @@ evaluate_statement(Node* stmt_node, ST* scope)
         Node* expr_node = stmt_node->children.back();
         string typ = evaluate_expression_type(expr_node, scope);
         if (typ != id_sym->type){
-            error("4 Cannot match type " + id_sym->type + " to " + typ + " on node (" + expr_node->type + " , " + expr_node->value + ")");
+            error("4 Cannot match type " + id_sym->type + " to " + typ + " in " + scope->name);
         }
     }
     else if(stmt_node->type == "IF") 
@@ -399,18 +401,16 @@ explore_node(Node* node, ST* scope)
         Node* type = node->children.front()->children.front();
         Node* return_type = node->children.back();
 
-        if(return_type->value == "Void")
-            return;
+        if(return_type->value != "Void"){
+            string ret_expr_type = evaluate_expression_type(return_type->children.front(), scope);
 
-        string ret_expr_type = evaluate_expression_type(return_type->children.front(), scope);
-
-        if(type->type == "Identifier"){
-            if(type->value != ret_expr_type)
+            if(type->type == "Identifier"){
+                if(type->value != ret_expr_type)
+                    error("15.1 Cannot convert " + ret_expr_type + " to " + type->type + " in method " + scope->name);
+            }
+            else if(type->type != ret_expr_type)
                 error("15.1 Cannot convert " + ret_expr_type + " to " + type->type + " in method " + scope->name);
         }
-        else if(type->type != ret_expr_type)
-            error("15.1 Cannot convert " + ret_expr_type + " to " + type->type + " in method " + scope->name);
-        
     } 
     else if(node->type == "Statement List")
     {    
