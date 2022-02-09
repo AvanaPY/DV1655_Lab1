@@ -15,7 +15,6 @@ MAGENTA=$(tput setaf 5)
 CYAN=$(tput setaf 6)
 WHITE=$(tput setaf 7)
 BRIGHT=$(tput bold)
-NORMAL=$(tput sgr0)
 BLINK=$(tput blink)
 REVERSE=$(tput smso)
 UNDERLINE=$(tput smul)
@@ -23,6 +22,7 @@ normal=$(tput sgr0)
 
 for filename in ./semantics_tests/*
 do
-    printf "\n%40s\n" "${CYAN}Running $filename ${normal}"
+    printf "\n%10s" "${MAGENTA}Running "
+    printf "%40s\n" "${CYAN}$filename ${normal}"
     ./compiler < $filename    
 done
