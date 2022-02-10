@@ -47,7 +47,7 @@ evaluate_function_call(Node* node, ST* scope)
 
         ST* id1_scope = scope->find_scope(expr_type);
         if(id1_scope == nullptr) {
-            error("9 Cannot find scope " + expr_type + " in scope (" + scope->name + ")");
+            error("15 Cannot find scope " + expr_type + " in scope (" + scope->name + ")");
             return T_UNKNOWN;
         }
 
@@ -57,20 +57,20 @@ evaluate_function_call(Node* node, ST* scope)
     // Find the symbol in the current scope
     Symbol* sym = scope->find_local_symbol(id2->value);
     if(sym == nullptr){
-        error("10 Cannot find symbol " + id2->value + " in scope (" + scope->name + ")");
+        error("16 Cannot find symbol " + id2->value + " in scope (" + scope->name + ")");
         return T_UNKNOWN;
     }
     
     // And make sure it is a method, we cannot call on a non-method type
     if(sym->type != "Method")
     {
-        error("11 Symbol " + sym->symbol + " is not a method");
+        error("17 Symbol " + sym->symbol + " is not a method");
         return T_UNKNOWN;
     }
 
     ST* method_scope = scope->find_scope(sym->symbol);
     if(method_scope == nullptr){
-        error("12 Cannot find a scope for " + sym->symbol);
+        error("18 Cannot find a scope for " + sym->symbol);
         return T_UNKNOWN;
     }
 
@@ -81,7 +81,7 @@ evaluate_function_call(Node* node, ST* scope)
 
     if(input_arg_count != param_count)
     {
-        error("12.1 Arguments and parameters not matching in function call. Expected: " + to_string(param_count) + ", Got: " + to_string(input_arg_count));
+        error("19 Arguments and parameters not matching in function call. Expected: " + to_string(param_count) + ", Got: " + to_string(input_arg_count));
         return T_UNKNOWN;
     }
 
@@ -98,13 +98,13 @@ evaluate_function_call(Node* node, ST* scope)
         {
             Symbol* s = org_scope->find_symbol((*arg_it)->value);
             if(s == nullptr)
-                error("12.2 Cannot find symbol " + s->symbol);
+                error("20.1 Cannot find symbol " + s->symbol);
             else
                 arg_type = s->type;
         }
 
         if((*param_it)->type != arg_type){
-            error("12.3 Cannot match argument " + (*param_it)->symbol + " of type " + (*param_it)->type + " to type " + arg_type + " in " + scope->name);
+            error("20.2 Cannot match argument " + (*param_it)->symbol + " of type " + (*param_it)->type + " to type " + arg_type + " in " + scope->name);
         }
         std::advance(param_it, 1);
         std::advance(arg_it, 1);
@@ -157,7 +157,7 @@ evaluate_expression_type(Node* expr_node, ST* scope)
     {
         Symbol* sym = scope->find_symbol(expr_node->value);
         if(sym == nullptr)
-            error("1 Cannot find symbol " + expr_node->value + " in scope (" + scope->name + ")");
+            error("10 Cannot find symbol " + expr_node->value + " in scope (" + scope->name + ")");
         else if(sym->type == "Class")
             return sym->symbol;
         else
@@ -183,16 +183,16 @@ evaluate_expression_type(Node* expr_node, ST* scope)
                 Symbol* sym = scope->find_symbol(array_len_node->value);
                 if(sym == nullptr)
                 {
-                    error("Cannot find symbol " + array_len_node->value);
+                    error("11.1 Cannot find symbol " + array_len_node->value);
                 } 
                 else
                 {
                     if(sym->type != "Int")
-                        error("1.1 " + array_len_node->type + " is an invalid type for array length assignment, expected Integer");
+                        error("11.2 " + array_len_node->type + " is an invalid type for array length assignment, expected Integer");
                 }
             }
             else
-                error("1.2 " + array_len_node->type + " is an invalid type for array length assignment, expected Integer");
+                error("11.3 " + array_len_node->type + " is an invalid type for array length assignment, expected Integer");
         }
         return "Int[]";
     }
@@ -201,12 +201,10 @@ evaluate_expression_type(Node* expr_node, ST* scope)
         Node* identifier = expr_node->children.front();
         Symbol* sym = scope->find_symbol(identifier->value);
         if(sym == nullptr)
-            error("1.1 Cannot find symbol " + identifier->value);
-        else if(sym->type == "Int[]")
-            return "Int";
-        else
-            error("Cannot call .length on non-int[] type");
-        return T_UNKNOWN;
+            error("12.1 Cannot find symbol " + identifier->value);
+        else if(sym->type != "Int[]")
+            error("12.2 Cannot call .length on type " + sym->type);
+        return "Int";
     }
     else if(expr_node->type == "Statement")
     {
@@ -223,12 +221,12 @@ evaluate_expression_type(Node* expr_node, ST* scope)
 
         Symbol* sym = scope->find_symbol(identifier->value);
         if(sym == nullptr){
-            error("1.2 Cannot find symbol " + identifier->value + " in method " + scope->name);
+            error("13.1 Cannot find symbol " + identifier->value + " in method " + scope->name);
             return T_UNKNOWN;
         }
         if(sym->type != "Int[]")
         {
-            error("1.3 Cannot index type " + sym->type + ", expected Int[]");
+            error("13.2 Cannot index type " + sym->type + ", expected Int[]");
             return T_UNKNOWN;
         }
         if(index->type == "Identifier")
@@ -236,24 +234,24 @@ evaluate_expression_type(Node* expr_node, ST* scope)
             Symbol* index_symbol = scope->find_symbol(index->value);
             if(index_symbol == nullptr)
             {
-                error("1.4 Cannot find symbol " + index->value + " in method " + scope->name);
+                error("13.3 Cannot find symbol " + index->value + " in method " + scope->name);
                 return T_UNKNOWN;
             }
             if(index_symbol->type != "Int")
             {
-                error("Cannot index with type " + index_symbol->type + ", expected Integer");
+                error("13.4 Cannot index with type " + index_symbol->type + ", expected Integer");
                 return T_UNKNOWN;
             }
         }
         else if(index->type != "Int")
         {
-            error("1.5 Cannot index with type " + index->type + ", expected Integer");
+            error("13.5 Cannot index with type " + index->type + ", expected Integer");
             return T_UNKNOWN;
         }
         return "Int";
     }
     else {
-        error("2 Expression Evaluation: " + expr_node->type + " is not implemented.");
+        error("14 Expression Evaluation: " + expr_node->type + " is not implemented.");
     }
     return T_UNKNOWN;
 }
@@ -266,13 +264,13 @@ evaluate_statement(Node* stmt_node, ST* scope)
         Node* identifier = stmt_node->children.front();
         Symbol* id_sym   = scope->find_symbol(identifier->value);
         if(id_sym == nullptr){
-            error("3 Cannot find symbol " + identifier->value + " in scope (" + scope->name + ")");
+            error("5 Cannot find symbol " + identifier->value + " in scope (" + scope->name + ")");
             return;
         }
         Node* expr_node = stmt_node->children.back();
         string typ = evaluate_expression_type(expr_node, scope);
         if (typ != id_sym->type){
-            error("4 Cannot match type " + id_sym->type + " to " + typ + " in " + scope->name);
+            error("5.1 Cannot match type " + id_sym->type + " to " + typ + " in " + scope->name);
         }
     }
     else if(stmt_node->type == "IF") 
@@ -281,7 +279,7 @@ evaluate_statement(Node* stmt_node, ST* scope)
         string cond_type = evaluate_expression_type(cond_node, scope);
 
         if(cond_type != "Bool")
-            error("5 Expression is not of type Bool in IF statement");
+            error("6 Expression is not of type Bool in IF statement");
 
         auto it = stmt_node->children.begin();
         std::advance(it, 1); Node* if_node = *it;
@@ -306,7 +304,7 @@ evaluate_statement(Node* stmt_node, ST* scope)
         string cond_type = evaluate_expression_type(cond_node, scope);
 
         if(cond_type != "Bool")
-            error("6 Expression is not of type Bool in WHILE statement");
+            error("7 Expression is not of type Bool in WHILE statement");
 
         Node* statements = stmt_node->children.back();
         if(statements->type == "Statement List")
@@ -348,17 +346,17 @@ evaluate_statement(Node* stmt_node, ST* scope)
 
         Symbol* id_sym = scope->find_symbol(identifier->value);
         if(id_sym == nullptr)
-            error("12.4 Cannot find symbol " + identifier->value);
+            error("9.1 Cannot find symbol " + identifier->value);
         else if(id_sym->type != "Int[]")
-            error("12.5 Cannot index assign non-array type (" + id_sym->type + ")");
+            error("9.2 Cannot index assign non-array type (" + id_sym->type + ")");
 
         string index_expr_type = evaluate_expression_type(assign_index_node, scope);
         if(index_expr_type != "Int")
-            error("12.6 Cannot index with non-integer value");
+            error("9.3 Cannot index with non-integer value");
 
         string assign_value_type = evaluate_expression_type(assign_value_node, scope);
         if(assign_value_type != "Int")
-            error("12.7 Cannot assign non-integer value to type int[]");
+            error("9.4 Cannot assign non-integer value to type int[]");
     }
     else if(stmt_node->value == "Empty")
     { return; }
@@ -378,7 +376,7 @@ verify_variable_parameter_type(Node* var_node, ST* scope)
     
     Symbol* sym = scope->find_symbol(type->value);
     if(sym == nullptr)
-        error("Cannot find symbol for type " + type->value + " (" + var_node->type + " " + id->value + " in scope " + scope->name + ")");
+        error("21 Cannot find symbol for type " + type->value + " (" + var_node->type + " " + id->value + " in scope " + scope->name + ")");
 }
 
 void
@@ -388,14 +386,14 @@ explore_node(Node* node, ST* scope)
     {
         ST* child = scope->get_child(node->value);
         if(child == nullptr)
-            error("14 Cannot find class " + node->value + " in scope " + scope->name);
+            error("1 Cannot find class " + node->value + " in scope " + scope->name);
         scope = child;
     }
     else if(node->type == "Method")
     {
         ST* child = scope->get_child(node->value);
         if(child == nullptr)
-            error("15 Cannot find method " + node->value + " in scope " + scope->name);
+            error("2 Cannot find method " + node->value + " in scope " + scope->name);
         scope = child;
 
         Node* type = node->children.front()->children.front();
@@ -406,10 +404,10 @@ explore_node(Node* node, ST* scope)
 
             if(type->type == "Identifier"){
                 if(type->value != ret_expr_type)
-                    error("15.1 Cannot convert " + ret_expr_type + " to " + type->type + " in method " + scope->name);
+                    error("3 Cannot convert " + ret_expr_type + " to " + type->type + " in method " + scope->name);
             }
             else if(type->type != ret_expr_type)
-                error("15.1 Cannot convert " + ret_expr_type + " to " + type->type + " in method " + scope->name);
+                error("3 Cannot convert " + ret_expr_type + " to " + type->type + " in method " + scope->name);
         }
     } 
     else if(node->type == "Statement List")
@@ -430,7 +428,7 @@ explore_node(Node* node, ST* scope)
         // std::cout << " (" << node->type << ", " << node->value << ")\n";
         Symbol* sym = scope->find_symbol(node->value);
         if(sym == nullptr)
-            error("19 Cannot find symbol " + node->value + " in scope (" + scope->name + ")");
+            error("4 Cannot find symbol " + node->value + " in scope (" + scope->name + ")");
         return;
     }
     else if(node->type == "Function Call") { /* evaluate_statement(node, scope); */ return; }
