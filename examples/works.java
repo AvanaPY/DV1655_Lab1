@@ -13,6 +13,7 @@ class BigBrain
       return 0;
    }
 }
+
 class SmallBrain extends BigBrain
 {
    int a;

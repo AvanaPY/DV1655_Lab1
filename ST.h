@@ -76,17 +76,20 @@ public:
                 scope->add_symbol(new_symbol);
 
                 Node* front = c->children.front();
-                std::cout << "Checking if " << c->value << " extends...\n";
                 if(front->type == "Class Extends")
                 {
                     ST* st = scope->find_scope(front->value);
-
+                    if(st == nullptr)
+                    {
+                        error("Cannot inherit from undefined class");
+                        return;
+                    }
                     ST* copy = st->copy();
                     copy->name = c->value;
                     copy->parent = scope;
                     scope->children.push_back(copy);
                     explore_node(c, copy);
-
+                    
                 } else
                 {
                     // Since it's a class, create a new Symbol Table
