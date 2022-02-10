@@ -76,8 +76,10 @@ public:
                 scope->add_symbol(new_symbol);
 
                 Node* front = c->children.front();
-                if(front->type == "Class Extends")
+                if(front != nullptr && front->type == "Class Extends")
                 {
+                    // If the class extends from another class
+                    // copy the symbol table entirely and work off of that
                     ST* st = scope->find_scope(front->value);
                     if(st == nullptr)
                     {
@@ -92,7 +94,7 @@ public:
                     
                 } else
                 {
-                    // Since it's a class, create a new Symbol Table
+                    // Otherwise, since it's a class, we create a new Symbol Table
                     ST* st = new ST(c->value);
                     st->parent = scope;
                     scope->children.push_back(st);
@@ -141,7 +143,7 @@ public:
         if(local == nullptr)
             symbols.push_back(sym);
         else
-            error("A symbol of name " + sym->symbol + " already exists");
+            error("A symbol of name \"" + sym->symbol + "\" already exists");
     }
 
     int num_param_symbols()

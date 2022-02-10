@@ -104,7 +104,7 @@ evaluate_function_call(Node* node, ST* scope)
         }
 
         if((*param_it)->type != arg_type){
-            error("12.3 Cannot match arguments " + (*param_it)->type + " to " + arg_type);
+            error("12.3 Cannot match argument " + (*param_it)->symbol + " of type " + (*param_it)->type + " to type " + arg_type + " in " + scope->name);
         }
         std::advance(param_it, 1);
         std::advance(arg_it, 1);
