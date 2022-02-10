@@ -37,7 +37,7 @@ do
 done
 
 printf "\n%10s" "${WHITE}Running Cambrige Files"
-for filename in ./java/*
+for filename in ./semantics_tests/java/*
 do
     printf "\n%10s" "${MAGENTA}Running "
     printf "%40s\n" "${CYAN}$filename${POWDER_BLUE}"
