@@ -388,7 +388,7 @@ explore_node(Node* node, ST* scope)
     {
         ST* child = scope->get_child(node->value);
         if(child == nullptr)
-            error("14 Cannot find method " + node->value + " in scope " + scope->name);
+            error("14 Cannot find class " + node->value + " in scope " + scope->name);
         scope = child;
     }
     else if(node->type == "Method")

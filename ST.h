@@ -44,6 +44,17 @@ public:
         parent = nullptr;
     }
 
+    ST* copy() {
+        ST* st = new ST(name);
+
+        for(auto it = symbols.begin(); it != symbols.end(); it++)
+            st->symbols.push_back(*it);
+        for(auto it = children.begin(); it != children.end(); it++)
+            st->children.push_back(*it);
+
+        return st;
+    }
+
     void error(string err)
     {
         cout << "Symbol Error: " << err << "\n";
@@ -69,7 +80,13 @@ public:
                 if(front->type == "Class Extends")
                 {
                     ST* st = scope->find_scope(front->value);
-                    std::cout << "Found parent scope " << st->name << "\n";
+
+                    ST* copy = st->copy();
+                    copy->name = c->value;
+                    copy->parent = scope;
+                    scope->children.push_back(copy);
+                    explore_node(c, copy);
+
                 } else
                 {
                     // Since it's a class, create a new Symbol Table

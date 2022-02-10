@@ -9,12 +9,14 @@ class Main
 class BigBrain 
 {
    int size;
+   public int main(boolean b){
+      return 0;
+   }
 }
-
 class SmallBrain extends BigBrain
 {
    int a;
    public int b(){
-      return 0;
+      return this.main(true);
    }
 }
