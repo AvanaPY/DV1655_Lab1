@@ -294,7 +294,6 @@ evaluate_statement(Node* stmt_node, ST* scope)
         if(else_node->type == "Statement List")
             for(auto c = else_node->children.begin(); c != else_node->children.end(); c++)
                 evaluate_statement(*c, scope);
-            
         else
             evaluate_statement(else_node, scope);
     }

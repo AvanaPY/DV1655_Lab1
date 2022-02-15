@@ -31,7 +31,7 @@ int main(int argc, char **argv)
         symbol_table->explore(root);
         Semantic::semantic_analysis(root, symbol_table);
 
-        root->generate_tree();
+        // root->generate_tree();
         // symbol_table->print_table();
         // root->print_tree();
     }
