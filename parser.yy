@@ -97,14 +97,14 @@ MainClass           : CLASS Identifier LMP PUBLIC STATIC VOID MAIN LP STRING LHK
                                                                 }
                     ;
 
-OptionalClassList   : OptionalClassList ClassDeclaration {
+OptionalClassList   :   OptionalClassList ClassDeclaration {
                             if(classes == NULL){
                                 classes = new Node("Class List", "");
                             }
                             $1->children.push_back($2);
                             $$ = $1;
                         }
-                    | ClassDeclaration {
+                    |   ClassDeclaration {
                             if(classes == NULL){
                                 classes = new Node("Class List", "");
                             }
@@ -157,7 +157,7 @@ VarList             :   VarList VarDeclaration {
                         }
                     ;
 
-VarDeclaration      : Type Identifier SEMICOLON {
+VarDeclaration      :   Type Identifier SEMICOLON {
                             $$ = new Node("Variable", "");
                             if($1->type == "Identifier")
                                 $$->children.push_back($1);
@@ -210,7 +210,7 @@ MethodBodyDeclaration       :   VarList StatementList {
                                 }
                             ;
 
-MethodParameterList :  MethodParameterList COMMA MethodParameterDecl{
+MethodParameterList :   MethodParameterList COMMA MethodParameterDecl{
                             $1->children.push_back($3);
                             $$=$1;
                         }
@@ -387,7 +387,7 @@ Expression          :   Expression AND Expression {
                             }
                     ;
 
-FunctionArgumentList : FunctionArgumentList COMMA Expression {
+FunctionArgumentList :  FunctionArgumentList COMMA Expression {
                                 $1->children.push_back($3);
                                 $$=$1;
                             }

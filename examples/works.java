@@ -10,7 +10,7 @@ class BigBrain
 {
    int size;
    public int main(boolean b){
-      return 0;
+      return new BigBrain();
    }
 }
 
