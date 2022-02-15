@@ -1,24 +1,22 @@
 make -s clean && make -s
 
-mkdir pdfs
+mkdir -p pdfs
 
-./compiler < examples/factorial.java && dot -Tpdf tree.dot -o pdfs/factorial.pdf
-./compiler < examples/linked.java && dot -Tpdf tree.dot -o pdfs/linked.pdf
+run_test() {
+    printf "\nRunning $1\n"
+    ./compiler < $1 
+}
 
-./compiler < examples/multi_class.java && dot -Tpdf tree.dot -o pdfs/multi_class.pdf
-./compiler < examples/multi_method.java && dot -Tpdf tree.dot -o pdfs/multi_method.pdf
-./compiler < examples/nested_while.java && dot -Tpdf tree.dot -o pdfs/nested_while.pdf
+run_test "examples/factorial.java"
+run_test "examples/linked.java"
 
-./compiler < examples/works.java && dot -Tpdf tree.dot -o pdfs/works.pdf
+run_test "examples/multi_class.java"
+run_test "examples/multi_method.java"
+run_test "examples/nested_while.java"
 
-echo "Empty Main Class test:"
-./compiler < examples/empty_main.java
+run_test "examples/works.java"
 
-echo "Empty Main Method test :"
-./compiler < examples/empty_method.java
-
-echo "Lexical Error test:"
-./compiler < examples/lexical.java
-
-echo "Invalid syntax test:"
-./compiler < examples/notworks.java 
+run_test "examples/empty_main.java"
+run_test "examples/empty_method.java"
+run_test "examples/lexical.java"
+run_test "examples/notworks.java "
