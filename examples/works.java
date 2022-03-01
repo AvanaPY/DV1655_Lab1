@@ -10,6 +10,7 @@ class BigBrain
 {
    public int main(int x, int y){
       int z;
+      boolean a;
       z = x - 3 + y * 4 / 2;
       return z;
    }

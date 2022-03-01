@@ -137,16 +137,23 @@ traverse_ast(Node* node, list<Block*>* entry_points)
 }
 
 void
-convert_statement(Node* node, Block* currblk)
+convert_statement(Node* node, Block* blk)
 {
+    std::cout << "statement\n";
     if(node->type == "Assign")
     {
-        Block* newblk = new Block("Block_" + std::to_string(block_id));
-        block_id++;
+        string typ = node->children.back()->type;
 
-        currblk->set_true_exit(newblk);
-        convert_expression(node->children.back(), newblk);
-        newblk->add_tac(new TAC(node->children.front()->value, "", to_local_var_name(currblk->last_local_id), ""));
+        if(typ == "Int" || typ == "Identifier" || typ == "Bool")
+        {
+            blk->add_tac(new TAC(node->children.front()->value, "", node->children.back()->value, ""));
+        } 
+        else 
+        {
+            convert_expression(node->children.back(), blk);
+            blk->add_tac(new TAC(node->children.front()->value, "", to_local_var_name(currblk->last_local_id), ""));
+        }
+
     } 
     else if(node->type == "SYS_PRINTLN")
     {
@@ -179,6 +186,8 @@ abc(Node* node, Block* blk)
         return "$" + node->value;
     if(node->type == "Identifier")
         return node->value;
+    if(node->type == "Bool")
+        return node->value;
 
     string llc = abc(node->children.front(), blk);
     string rlc = abc(node->children.back(), blk);
@@ -189,15 +198,16 @@ abc(Node* node, Block* blk)
     TAC* tac = new TAC(to_local_var_name(blk->last_local_id), op, llc, rlc);
 
     blk->add_tac(tac);
+    std::cout << "adding tac \n";
     return to_local_var_name(blk->last_local_id);
 }
 
 void 
-convert_expression(Node* node, Block* currblk)
+convert_expression(Node* node, Block* blk)
 {
     if (node->type == "PLUS" || node->type == "MINUS" || node->type == "MULT" || node->type == "DIV")
     {
-        string llc = abc(node, currblk);
+        string llc = abc(node, blk);
     } 
     else
     {

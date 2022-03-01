@@ -2,7 +2,5 @@ digraph {
   graph [splines=ortho]
   node [shape=box]
   MainMain [label="MainMain\n"];
-  BigBrainMain [label="BigBrainMain\n"];
-  BigBrainMain -> Block_0[xlabel="true"];
-  Block_0 [label="Block_0\nt1 := x SUB $3\nt2 := y MUL $4\nt3 := t2 DIV $2\nt4 := t1 ADD t3\nz := t0  \n"];
+  BigBrainMain [label="BigBrainMain\n_+1 := x SUB $3\n_+2 := y MUL $4\n_+3 := _+2 DIV $2\n_+4 := _+1 ADD _+3\nz := _+4  \n"];
 }
