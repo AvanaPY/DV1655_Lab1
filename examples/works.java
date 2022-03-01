@@ -9,6 +9,8 @@ class Main
 class BigBrain 
 {
    public int main(int x, int y){
-      return x - 3 + y * 4;
+      int z;
+      z = x - 3 + y * 4 / 2;
+      return z;
    }
 }

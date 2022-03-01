@@ -4,6 +4,7 @@
 #include "semantic.h"
 #include "ir.h"
 #include "parser.tab.hh"
+#include<list>
 
 extern Node* root;
 extern FILE* yyin;
@@ -28,36 +29,21 @@ int main(int argc, char **argv)
 
   yy::parser parser;
   if(!parser.parse()) {
+    root->generate_tree();
 
     ST* symbol_table = new ST("Root");
     symbol_table->explore(root);
     Semantic::semantic_analysis(root, symbol_table);
 
-    root->generate_tree();
     // symbol_table->print_table();
     // root->print_tree();
     std::ofstream o ("dot.dot");
     if (o.is_open()){
-      IR::Block* entry = new IR::Block("Block_0");
 
-      entry->add_tac(new IR::TAC("_+0", "SUB", "x", "$3"));
-      entry->add_tac(new IR::TAC("_+1", "MUL", "y", "y"));
-      entry->add_tac(new IR::TAC("z", "ADD", "_+0", "_+1"));
+      list<IR::Block*> entry_points;
+      IR::traverse_ast(root, &entry_points);
+      IR::dump_cfg(&entry_points, o);
 
-
-      IR::Block* new_blk = new IR::Block("Block_1");
-      new_blk->add_tac(new IR::TAC("_+0", "SUB", "x", "$3"));
-      new_blk->add_tac(new IR::TAC("_+1", "SUB", "x", "$3"));
-      new_blk->add_tac(new IR::TAC("y", "SUB", "_+0", "_+1"));
-
-      entry->set_true_exit(new_blk);
-
-      new_blk = new IR::Block("Block_2");
-      new_blk->add_tac(new IR::TAC("_+0", "SUB", "x", "$3"));
-
-      entry->set_false_exit(new_blk);
-
-      IR::dump_cfg(entry, o);
       o.close();
     } else {
       std::cout << "Cannot open file\n";
