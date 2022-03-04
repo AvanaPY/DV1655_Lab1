@@ -6,7 +6,6 @@
 #include <map>
 
 namespace IR {
-
 map<std::string, std::string> opmap = {
     { "PLUS" , "ADD" },
     { "MINUS", "SUB" },
@@ -22,30 +21,109 @@ map<std::string, std::string> opmap = {
     { "new()", "NEW" },
     { "new[]", "NEW[]" }
 };
+static int blk_count;
+
+string 
+get_op(Node* node)
+{
+    if(opmap.count(node->type))
+        return opmap[node->type];
+    
+    std::cout << "Unhandled get_op: (" << node->type << ", " << node->value << ")\n";
+    return "---";
+}
+
+string
+generic_blk_name_from_id(int id)
+{
+    return "block_" + std::to_string(id);
+}
+
 
 class TAC {
-private:
+protected:
     std::string result, op, lhs, rhs;
 
 public:
     TAC(std::string res, std::string o, std::string l, std::string r) : op(o), lhs(l), rhs(r), result(res){}
-    void dump(std::ofstream& stream){
+    virtual void dump(std::ofstream& stream){}
+
+    string get_result()
+    {
+        return result;
+    }
+    void set_result(string res)
+    {
+        result = res;
+    }
+
+    string get_lhs()
+    {
+        return lhs;
+    }
+    string get_rhs()
+    {
+        return rhs;
+    }
+    string get_op()
+    {
+        return op;
+    }
+
+    virtual void stack_with(TAC* tac) {
+        std::cout << "Stacking Not implemented\n";
+    };
+};
+
+class AssignTAC : public TAC {
+public:
+    AssignTAC(std::string res, std::string o, std::string l, std::string r) : TAC(res, o, l, r){}
+
+    void dump(std::ofstream& stream)
+    {
         stream  << result 
                 << " := "
                 << lhs << " " 
                 << op << " " 
                 << rhs;
     }
+
+    void stack_with(TAC* tac)
+    {
+        lhs = tac->get_lhs();
+        rhs = tac->get_rhs();
+        op = tac->get_op();
+    }
+};
+
+class CondTAC : public TAC {
+public:
+    CondTAC(std::string stmt_type, std::string o, std::string l, std::string r) : TAC(stmt_type, o, l, r){}
+
+    void dump(std::ofstream& stream)
+    {
+        stream  << result << " "
+                << lhs << " " 
+                << op << " "
+                << rhs;
+    }
+
+    void stack_with(TAC* tac)
+    {
+        lhs = tac->get_lhs();
+        rhs = tac->get_rhs();
+        op = tac->get_op();
+    }
 };
 
 class Block {
 
 private:
-    list<TAC*> tacs;
     TAC* condition;
     Block *trueExit, *falseExit;
 
 public:
+    list<TAC*> tacs;
     string name;
     int last_local_id;
     Block(string n) : name(n), trueExit(NULL), falseExit(NULL) {}
@@ -70,9 +148,21 @@ public:
         condition = tac;
     }
 
-    void dump_rec(std::ofstream& stream)
+    void dump(std::ofstream& stream)
     {
+        map<std::string, int> dump_map;
+        dump_rec(stream, &dump_map);
+    }
+
+    void dump_rec(std::ofstream& stream, map<std::string, int>* dump_map)
+    {
+        if(dump_map->count(name)){
+            return;
+        }
+
         stream << "  " << name << " [label=\"" << name << "\\n";
+        dump_map->insert(std::pair<std::string, int>(name, 1));
+
         for(auto it = tacs.begin(); it != tacs.end(); it++)
         {
             (*it)->dump(stream);
@@ -87,12 +177,12 @@ public:
 
         if(trueExit != nullptr){
             stream << "  " << name << " -> " << trueExit->name << "[xlabel=\"true\"];" << std::endl;
-            trueExit->dump_rec(stream);
+            trueExit->dump_rec(stream, dump_map);
         }
         
         if(falseExit != nullptr){
             stream << "  " << name << " -> " << falseExit->name << "[xlabel=\"false\"];" << std::endl;
-            falseExit->dump_rec(stream);
+            falseExit->dump_rec(stream, dump_map);
         }
     }
 };
@@ -100,8 +190,7 @@ public:
 void dump_cfg(std::ofstream&);
 void traverse_ast(Node* node, list<Block*>* blks);
 void convert_statement(Node* node, Block* currblk);
-void convert_expression(Node* node, Block* currblk);
-
+string convert_expression(Node* node, Block* currblk);
 
 string
 to_local_var_name(int id)
@@ -116,7 +205,7 @@ dump_cfg(list<Block*>* blks, std::ofstream& stream)
            << "  graph [splines=ortho]\n"
            << "  node [shape=box]\n";
     for(auto it = blks->begin(); it != blks->end(); it++)
-        (*it)->dump_rec(stream);
+        (*it)->dump(stream);
     stream << "}";
 }
 
@@ -154,42 +243,93 @@ traverse_ast(Node* node, list<Block*>* entry_points)
 }
 
 void
-convert_statement(Node* node, Block* blk)
+stack_tacs(Block* blk)
 {
-    std::cout << "statement\n";
-    if(node->type == "Assign")
+    if(blk->tacs.size() < 2)
+        return;
+    TAC* a = blk->tacs.back(); blk->tacs.pop_back();
+    TAC* b = blk->tacs.back(); blk->tacs.pop_back();
+
+    a->stack_with(b);
+    blk->add_tac(a);
+}
+
+void
+create_assign_IR(Node* node, Block* blk)
+{
+    string typ = node->children.back()->type;
+
+    if(typ == "Int" || typ == "Identifier" || typ == "Bool")
     {
-        string typ = node->children.back()->type;
-
-        if(typ == "Int" || typ == "Identifier" || typ == "Bool")
-        {
-            blk->add_tac(new TAC(node->children.front()->value, "", node->children.back()->value, ""));
-        } 
-        else 
-        {
-            convert_expression(node->children.back(), blk);
-            blk->add_tac(new TAC(node->children.front()->value, "", to_local_var_name(currblk->last_local_id), ""));
-        }
-
+        blk->add_tac(new AssignTAC(node->children.front()->value, "", node->children.back()->value, ""));
     } 
-    else if(node->type == "SYS_PRINTLN")
+    else 
     {
+        convert_expression(node->children.back(), blk);
+        blk->add_tac(new AssignTAC(node->children.front()->value, "", to_local_var_name(currblk->last_local_id), ""));
 
-    }
-    else {
-        std::cout << "Encountered unhandled statement " << node->type << "\n";
-
+        stack_tacs(blk);
     }
 }
 
-string 
-get_op(Node* node)
+void
+create_if_IR(Node* node, Block* blk)
 {
-    if(opmap.count(node->type))
-        return opmap[node->type];
+    blk_count++;
+    Block* if_blk = new Block(generic_blk_name_from_id(blk_count));
     
-    std::cout << "Unhandled get_op: (" << node->type << ", " << node->value << ")\n";
-    return "---";
+    string lvm = convert_expression(node->children.front(), if_blk);
+    if_blk->add_tac(new CondTAC("IF", "", "", lvm));
+
+    stack_tacs(if_blk);
+
+    blk_count++;
+    Block* trueblk = new Block(generic_blk_name_from_id(blk_count));
+    
+    blk_count++;
+    Block* falseblk = new Block(generic_blk_name_from_id(blk_count));
+
+    auto it = node->children.begin(); std::advance(it, 1);
+    Node* true_stmt = *it; std::advance(it, 1);
+    Node* false_stmt = *it; 
+
+    convert_statement(true_stmt, trueblk);
+    convert_statement(false_stmt, falseblk);
+
+    blk->set_true_exit(if_blk);
+    if_blk->set_true_exit(trueblk);
+    if_blk->set_false_exit(falseblk);
+
+    blk_count++;
+    Block* exitblk = new Block(generic_blk_name_from_id(blk_count));
+
+    trueblk->set_true_exit(exitblk);
+    falseblk->set_true_exit(exitblk);
+    currblk = exitblk;
+}
+
+void
+convert_statement(Node* node, Block* blk)
+{
+    if(node->type == "Assign")
+        create_assign_IR(node, blk);
+
+    else if(node->type == "IF")
+        create_if_IR(node, blk);   
+
+    else if(node->type == "Statement List")
+    {
+        for(auto it = node->children.begin(); it != node->children.end(); it++)
+            convert_statement(*it, blk);
+    }
+    else if(node->type == "Statement")
+    {
+        
+    }
+
+    else {
+        std::cout << "Encountered unhandled statement " << node->type << "\n";
+    }
 }
 
 /* 
@@ -218,7 +358,7 @@ expr_node_to_tacs(Node* node, Block* blk)
     {
         string c = expr_node_to_tacs(node->children.front(), blk);
         blk->last_local_id++;
-        TAC* tac = new TAC(to_local_var_name(blk->last_local_id), op, "", c);
+        TAC* tac = new AssignTAC(to_local_var_name(blk->last_local_id), op, "", c);
         blk->add_tac(tac);
     } 
     /*
@@ -230,35 +370,16 @@ expr_node_to_tacs(Node* node, Block* blk)
         string r = expr_node_to_tacs(node->children.back(), blk);
 
         blk->last_local_id++;
-        TAC* tac = new TAC(to_local_var_name(blk->last_local_id), op, l, r);
+        TAC* tac = new AssignTAC(to_local_var_name(blk->last_local_id), op, l, r);
 
         blk->add_tac(tac);
     }
     return to_local_var_name(blk->last_local_id);
 }
 
-void 
+string 
 convert_expression(Node* node, Block* blk)
 {
-    if (node->type == "PLUS"  || 
-        node->type == "MINUS" || 
-        node->type == "MULT"  || 
-        node->type == "DIV"   ||
-        node->type == "AND"   || 
-        node->type == "OR"    ||
-        node->type == "NOT"   ||
-        node->type == "GT"    ||
-        node->type == "LT"    ||
-        node->type == "EQ"    ||
-        node->type == "Indexing" ||
-        node->type == "new()" ||
-        node->type == "new[]" )
-    {
-        string llc = expr_node_to_tacs(node, blk);
-    } 
-    else
-    {
-        std::cout << "Unhandled expression " << node->type << "\n";
-    }
+    return expr_node_to_tacs(node, blk);
 }
 }

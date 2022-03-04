@@ -2,5 +2,14 @@ digraph {
   graph [splines=ortho]
   node [shape=box]
   MainMain [label="MainMain\n"];
-  BigBrainMain [label="BigBrainMain\n_+1 :=  NEW Element\ne := _+1  \n_+2 :=  NEW[] $5\na := _+2  \n"];
+  BigBrainMain [label="BigBrainMain\n"];
+  BigBrainMain -> block_1[xlabel="true"];
+  block_1 [label="block_1\n_+1 := x LT y\n_+2 := y LT $5\n_+3 := a EQ x\n_+4 := _+2 OR _+3\nIF _+1 AND _+4\n"];
+  block_1 -> block_2[xlabel="true"];
+  block_2 [label="block_2\na := 2  \n"];
+  block_2 -> block_4[xlabel="true"];
+  block_4 [label="block_4\n"];
+  block_1 -> block_3[xlabel="false"];
+  block_3 [label="block_3\na := 3  \n"];
+  block_3 -> block_4[xlabel="true"];
 }

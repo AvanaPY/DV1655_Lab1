@@ -12,12 +12,16 @@ class BigBrain
 {
    public int main(int x, int y){
       
-      Element e;
-      int[] a;
-      e = new Element();
+      int a;
 
-      a = new int[5];
-
+      if(x < y && y < 5 || a == x)
+      {
+         a = 2;
+      }
+      else 
+      {
+         a = 3;
+      }
       return 0;
    }
 }
