@@ -6,12 +6,18 @@ class Main
    }
 }
 
+class Element{}
+
 class BigBrain 
 {
    public int main(int x, int y){
-      int z;
-      boolean a;
-      z = x - 3 + y * 4 / 2;
-      return z;
+      
+      Element e;
+      int[] a;
+      e = new Element();
+
+      a = new int[5];
+
+      return 0;
    }
 }

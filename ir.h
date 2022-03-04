@@ -3,8 +3,25 @@
 #include<string.h>
 #include <list>
 #include "Node.h"
+#include <map>
 
 namespace IR {
+
+map<std::string, std::string> opmap = {
+    { "PLUS" , "ADD" },
+    { "MINUS", "SUB" },
+    { "DIV"  , "DIV" },
+    { "MULT" , "MUL" },
+    { "AND"  , "AND" },
+    { "OR"   , "OR" },
+    { "NOT"  , "NOT" },
+    { "GT"  , "GT" },
+    { "LT"  , "LT" },
+    { "EQ"  , "EQ" },
+    { "Indexing", "@" },
+    { "new()", "NEW" },
+    { "new[]", "NEW[]" }
+};
 
 class TAC {
 private:
@@ -168,19 +185,21 @@ convert_statement(Node* node, Block* blk)
 string 
 get_op(Node* node)
 {
-    if(node->type == "PLUS")
-        return "ADD";
-    if(node->type == "MINUS")
-        return "SUB";
-    if(node->type == "MULT")
-        return "MUL";
-    if(node->type == "DIV")
-        return "DIV";
+    if(opmap.count(node->type))
+        return opmap[node->type];
+    
+    std::cout << "Unhandled get_op: (" << node->type << ", " << node->value << ")\n";
     return "---";
 }
 
+/* 
+Takes an expresison node and a block as arguments,
+then it recursively traverses the node tree and adds TACs to the block.
+
+It returns the name of the last variable.
+*/
 std::string
-abc(Node* node, Block* blk)
+expr_node_to_tacs(Node* node, Block* blk)
 {
     if(node->type == "Int")
         return "$" + node->value;
@@ -189,25 +208,53 @@ abc(Node* node, Block* blk)
     if(node->type == "Bool")
         return node->value;
 
-    string llc = abc(node->children.front(), blk);
-    string rlc = abc(node->children.back(), blk);
-
     string op = get_op(node);
 
-    blk->last_local_id++;
-    TAC* tac = new TAC(to_local_var_name(blk->last_local_id), op, llc, rlc);
+    /* 
+    Special case for the NOT, new() and new[] operators 
+    because they only take one argument
+    */
+    if(node->type == "NOT" || node->type == "new()" || node->type == "new[]")
+    {
+        string c = expr_node_to_tacs(node->children.front(), blk);
+        blk->last_local_id++;
+        TAC* tac = new TAC(to_local_var_name(blk->last_local_id), op, "", c);
+        blk->add_tac(tac);
+    } 
+    /*
+    All other expression operators
+    */
+    else
+    {
+        string l = expr_node_to_tacs(node->children.front(), blk);
+        string r = expr_node_to_tacs(node->children.back(), blk);
 
-    blk->add_tac(tac);
-    std::cout << "adding tac \n";
+        blk->last_local_id++;
+        TAC* tac = new TAC(to_local_var_name(blk->last_local_id), op, l, r);
+
+        blk->add_tac(tac);
+    }
     return to_local_var_name(blk->last_local_id);
 }
 
 void 
 convert_expression(Node* node, Block* blk)
 {
-    if (node->type == "PLUS" || node->type == "MINUS" || node->type == "MULT" || node->type == "DIV")
+    if (node->type == "PLUS"  || 
+        node->type == "MINUS" || 
+        node->type == "MULT"  || 
+        node->type == "DIV"   ||
+        node->type == "AND"   || 
+        node->type == "OR"    ||
+        node->type == "NOT"   ||
+        node->type == "GT"    ||
+        node->type == "LT"    ||
+        node->type == "EQ"    ||
+        node->type == "Indexing" ||
+        node->type == "new()" ||
+        node->type == "new[]" )
     {
-        string llc = abc(node, blk);
+        string llc = expr_node_to_tacs(node, blk);
     } 
     else
     {

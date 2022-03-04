@@ -2,5 +2,5 @@ digraph {
   graph [splines=ortho]
   node [shape=box]
   MainMain [label="MainMain\n"];
-  BigBrainMain [label="BigBrainMain\n_+1 := x SUB $3\n_+2 := y MUL $4\n_+3 := _+2 DIV $2\n_+4 := _+1 ADD _+3\nz := _+4  \n"];
+  BigBrainMain [label="BigBrainMain\n_+1 :=  NEW Element\ne := _+1  \n_+2 :=  NEW[] $5\na := _+2  \n"];
 }
