@@ -14,14 +14,12 @@ class BigBrain
       
       int a;
 
-      if(x < y && y < 5 || a == x)
+      while(a == 4)
       {
-         a = 2;
+         a = a * 4;
       }
-      else 
-      {
-         a = 3;
-      }
+
+      a = a * a * a;
       return 0;
    }
 }

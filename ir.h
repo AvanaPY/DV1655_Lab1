@@ -275,20 +275,23 @@ create_assign_IR(Node* node, Block* blk)
 void
 create_if_IR(Node* node, Block* blk)
 {
+    // Create our new if block
     blk_count++;
     Block* if_blk = new Block(generic_blk_name_from_id(blk_count));
     
+    // Convert the conditional expression
     string lvm = convert_expression(node->children.front(), if_blk);
     if_blk->add_tac(new CondTAC("IF", "", "", lvm));
+    stack_tacs(if_blk); // Stack the last 2 blocks for nice looking IR
 
-    stack_tacs(if_blk);
-
+    // Create a true and a false block
     blk_count++;
     Block* trueblk = new Block(generic_blk_name_from_id(blk_count));
     
     blk_count++;
     Block* falseblk = new Block(generic_blk_name_from_id(blk_count));
 
+    // Iterate over the nodes and convert the statements to blocks
     auto it = node->children.begin(); std::advance(it, 1);
     Node* true_stmt = *it; std::advance(it, 1);
     Node* false_stmt = *it; 
@@ -296,16 +299,49 @@ create_if_IR(Node* node, Block* blk)
     convert_statement(true_stmt, trueblk);
     convert_statement(false_stmt, falseblk);
 
+    // Create an exit block
+    blk_count++;
+    Block* exitblk = new Block(generic_blk_name_from_id(blk_count));
+
+    // Assign exits
     blk->set_true_exit(if_blk);
     if_blk->set_true_exit(trueblk);
     if_blk->set_false_exit(falseblk);
 
-    blk_count++;
-    Block* exitblk = new Block(generic_blk_name_from_id(blk_count));
-
     trueblk->set_true_exit(exitblk);
     falseblk->set_true_exit(exitblk);
-    currblk = exitblk;
+    currblk = exitblk; // Update block we're on
+}
+
+void
+create_while_IR(Node* node, Block* blk)
+{
+    blk_count++;
+    Block* while_blk = new Block(generic_blk_name_from_id(blk_count));
+    
+    string lvm = convert_expression(node->children.front(), while_blk);
+    while_blk->add_tac(new CondTAC("WHILE", "", "", lvm));
+    stack_tacs(while_blk);
+
+    // Create a true and a false block
+    blk_count++;
+    Block* trueblk = new Block(generic_blk_name_from_id(blk_count));
+    
+    blk_count++;
+    Block* falseblk = new Block(generic_blk_name_from_id(blk_count));
+
+    // Iterate over the nodes and convert the statements to blocks
+    auto it = node->children.begin(); std::advance(it, 1);
+    Node* true_stmt = *it; std::advance(it, 1);
+    convert_statement(true_stmt, trueblk);
+
+    // Assign exits
+    blk->set_true_exit(while_blk);
+    while_blk->set_true_exit(trueblk);
+    while_blk->set_false_exit(falseblk);
+
+    trueblk->set_true_exit(while_blk);
+    currblk = falseblk; // Update block we're on
 }
 
 void
@@ -316,6 +352,9 @@ convert_statement(Node* node, Block* blk)
 
     else if(node->type == "IF")
         create_if_IR(node, blk);   
+
+    else if(node->type == "WHILE")
+        create_while_IR(node, blk);
 
     else if(node->type == "Statement List")
     {
