@@ -7,3 +7,4 @@
 * Ask about return statements.
 * ASK ABOUT PRETTY GRAPHVIZ
 * ASK ABOUT E.JAVA WTF PRINT BOOL???????? 
+* WHAT IS ASSIGN
