@@ -1,25 +1,5 @@
 digraph {
   graph [splines=ortho]
   node [shape=box]
-  MainMain [label="MainMain\n_+1 :=  NEW BigBrain\nparam _+1  \nparam $5  \nparam $2  \n_+2 := call run 3\nPRINT _+2  \n"];
-  BigBrainrun [label="BigBrainrun\nWHILE x EQ $1\n"];
-  BigBrainrun -> block_1[xlabel="true"];
-  block_1 [label="block_1\nIF a EQ $2\n"];
-  block_1 -> block_3[xlabel="true"];
-  block_3 [label="block_3\ny := 2  \n"];
-  block_3 -> block_5[xlabel="true"];
-  block_5 [label="block_5\n"];
-  block_5 -> BigBrainrun[xlabel="true"];
-  block_1 -> block_4[xlabel="false"];
-  block_4 [label="block_4\nx := 2  \n"];
-  block_4 -> block_5[xlabel="true"];
-  BigBrainrun -> block_2[xlabel="false"];
-  block_2 [label="block_2\n_+1 := $5 MUL $2\n_+2 := $11 MUL $69\n_+3 := _+2 DIV $420\na := _+1 ADD _+3\nIF $69 EQ $420\n"];
-  block_2 -> block_6[xlabel="true"];
-  block_6 [label="block_6\n"];
-  block_6 -> block_8[xlabel="true"];
-  block_8 [label="block_8\n"];
-  block_2 -> block_7[xlabel="false"];
-  block_7 [label="block_7\n"];
-  block_7 -> block_8[xlabel="true"];
+  MinimalMain [label="MinimalMain\n_+1 := $4 MUL $2\n_+2 := _+1 ADD $10\n_+3 := $2 MUL $6\n_+4 := _+2 SUB _+3\n_+5 := $4 SUB $1\n_+6 := _+5 MUL $2\n_+7 := _+6 DIV $2\n_+8 := _+4 ADD _+7\nPRINT _+8  \n_+9 :=  NOT true\n_+10 := _+9 AND false\n_+11 := true EQ _+10\n_+12 := $10 GT $1\n_+13 := _+11 OR _+12\n_+14 := $1 LT $10\n_+15 := _+13 AND _+14\nPRINT _+15  \n"];
 }

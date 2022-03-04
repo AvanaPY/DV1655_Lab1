@@ -242,12 +242,12 @@ public:
         stream << "\"];" << std::endl;
 
         if(trueExit != nullptr){
-            stream << "  " << name << " -> " << trueExit->name << "[xlabel=\"true\"];" << std::endl;
+            stream << "  " << name << " -> " << trueExit->name << "[xlabel=\"True\"];" << std::endl;
             trueExit->dump_rec(stream, dump_map);
         }
         
         if(falseExit != nullptr){
-            stream << "  " << name << " -> " << falseExit->name << "[xlabel=\"false\"];" << std::endl;
+            stream << "  " << name << " -> " << falseExit->name << "[xlabel=\"False\"];" << std::endl;
             falseExit->dump_rec(stream, dump_map);
         }
     }

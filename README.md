@@ -5,3 +5,5 @@
 * Ask about the naming conventions of the IR blocks.
 * Ask about THIS in IR creation.
 * Ask about return statements.
+* ASK ABOUT PRETTY GRAPHVIZ
+* ASK ABOUT E.JAVA WTF PRINT BOOL???????? 
