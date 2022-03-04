@@ -19,7 +19,9 @@ map<std::string, std::string> opmap = {
     { "EQ"  , "EQ" },
     { "Indexing", "@" },
     { "new()", "NEW" },
-    { "new[]", "NEW[]" }
+    { "new[]", "NEW[]" },
+    { "Function Call", "call"},
+    { "THIS", "THIS" }
 };
 static int blk_count;
 
@@ -116,17 +118,79 @@ public:
     }
 };
 
+class PrintTAC : public TAC {
+public:
+    PrintTAC(std::string lhs) : TAC("PRINT", "", lhs, ""){}
+
+    void dump(std::ofstream& stream)
+    {
+        stream  << result << " "
+                << lhs << " "
+                << op  << " "
+                << rhs;
+    }
+
+    void stack_with(TAC* tac)
+    {
+        lhs = tac->get_lhs();
+        rhs = tac->get_rhs();
+        op = tac->get_op();
+    }
+};
+
+class ParamTAC : public TAC {
+public:
+    ParamTAC(std::string name) : TAC("param", "", name, ""){}
+
+    void dump(std::ofstream& stream)
+    {
+        stream  << result << " "
+                << lhs << " "
+                << op  << " "
+                << rhs;
+    }
+
+    void stack_with(TAC* tac)
+    {
+        lhs = tac->get_lhs();
+        rhs = tac->get_rhs();
+        op = tac->get_op();
+    }
+};
+
+class CallTAC : public TAC {
+public:
+    CallTAC(std::string res, std::string name, int params) : TAC(res, "call", name, std::to_string(params)){}
+
+    void dump(std::ofstream& stream)
+    {
+        stream  << result << " := "
+                << op  << " "
+                << lhs << " "
+                << rhs;
+    }
+
+    void stack_with(TAC* tac)
+    {
+        lhs = tac->get_lhs();
+        rhs = tac->get_rhs();
+        op = tac->get_op();
+    }
+};
+
 class Block {
 
 private:
     TAC* condition;
-    Block *trueExit, *falseExit;
 
 public:
+    Block *trueExit, *falseExit;
     list<TAC*> tacs;
     string name;
     int last_local_id;
-    Block(string n) : name(n), trueExit(NULL), falseExit(NULL) {}
+    Block(string n) : name(n), trueExit(NULL), falseExit(NULL) {
+        std::cout << "Created block " << name << "\n";
+    }
 
     void add_tac(TAC* tac)
     {
@@ -135,11 +199,13 @@ public:
 
     void set_true_exit(Block* blk)
     {
+        std::cout << "Updating " << name << " true exit to " << blk->name << "\n";
         trueExit = blk;
     }
 
     void set_false_exit(Block* blk)
     {
+        std::cout << "Updating " << name << " false exit to " << blk->name << "\n";
         falseExit = blk;
     }
 
@@ -189,8 +255,9 @@ public:
 
 void dump_cfg(std::ofstream&);
 void traverse_ast(Node* node, list<Block*>* blks);
-void convert_statement(Node* node, Block* currblk);
+Block* convert_statement(Node* node, Block* currblk);
 string convert_expression(Node* node, Block* currblk);
+std::string expr_node_to_tacs(Node* node, Block* blk);
 
 string
 to_local_var_name(int id)
@@ -254,7 +321,7 @@ stack_tacs(Block* blk)
     blk->add_tac(a);
 }
 
-void
+Block*
 create_assign_IR(Node* node, Block* blk)
 {
     string typ = node->children.back()->type;
@@ -270,21 +337,21 @@ create_assign_IR(Node* node, Block* blk)
 
         stack_tacs(blk);
     }
+    currblk = blk;
+    return currblk;
 }
 
-void
+Block*
 create_if_IR(Node* node, Block* blk)
 {
     // Create our new if block
-    blk_count++;
-    Block* if_blk = new Block(generic_blk_name_from_id(blk_count));
     
     // Convert the conditional expression
-    string lvm = convert_expression(node->children.front(), if_blk);
-    if_blk->add_tac(new CondTAC("IF", "", "", lvm));
-    stack_tacs(if_blk); // Stack the last 2 blocks for nice looking IR
+    string lvm = convert_expression(node->children.front(), blk);
+    blk->add_tac(new CondTAC("IF", "", "", lvm));
+    stack_tacs(blk); // Stack the last 2 tacs for nice looking IR
 
-    // Create a true and a false block
+    // // Create a true and a false block
     blk_count++;
     Block* trueblk = new Block(generic_blk_name_from_id(blk_count));
     
@@ -296,32 +363,36 @@ create_if_IR(Node* node, Block* blk)
     Node* true_stmt = *it; std::advance(it, 1);
     Node* false_stmt = *it; 
 
-    convert_statement(true_stmt, trueblk);
-    convert_statement(false_stmt, falseblk);
+    std::cout << "True conversion\n";
+    Block* a = convert_statement(true_stmt, trueblk);
+    std::cout << "False conversion\n";
+    Block* b = convert_statement(false_stmt, falseblk);
 
-    // Create an exit block
+    std::cout << "-----\n  T:" << a->name << "\n  F:" << b->name << "\n  B:" << blk->name << "\n-----\n";
+
+    // // Create an exit block
     blk_count++;
     Block* exitblk = new Block(generic_blk_name_from_id(blk_count));
 
-    // Assign exits
-    blk->set_true_exit(if_blk);
-    if_blk->set_true_exit(trueblk);
-    if_blk->set_false_exit(falseblk);
+    // // Assign exits
+    blk->set_true_exit(trueblk);
+    blk->set_false_exit(falseblk);
 
-    trueblk->set_true_exit(exitblk);
-    falseblk->set_true_exit(exitblk);
+    a->set_true_exit(exitblk);
+    b->set_true_exit(exitblk);
+
     currblk = exitblk; // Update block we're on
+    std::cout << "Set currblk to " << currblk->name << "\n";
+    return currblk;
 }
 
-void
+Block*
 create_while_IR(Node* node, Block* blk)
 {
-    blk_count++;
-    Block* while_blk = new Block(generic_blk_name_from_id(blk_count));
     
-    string lvm = convert_expression(node->children.front(), while_blk);
-    while_blk->add_tac(new CondTAC("WHILE", "", "", lvm));
-    stack_tacs(while_blk);
+    string lvm = convert_expression(node->children.front(), blk);
+    blk->add_tac(new CondTAC("WHILE", "", "", lvm));
+    stack_tacs(blk);
 
     // Create a true and a false block
     blk_count++;
@@ -333,42 +404,56 @@ create_while_IR(Node* node, Block* blk)
     // Iterate over the nodes and convert the statements to blocks
     auto it = node->children.begin(); std::advance(it, 1);
     Node* true_stmt = *it; std::advance(it, 1);
-    convert_statement(true_stmt, trueblk);
+    Block* a = convert_statement(true_stmt, trueblk);
 
     // Assign exits
-    blk->set_true_exit(while_blk);
-    while_blk->set_true_exit(trueblk);
-    while_blk->set_false_exit(falseblk);
+    blk->set_true_exit(trueblk);
+    blk->set_false_exit(falseblk);
 
-    trueblk->set_true_exit(while_blk);
+    a->set_true_exit(blk);
     currblk = falseblk; // Update block we're on
+    return falseblk;
 }
 
-void
+Block*
+create_sysprint_IR(Node* node, Block* blk)
+{
+    string expr = expr_node_to_tacs(node->children.front(), blk);
+    blk->add_tac(new PrintTAC(expr));
+    // stack_tacs(blk);
+    return blk;
+}
+
+Block*
 convert_statement(Node* node, Block* blk)
 {
+    Block* finalblk;
     if(node->type == "Assign")
-        create_assign_IR(node, blk);
+        finalblk = create_assign_IR(node, blk);
 
     else if(node->type == "IF")
-        create_if_IR(node, blk);   
+        finalblk = create_if_IR(node, blk);   
 
     else if(node->type == "WHILE")
-        create_while_IR(node, blk);
+        finalblk = create_while_IR(node, blk);
+
+    else if(node->type == "SYS_PRINTLN")
+        finalblk = create_sysprint_IR(node, blk);
 
     else if(node->type == "Statement List")
     {
+        finalblk = blk;
         for(auto it = node->children.begin(); it != node->children.end(); it++)
-            convert_statement(*it, blk);
+            finalblk = convert_statement(*it, finalblk);
+    } 
+    else if(node->type == "Statement"){
+        finalblk = blk;
     }
-    else if(node->type == "Statement")
-    {
-        
-    }
-
     else {
-        std::cout << "Encountered unhandled statement " << node->type << "\n";
+        std::cout << "Encountered unhandled statement (" << node->type << ", " << node->value << ")\n";
+        finalblk = blk;
     }
+    return finalblk;
 }
 
 /* 
@@ -386,6 +471,8 @@ expr_node_to_tacs(Node* node, Block* blk)
         return node->value;
     if(node->type == "Bool")
         return node->value;
+    if(node->type == "THIS")
+        return "THIS";
 
     string op = get_op(node);
 
@@ -403,6 +490,25 @@ expr_node_to_tacs(Node* node, Block* blk)
     /*
     All other expression operators
     */
+    else if(node->type == "Function Call")
+    {
+        auto it = node->children.begin();
+
+        std::string cls_expr = expr_node_to_tacs(*it, blk);
+        blk->add_tac(new ParamTAC(cls_expr));
+
+        std::advance(it, 1);
+        Node* identifier = *it; std::advance(it, 1);
+        Node* args = *it;
+
+        for(auto it_args = args->children.begin(); it_args != args->children.end(); it_args++){
+            string args_id = expr_node_to_tacs(*it_args, blk);
+            blk->add_tac(new ParamTAC(args_id));
+        }
+
+        blk->last_local_id++;
+        blk->add_tac(new CallTAC(to_local_var_name(blk->last_local_id), identifier->value, 1  + args->children.size()));
+    }
     else
     {
         string l = expr_node_to_tacs(node->children.front(), blk);
@@ -410,7 +516,6 @@ expr_node_to_tacs(Node* node, Block* blk)
 
         blk->last_local_id++;
         TAC* tac = new AssignTAC(to_local_var_name(blk->last_local_id), op, l, r);
-
         blk->add_tac(tac);
     }
     return to_local_var_name(blk->last_local_id);

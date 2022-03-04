@@ -364,8 +364,7 @@ Expression          :   Expression AND Expression {
                                 $$->children.push_back($2);
                             }
                     |   LP Expression RP{
-                                $$ = new Node("Statement", "");
-                                $$->children.push_back($2);
+                                $$ = $2;
                             }
                     |   Identifier {
                                 $$ = new Node("Identifier", $1->value);
