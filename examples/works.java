@@ -9,10 +9,14 @@ class BigBrain
 {
    public int run(int x, int y){
       int a;
+      a = 5;
       while(x == 1){
          if(a == 2)
          {
             y = 2;
+            if(a == 4){
+            
+            } else{}
          }
          else
          {

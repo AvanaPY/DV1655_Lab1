@@ -31,7 +31,7 @@ get_op(Node* node)
     if(opmap.count(node->type))
         return opmap[node->type];
     
-    std::cout << "Unhandled get_op: (" << node->type << ", " << node->value << ")\n";
+    std::cout << "BIG ERROR: Unhandled get_op: (" << node->type << ", " << node->value << ")\n";
     return "---";
 }
 
@@ -73,7 +73,6 @@ public:
     }
 
     virtual void stack_with(TAC* tac) {
-        std::cout << "Stacking Not implemented\n";
     };
 };
 
@@ -189,7 +188,6 @@ public:
     string name;
     int last_local_id;
     Block(string n) : name(n), trueExit(NULL), falseExit(NULL) {
-        std::cout << "Created block " << name << "\n";
     }
 
     void add_tac(TAC* tac)
@@ -199,13 +197,11 @@ public:
 
     void set_true_exit(Block* blk)
     {
-        std::cout << "Updating " << name << " true exit to " << blk->name << "\n";
         trueExit = blk;
     }
 
     void set_false_exit(Block* blk)
     {
-        std::cout << "Updating " << name << " false exit to " << blk->name << "\n";
         falseExit = blk;
     }
 
@@ -363,12 +359,8 @@ create_if_IR(Node* node, Block* blk)
     Node* true_stmt = *it; std::advance(it, 1);
     Node* false_stmt = *it; 
 
-    std::cout << "True conversion\n";
     Block* a = convert_statement(true_stmt, trueblk);
-    std::cout << "False conversion\n";
     Block* b = convert_statement(false_stmt, falseblk);
-
-    std::cout << "-----\n  T:" << a->name << "\n  F:" << b->name << "\n  B:" << blk->name << "\n-----\n";
 
     // // Create an exit block
     blk_count++;
@@ -382,7 +374,6 @@ create_if_IR(Node* node, Block* blk)
     b->set_true_exit(exitblk);
 
     currblk = exitblk; // Update block we're on
-    std::cout << "Set currblk to " << currblk->name << "\n";
     return currblk;
 }
 
@@ -450,7 +441,6 @@ convert_statement(Node* node, Block* blk)
         finalblk = blk;
     }
     else {
-        std::cout << "Encountered unhandled statement (" << node->type << ", " << node->value << ")\n";
         finalblk = blk;
     }
     return finalblk;
