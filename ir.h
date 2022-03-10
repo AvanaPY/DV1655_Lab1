@@ -18,6 +18,7 @@ map<std::string, std::string> opmap = {
     { "LT"  , "LT" },
     { "EQ"  , "EQ" },
     { "Indexing", "@" },
+    { "Assign[]", "@" },
     { "new()", "NEW" },
     { "new[]", "NEW[]" },
     { "Function Call", "call"},
@@ -178,6 +179,23 @@ public:
     }
 };
 
+class ReturnTAC : public TAC {
+public:
+    ReturnTAC(std::string res) : TAC(res, "", "", ""){}
+
+    void dump(std::ofstream& stream)
+    {
+        stream  << "RETURN " << result; 
+    }
+
+    void stack_with(TAC* tac)
+    {
+        lhs = tac->get_lhs();
+        rhs = tac->get_rhs();
+        op = tac->get_op();
+    }
+};
+
 class Block {
 
 private:
@@ -188,9 +206,7 @@ public:
     list<TAC*> tacs;
     string name;
     int last_local_id;
-    Block(string n) : name(n), trueExit(NULL), falseExit(NULL) {
-        std::cout << "Created block " << name << "\n";
-    }
+    Block(string n) : name(n), trueExit(NULL), falseExit(NULL) {}
 
     void add_tac(TAC* tac)
     {
@@ -281,6 +297,19 @@ Block* currblk;
 int block_id = 0;
 
 void
+stack_tacs(Block* blk)
+{
+    if(blk->tacs.size() < 2)
+        return;
+        
+    TAC* a = blk->tacs.back(); blk->tacs.pop_back();
+    TAC* b = blk->tacs.back(); blk->tacs.pop_back();
+
+    a->stack_with(b);
+    blk->add_tac(a);
+}
+
+void
 traverse_ast(Node* node, list<Block*>* entry_points)
 {
     if(node->type == "MainClass" || node->type == "Class") 
@@ -291,12 +320,22 @@ traverse_ast(Node* node, list<Block*>* entry_points)
     } 
     else if(node->type == "Method")
     {
-        Block* blk = new Block(curr_class_name + node->value);
+        std::string n = curr_class_name + "_" + node->value;
+        Block* blk = new Block(n);
         entry_points->push_back(blk);
         currblk = blk;
 
         for(auto it = node->children.begin(); it != node->children.end(); it++)
             traverse_ast(*it, entry_points);
+
+        Node* ret = node->children.back();
+        if(ret->value == "Expression")
+        {
+            std::string local_var_name = convert_expression(ret->children.front(), currblk);
+            blk->add_tac(new ReturnTAC(local_var_name));
+        }
+        else
+            blk->add_tac(new ReturnTAC(""));
     }
     else if(node->type == "Statement List")
     {
@@ -307,18 +346,6 @@ traverse_ast(Node* node, list<Block*>* entry_points)
         for(auto c = node->children.begin(); c != node->children.end(); c++)
             traverse_ast((*c), entry_points);
     }
-}
-
-void
-stack_tacs(Block* blk)
-{
-    if(blk->tacs.size() < 2)
-        return;
-    TAC* a = blk->tacs.back(); blk->tacs.pop_back();
-    TAC* b = blk->tacs.back(); blk->tacs.pop_back();
-
-    a->stack_with(b);
-    blk->add_tac(a);
 }
 
 Block*
@@ -337,6 +364,22 @@ create_assign_IR(Node* node, Block* blk)
 
         stack_tacs(blk);
     }
+    currblk = blk;
+    return currblk;
+}
+
+Block*
+create_assign_arr_IR(Node* node, Block* blk)
+{
+    auto it = node->children.begin();
+
+    Node* identifier = *it; std::advance(it, 1);
+    Node* index      = *it; std::advance(it, 1);
+    Node* value      = *it;
+
+    std::string local_var_name = convert_expression(value, blk);
+    blk->add_tac(new AssignTAC(identifier->value, get_op(node), local_var_name, "$" + index->value));
+
     currblk = blk;
     return currblk;
 }
@@ -420,7 +463,7 @@ create_sysprint_IR(Node* node, Block* blk)
 {
     string expr = expr_node_to_tacs(node->children.front(), blk);
     blk->add_tac(new PrintTAC(expr));
-    // stack_tacs(blk);
+    //stack_tacs(blk);
     return blk;
 }
 
@@ -430,6 +473,9 @@ convert_statement(Node* node, Block* blk)
     Block* finalblk;
     if(node->type == "Assign")
         finalblk = create_assign_IR(node, blk);
+
+    else if(node->type == "Assign[]")
+        finalblk = create_assign_arr_IR(node, blk);
 
     else if(node->type == "IF")
         finalblk = create_if_IR(node, blk);   

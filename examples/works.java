@@ -9,24 +9,16 @@ class BigBrain
 {
    public int run(int x, int y){
       int a;
-      while(x == 1){
-         if(a == 2)
-         {
-            y = 2;
-         }
-         else
-         {
-            x = 2;
-         }
-      }
-      a = 5 * 2 + 11 * 69 / 420;
-      if(69 == 420)
-      {
+      int[] b;
+      int c;
+      b = new int[5];
+      b[3] = 0;
+      c = b[3];
+      return b[3];
+   }
 
-      }
-      else{
-         
-      }
-      return a;
+   public int method()
+   {
+      return 0;
    }
 }
