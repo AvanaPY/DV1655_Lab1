@@ -1,25 +1,23 @@
 digraph {
   graph [splines=ortho]
   node [shape=box]
-  MainMain [label="MainMain\n_+1 :=  NEW BigBrain\nparam _+1  \nparam $5  \nparam $2  \n_+2 := call run 3\nPRINT _+2  \n"];
-  BigBrainrun [label="BigBrainrun\nWHILE x EQ $1\n"];
-  BigBrainrun -> block_1[xlabel="True"];
-  block_1 [label="block_1\nIF a EQ $2\n"];
-  block_1 -> block_3[xlabel="True"];
-  block_3 [label="block_3\ny := 2  \n"];
-  block_3 -> block_5[xlabel="True"];
-  block_5 [label="block_5\n"];
-  block_5 -> BigBrainrun[xlabel="True"];
-  block_1 -> block_4[xlabel="False"];
-  block_4 [label="block_4\nx := 2  \n"];
+  Main_Main [label="Main_Main\n_+1 :=  NEW BigBrain\nparam _+1  \nparam $5  \nparam $2  \n_+2 := call run 3\nPRINT _+2  \nRETURN \n"];
+  Element_foo [label="Element_foo\na := x ADD y\nb := y DIV x\nc := z SUB b\n"];
+  Element_foo -> block_1[xlabel="True"];
+  block_1 [label="block_1\nWHILE a GT $0\n"];
+  block_1 -> block_2[xlabel="True"];
+  block_2 [label="block_2\nb := b SUB $1\n"];
+  block_2 -> block_4[xlabel="True"];
+  block_4 [label="block_4\nIF b LT $5\n"];
   block_4 -> block_5[xlabel="True"];
-  BigBrainrun -> block_2[xlabel="False"];
-  block_2 [label="block_2\n_+1 := $5 MUL $2\n_+2 := $11 MUL $69\n_+3 := _+2 DIV $420\na := _+1 ADD _+3\nIF $69 EQ $420\n"];
-  block_2 -> block_6[xlabel="True"];
-  block_6 [label="block_6\n"];
-  block_6 -> block_8[xlabel="True"];
-  block_8 [label="block_8\n"];
-  block_2 -> block_7[xlabel="False"];
+  block_5 [label="block_5\nc := 5  \n"];
+  block_5 -> block_7[xlabel="True"];
   block_7 [label="block_7\n"];
-  block_7 -> block_8[xlabel="True"];
+  block_7 -> block_1[xlabel="True"];
+  block_4 -> block_6[xlabel="False"];
+  block_6 [label="block_6\nc := 2  \n"];
+  block_6 -> block_7[xlabel="True"];
+  block_1 -> block_3[xlabel="False"];
+  block_3 [label="block_3\n_+1 := a ADD b\nd := _+1 ADD c\nRETURN d\n"];
+  BigBrain_run [label="BigBrain_run\na :=  NEW[] $69\ne :=  NEW Element\nparam e  \nparam x  \nparam y  \nparam $420  \nz := foo call 4\n_+1 := a @ $0\nRETURN _+1\n"];
 }
