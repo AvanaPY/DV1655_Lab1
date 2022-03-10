@@ -32,7 +32,7 @@ get_op(Node* node)
     if(opmap.count(node->type))
         return opmap[node->type];
     
-    std::cout << "Unhandled get_op: (" << node->type << ", " << node->value << ")\n";
+    std::cout << "BIG ERROR: Unhandled get_op: (" << node->type << ", " << node->value << ")\n";
     return "---";
 }
 
@@ -74,7 +74,6 @@ public:
     }
 
     virtual void stack_with(TAC* tac) {
-        std::cout << "Stacking Not implemented\n";
     };
 };
 
@@ -427,7 +426,6 @@ create_if_IR(Node* node, Block* blk)
     b->set_true_exit(exitblk);
 
     currblk = exitblk; // Update block we're on
-    std::cout << "Set currblk to " << currblk->name << "\n";
     return currblk;
 }
 
@@ -502,7 +500,6 @@ convert_statement(Node* node, Block* blk)
         finalblk = blk;
     }
     else {
-        std::cout << "Encountered unhandled statement (" << node->type << ", " << node->value << ")\n";
         finalblk = blk;
     }
     return finalblk;
