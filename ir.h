@@ -215,13 +215,11 @@ public:
 
     void set_true_exit(Block* blk)
     {
-        std::cout << "Updating " << name << " true exit to " << blk->name << "\n";
         trueExit = blk;
     }
 
     void set_false_exit(Block* blk)
     {
-        std::cout << "Updating " << name << " false exit to " << blk->name << "\n";
         falseExit = blk;
     }
 
@@ -307,6 +305,7 @@ stack_tacs(Block* blk)
 
     a->stack_with(b);
     blk->add_tac(a);
+    blk->last_local_id--;
 }
 
 void
@@ -332,10 +331,10 @@ traverse_ast(Node* node, list<Block*>* entry_points)
         if(ret->value == "Expression")
         {
             std::string local_var_name = convert_expression(ret->children.front(), currblk);
-            blk->add_tac(new ReturnTAC(local_var_name));
+            currblk->add_tac(new ReturnTAC(local_var_name));
         }
         else
-            blk->add_tac(new ReturnTAC(""));
+            currblk->add_tac(new ReturnTAC(""));
     }
     else if(node->type == "Statement List")
     {
@@ -389,10 +388,15 @@ create_if_IR(Node* node, Block* blk)
 {
     // Create our new if block
     
+
+    blk_count++;
+    Block* if_blk = new Block(generic_blk_name_from_id(blk_count));
+
     // Convert the conditional expression
-    string lvm = convert_expression(node->children.front(), blk);
-    blk->add_tac(new CondTAC("IF", "", "", lvm));
-    stack_tacs(blk); // Stack the last 2 tacs for nice looking IR
+    string lvm = convert_expression(node->children.front(), if_blk);
+
+    if_blk->add_tac(new CondTAC("IF", "", "", lvm));
+    stack_tacs(if_blk); // Stack the last 2 tacs for nice looking IR
 
     // // Create a true and a false block
     blk_count++;
@@ -406,20 +410,18 @@ create_if_IR(Node* node, Block* blk)
     Node* true_stmt = *it; std::advance(it, 1);
     Node* false_stmt = *it; 
 
-    std::cout << "True conversion\n";
     Block* a = convert_statement(true_stmt, trueblk);
-    std::cout << "False conversion\n";
     Block* b = convert_statement(false_stmt, falseblk);
-
-    std::cout << "-----\n  T:" << a->name << "\n  F:" << b->name << "\n  B:" << blk->name << "\n-----\n";
 
     // // Create an exit block
     blk_count++;
     Block* exitblk = new Block(generic_blk_name_from_id(blk_count));
 
-    // // Assign exits
-    blk->set_true_exit(trueblk);
-    blk->set_false_exit(falseblk);
+    blk->set_true_exit(if_blk);
+
+    // Assign exits
+    if_blk->set_true_exit(trueblk);
+    if_blk->set_false_exit(falseblk);
 
     a->set_true_exit(exitblk);
     b->set_true_exit(exitblk);
@@ -432,10 +434,12 @@ create_if_IR(Node* node, Block* blk)
 Block*
 create_while_IR(Node* node, Block* blk)
 {
-    
-    string lvm = convert_expression(node->children.front(), blk);
-    blk->add_tac(new CondTAC("WHILE", "", "", lvm));
-    stack_tacs(blk);
+    blk_count++;
+    Block* while_blk = new Block(generic_blk_name_from_id(blk_count));
+
+    string lvm = convert_expression(node->children.front(), while_blk);
+    while_blk->add_tac(new CondTAC("WHILE", "", "", lvm));
+    stack_tacs(while_blk);
 
     // Create a true and a false block
     blk_count++;
@@ -449,11 +453,13 @@ create_while_IR(Node* node, Block* blk)
     Node* true_stmt = *it; std::advance(it, 1);
     Block* a = convert_statement(true_stmt, trueblk);
 
-    // Assign exits
-    blk->set_true_exit(trueblk);
-    blk->set_false_exit(falseblk);
+    blk->set_true_exit(while_blk);
 
-    a->set_true_exit(blk);
+    // Assign exits
+    while_blk->set_true_exit(trueblk);
+    while_blk->set_false_exit(falseblk);
+
+    a->set_true_exit(while_blk);
     currblk = falseblk; // Update block we're on
     return falseblk;
 }
