@@ -277,7 +277,6 @@ evaluate_statement(Node* stmt_node, ST* scope)
     {
         Node* cond_node = stmt_node->children.front();
         string cond_type = evaluate_expression_type(cond_node, scope);
-
         if(cond_type != "Bool")
             error("6 Expression is not of type Bool in IF statement");
 

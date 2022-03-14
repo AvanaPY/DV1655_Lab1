@@ -1,7 +1,10 @@
 #include<iostream>
+#include<fstream>
 #include "ST.h"
 #include "semantic.h"
+#include "ir.h"
 #include "parser.tab.hh"
+#include<list>
 
 extern Node* root;
 extern FILE* yyin;
@@ -15,26 +18,37 @@ void yy::parser::error(std::string const&err)
 
 int main(int argc, char **argv)
 {
-    //Reads from file if a file name is passed as an argument. Otherwise, reads from stdin.
-    if(argc > 1) {
-        if(!(yyin = fopen(argv[1], "r"))) {
-          perror(argv[1]);
-          printf("Error could not open file");
-          return 1;
-        }
+  //Reads from file if a file name is passed as an argument. Otherwise, reads from stdin.
+  if(argc > 1) {
+      if(!(yyin = fopen(argv[1], "r"))) {
+        perror(argv[1]);
+        printf("Error could not open file");
+        return 1;
+      }
+  }
+
+  yy::parser parser;
+  if(!parser.parse()) {
+    root->generate_tree();
+
+    ST* symbol_table = new ST("Root");
+    symbol_table->explore(root);
+    Semantic::semantic_analysis(root, symbol_table);
+
+    // symbol_table->print_table();
+    // root->print_tree();
+    std::ofstream o ("dot.dot");
+    if (o.is_open()){
+
+      list<IR::Block*> entry_points;
+      IR::traverse_ast(root, &entry_points);
+      IR::dump_cfg(&entry_points, o);
+
+      o.close();
+    } else {
+      std::cout << "Cannot open file\n";
     }
+  }
 
-    yy::parser parser;
-    if(!parser.parse()) {
-
-        ST* symbol_table = new ST("Root");
-        symbol_table->explore(root);
-        Semantic::semantic_analysis(root, symbol_table);
-
-        // root->generate_tree();
-        // symbol_table->print_table();
-        // root->print_tree();
-    }
-  
   return 0;
 }
