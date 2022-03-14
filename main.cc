@@ -37,7 +37,7 @@ int main(int argc, char **argv)
 
     // symbol_table->print_table();
     // root->print_tree();
-    std::ofstream o ("dot.dot");
+    std::ofstream o ("IR.dot");
     if (o.is_open()){
 
       list<IR::Block*> entry_points;

@@ -1,0 +1,6 @@
+digraph {
+  graph [splines=ortho]
+  node [shape=box]
+  Main_Main [label="Main_Main\n_+1 :=  NEW BigBrain\nparam _+1  \nparam $5  \nparam $2  \n_+2 := call run 3\nPRINT _+2  \nRETURN \n"];
+  BigBrain_run [label="BigBrain_run\n_+1 := x ADD y\nRETURN _+1\n"];
+}
