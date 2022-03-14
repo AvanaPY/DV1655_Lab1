@@ -68,7 +68,6 @@ protected:
 
 public:
     TAC(std::string res, std::string o, std::string l, std::string r) : op(o), lhs(l), rhs(r), result(res){
-        std::cout << "Generated tac " << result << op << lhs << rhs << "\n";
     }
     virtual void dump(std::ofstream& stream){}
 
@@ -145,6 +144,9 @@ public:
 
     void dump_result(std::ofstream& stream)
     {
+        if(result.size() == 0)
+            return;
+            
         if(result.find("_+") == -1)
         {
             stream << "\tistore " << result << "\n";
@@ -273,11 +275,11 @@ public:
 
 class ReturnTAC : public TAC {
 public:
-    ReturnTAC(std::string res) : TAC(res, "", "", ""){}
+    ReturnTAC(std::string res) : TAC("", "", res, ""){}
 
     void dump(std::ofstream& stream)
     {
-        stream  << "RETURN " << result; 
+        stream  << "RETURN " << lhs; 
     }
 
     void stack_with(TAC* tac)
@@ -285,6 +287,15 @@ public:
         lhs = tac->get_lhs();
         rhs = tac->get_rhs();
         op = tac->get_op();
+    }
+
+    void dump_code(std::ofstream& stream)
+    {
+        dump_lhs(stream);
+        dump_rhs(stream);
+        dump_op(stream);
+        dump_result(stream);
+        stream << "\tireturn\n";
     }
 };
 
@@ -374,14 +385,17 @@ public:
         {
             (*it)->dump_code(stream);
         }
+        // If this is our "Main" block, put a stop at the very end
+        if(name.compare(name.size() - 4, 4, "Main") == 0)
+            stream << "\tstop\n";
 
         // Continue
         if(trueExit != nullptr)
             trueExit->dump_code(stream);
+            
+        if(falseExit != nullptr)
+            falseExit->dump_code(stream);
 
-        // If this is our "Main" block, put a stop at the very end
-        if(name.compare(name.size() - 4, 4, "Main") == 0)
-            stream << "\tstop\n";
     }
 };
 

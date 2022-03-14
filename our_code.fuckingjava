@@ -11,6 +11,7 @@ Sum_Main:
 	iconst 1
 	iand
 	print
+	ireturn
 	stop
 
 
@@ -27,5 +28,14 @@ block_2:
 	iconst 1
 	isub
 	istore num
+block_3:
+	iload sum
+	iconst 1
+	iadd
+	iconst 1
+	iadd
+	iconst 1
+	iadd
+	ireturn
 
 

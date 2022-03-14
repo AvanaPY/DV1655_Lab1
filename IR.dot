@@ -9,5 +9,5 @@ digraph {
   block_2 [label="block_2\nsum := sum ADD num\nnum := num SUB $1\n"];
   block_2 -> block_1[xlabel="True"];
   block_1 -> block_3[xlabel="False"];
-  block_3 [label="block_3\nRETURN sum\n"];
+  block_3 [label="block_3\n_+1 := sum ADD $1\n_+2 := _+1 ADD $1\n_+3 := _+2 ADD $1\nRETURN _+3\n"];
 }

@@ -15,6 +15,6 @@ public int Sum(int num) {
       sum = sum + num;
       num = num - 1;
    } 
-   return sum;
+   return sum + 1 + 1 + 1;
    }
 }
