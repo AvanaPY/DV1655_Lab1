@@ -2,7 +2,7 @@ digraph {
   graph [splines=ortho]
   node [shape=box]
   Main_Main [label="Main_Main\n_+1 :=  NEW BigBrain\nparam _+1  \nparam $5  \nparam $2  \n_+2 := call run 3\nPRINT _+2  \nRETURN \n"];
-  Element_foo [label="Element_foo\na := x ADD y\nb := y DIV x\nc := z SUB b\n"];
+  Element_foo [label="Element_foo\n_+1 := y DIV x\na := x ADD _+1\n_+2 := y MUL x\nb := _+2 ADD a\n_+3 := z SUB b\n_+4 := a DIV b\nc := _+3 ADD _+4\n"];
   Element_foo -> block_1[xlabel="True"];
   block_1 [label="block_1\nWHILE a GT $0\n"];
   block_1 -> block_2[xlabel="True"];

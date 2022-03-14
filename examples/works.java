@@ -14,9 +14,9 @@ class Element
       int a; int b;
       int c; int d;
 
-      a = x + y;
-      b = y / x;
-      c = z - b;
+      a = x + y / x;
+      b = y * x + a;
+      c = z - b + a / b;
       while(a > 0)
       {
          b = b - 1;
