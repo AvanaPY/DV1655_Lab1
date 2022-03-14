@@ -37,13 +37,12 @@ int main(int argc, char **argv)
 
     // symbol_table->print_table();
     // root->print_tree();
+    list<IR::Block*> entry_points;
+    IR::traverse_ast(root, &entry_points);
+
     std::ofstream o ("IR.dot");
     if (o.is_open()){
-
-      list<IR::Block*> entry_points;
-      IR::traverse_ast(root, &entry_points);
       IR::dump_cfg(&entry_points, o);
-
       o.close();
     } else {
       std::cout << "Cannot open file\n";
