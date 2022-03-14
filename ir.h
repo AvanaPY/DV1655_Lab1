@@ -156,6 +156,8 @@ public:
     virtual void stack_with(TAC* tac) {};
     virtual void dump_code(std::ofstream& stream){};
     virtual void dump_code(std::ofstream& stream, std::string argument){};
+    virtual void dump_code(std::ofstream& stream, std::string arg1, std::string arg2){};
+    virtual void dump_code(std::ofstream& stream, std::string arg1, std::string arg2, std::string arg3){};
 };
 
 class AssignTAC : public TAC {
@@ -204,6 +206,23 @@ public:
         lhs = tac->get_lhs();
         rhs = tac->get_rhs();
         op = tac->get_op();
+    }
+    
+    void dump_code(std::ofstream& stream, std::string true_exit, std::string false_exit)
+    {
+        dump_lhs(stream);
+        dump_rhs(stream);
+        dump_op(stream);
+        stream << "\tiffalse goto \n\t\t" << false_exit << "\n";
+    }
+    
+    void dump_code(std::ofstream& stream, std::string true_exit, std::string false_exit, std::string org_exit)
+    {
+        dump_lhs(stream);
+        dump_rhs(stream);
+        dump_op(stream);
+        stream << "\tiffalse goto \n\t\t" << false_exit << "\n";
+
     }
 };
 
@@ -397,20 +416,26 @@ public:
         // This is such a horrible solution to calls, but it works
         // "It is not horrible if it works" - Sun Tzu
         TAC* invoke_class_tac = nullptr;
+        std::string op, res;
+        bool dump_true_exit_goto = false;
         for(auto it = tacs.begin(); it != tacs.end(); it++)
         {
-            if((*it)->get_op() == "NEW")
-            {
+            op = (*it)->get_op();
+            res = (*it)->get_result();
+            if(op == "NEW")
                 invoke_class_tac = *it;
-            }
-            else if((*it)->get_op() == "call")
-            {
+            else if(op == "call")
                 (*it)->dump_code(stream, invoke_class_tac->get_rhs());
+            else if(res == "IF")
+                (*it)->dump_code(stream, trueExit->name, falseExit->name);
+            else if(res == "WHILE")
+            {
+                (*it)->dump_code(stream, trueExit->name, falseExit->name);
+                dump_true_exit_goto = true;
             }
             else
-            {
                 (*it)->dump_code(stream);
-            }
+            
         }
         // If this is our "Main" block, put a stop at the very end
         if(name.compare(name.size() - 4, 4, "Main") == 0)
@@ -418,11 +443,18 @@ public:
 
         // Continue
         if(trueExit != nullptr)
+        {
             trueExit->dump_code(stream);
+            if(dump_true_exit_goto && !code_dumped)
+                stream << "\tgoto " << name << "\n";
+        }
             
         if(falseExit != nullptr)
+        {
             falseExit->dump_code(stream);
-
+            if(falseExit->trueExit != nullptr)
+                stream << "\tgoto " << falseExit->trueExit->name << "\n";
+        }
     }
 };
 
