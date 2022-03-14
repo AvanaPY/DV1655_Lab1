@@ -1,8 +1,33 @@
 digraph {
   graph [splines=ortho]
   node [shape=box]
-  Bar_Main [label="Bar_Main\n_+1 := NEW  Bar1\n  param _+1\n_+2 := call foo 1\nPRINT _+2  \nRETURN \n"];
-  Element_sum [label="Element_sum\n_+1 := ADD a b\nRETURN _+1\n"];
-  Bar1_foo [label="Bar1_foo\n  param THIS\n  param $1\n  param $2\naux := call sum 3\nRETURN aux\n"];
-  Bar1_sum [label="Bar1_sum\n_+1 := ADD a b\nRETURN _+1\n"];
+  FacFib_Main [label="FacFib_Main\n_+1 := NEW  FacFib2\n  param _+1\n  param $5\n  param $10\n_+2 := call Compute 3\nPRINT _+2  \nRETURN \n"];
+  FacFib2_Compute [label="FacFib2_Compute\n"];
+  FacFib2_Compute -> block_1[xlabel="True"];
+  block_1 [label="block_1\n_+1 := LT first $1\n_+2 := NOT  _+1\n_+3 := LT second $1\n_+4 := NOT  _+3\nIF _+2 AND _+4\n"];
+  block_1 -> block_2[xlabel="True"];
+  block_2 [label="block_2\n  param THIS\n  param first\nfac := call ComputeFac 2\nPRINT fac  \n  param THIS\n  param second\nfib := call ComputeFib 2\nPRINT fib  \nreturnValue :=  $1 \n"];
+  block_2 -> block_4[xlabel="True"];
+  block_4 [label="block_4\nRETURN returnValue\n"];
+  block_1 -> block_3[xlabel="False"];
+  block_3 [label="block_3\nreturnValue :=  $0 \n"];
+  block_3 -> block_4[xlabel="True"];
+  FacFib2_ComputeFac [label="FacFib2_ComputeFac\n"];
+  FacFib2_ComputeFac -> block_5[xlabel="True"];
+  block_5 [label="block_5\nIF num LT $1\n"];
+  block_5 -> block_6[xlabel="True"];
+  block_6 [label="block_6\nfac :=  $1 \n"];
+  block_6 -> block_8[xlabel="True"];
+  block_8 [label="block_8\nRETURN fac\n"];
+  block_5 -> block_7[xlabel="False"];
+  block_7 [label="block_7\n  param THIS\n_+1 := SUB num $1\n  param _+1\n_+2 := call ComputeFac 2\nfac := MUL num _+2\n"];
+  block_7 -> block_8[xlabel="True"];
+  FacFib2_ComputeFib [label="FacFib2_ComputeFib\nf0 :=  $0 \nf1 :=  $1 \nfib :=  num \ni :=  $1 \n"];
+  FacFib2_ComputeFib -> block_9[xlabel="True"];
+  block_9 [label="block_9\nWHILE i LT num\n"];
+  block_9 -> block_10[xlabel="True"];
+  block_10 [label="block_10\nfib := ADD f1 f0\nf0 :=  f1 \nf1 :=  fib \ni := ADD i $1\n"];
+  block_10 -> block_9[xlabel="True"];
+  block_9 -> block_11[xlabel="False"];
+  block_11 [label="block_11\nRETURN fib\n"];
 }
