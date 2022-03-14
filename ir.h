@@ -67,10 +67,16 @@ protected:
     std::string result, op, lhs, rhs;
 
 public:
-    TAC(std::string res, std::string o, std::string l, std::string r) : op(o), lhs(l), rhs(r), result(res){
+    TAC(std::string res, std::string o, std::string l, std::string r) : op(o), lhs(l), rhs(r), result(res){}
+    
+    virtual void dump(std::ofstream& stream)
+    {
+        stream  << result 
+                << " := "
+                << op << " " 
+                << lhs << " " 
+                << rhs;
     }
-    virtual void dump(std::ofstream& stream){}
-
     string get_result()
     {
         return result;
@@ -95,43 +101,12 @@ public:
 
     void dump_lhs(std::ofstream& stream)
     {
-        if(lhs.find("_+") != -1 || lhs.size() == 0)
-            return;
-
-        if(bool_map.count(lhs) != 0)
-        {
-            stream << "\ticonst " << bool_map[lhs] << "\n";
-            return;
-        }
-
-        if(lhs.find("$") == -1)
-        {
-            stream << "\tiload " << lhs << "\n";
-            return;
-        }
-
-        stream << "\ticonst " << lhs.substr(1, lhs.size() - 1) << "\n";
+        stream << value_to_instruction(lhs);
     }
     
     void dump_rhs(std::ofstream& stream)
     {
-        if(rhs.find("_+") != -1 || rhs.size() == 0)
-            return;
-
-        if(bool_map.count(rhs) != 0)
-        {
-            stream << "\ticonst " << bool_map[rhs] << "\n";
-            return;
-        }
-
-        if(rhs.find("$") == -1)
-        {
-            stream << "\tiload " << rhs << "\n";
-            return;
-        }
-
-        stream << "\ticonst " << rhs.substr(1, rhs.size() - 1) << "\n";
-        
+        stream << value_to_instruction(rhs);
     }
 
     void dump_op(std::ofstream& stream)
@@ -153,25 +128,36 @@ public:
         }
     }
 
+    std::string value_to_instruction(std::string v)
+    {
+        if(v.find("_+") != -1 || v.size() == 0)
+            return "";
+
+        std::string res;
+        if(bool_map.count(v) != 0)
+        {
+            res = "\ticonst " + bool_map[v];
+        }
+        else if(v.find("$") == -1)
+        {
+            res = "\tiload " + v;
+        }
+        else
+        {
+            res = "\ticonst " + v.substr(1, v.size() - 1);
+        }
+        return res + "\n";
+    }
+
     virtual void stack_with(TAC* tac) {};
     virtual void dump_code(std::ofstream& stream){};
     virtual void dump_code(std::ofstream& stream, std::string argument){};
     virtual void dump_code(std::ofstream& stream, std::string arg1, std::string arg2){};
-    virtual void dump_code(std::ofstream& stream, std::string arg1, std::string arg2, std::string arg3){};
 };
 
 class AssignTAC : public TAC {
 public:
     AssignTAC(std::string res, std::string o, std::string l, std::string r) : TAC(res, o, l, r){}
-
-    void dump(std::ofstream& stream)
-    {
-        stream  << result 
-                << " := "
-                << lhs << " " 
-                << op << " " 
-                << rhs;
-    }
 
     void stack_with(TAC* tac)
     {
@@ -222,7 +208,6 @@ public:
         dump_rhs(stream);
         dump_op(stream);
         stream << "\tiffalse goto \n\t\t" << false_exit << "\n";
-
     }
 };
 
@@ -255,7 +240,7 @@ public:
 
 class ParamTAC : public TAC {
 public:
-    ParamTAC(std::string name) : TAC("param", "", name, ""){}
+    ParamTAC(std::string name) : TAC("", "param", "", name){}
 
     void dump(std::ofstream& stream)
     {
@@ -274,8 +259,7 @@ public:
 
     void dump_code(std::ofstream& stream)
     {
-        if(lhs.find("$") == 0)
-            stream << "\ticonst " << lhs.substr(1, lhs.size() - 1) << "\n";
+        stream << value_to_instruction(rhs);
     }
 };
 
@@ -283,19 +267,9 @@ class CallTAC : public TAC {
 public:
     CallTAC(std::string res, std::string name, int params) : TAC(res, "call", name, std::to_string(params)){}
 
-    void dump(std::ofstream& stream)
-    {
-        stream  << result << " := "
-                << op  << " "
-                << lhs << " "
-                << rhs;
-    }
-
     void stack_with(TAC* tac)
     {
-        lhs = tac->get_lhs();
-        rhs = tac->get_rhs();
-        op = tac->get_op();
+        result = tac->get_result();
     }
 
     void dump_code(std::ofstream& stream, std::string class_name)
@@ -348,6 +322,14 @@ public:
     void add_tac(TAC* tac)
     {
         tacs.push_back(tac);
+    }
+
+    TAC* find_tac(std::string local_var_name)
+    {
+        for(auto it = tacs.begin(); it != tacs.end(); it++)
+            if((*it)->get_result() == local_var_name)
+                return *it;
+        return nullptr;
     }
 
     void set_true_exit(Block* blk)
@@ -416,16 +398,41 @@ public:
         // This is such a horrible solution to calls, but it works
         // "It is not horrible if it works" - Sun Tzu
         TAC* invoke_class_tac = nullptr;
-        std::string op, res;
+        bool listing_params = false;
         bool dump_true_exit_goto = false;
+
+        std::string op, res;
         for(auto it = tacs.begin(); it != tacs.end(); it++)
         {
             op = (*it)->get_op();
             res = (*it)->get_result();
-            if(op == "NEW")
-                invoke_class_tac = *it;
+            if(op == "param")
+            {
+                if(listing_params)
+                {
+                    (*it)->dump_code(stream);
+                }
+                else
+                {
+                    invoke_class_tac = *it;
+                    listing_params = true;
+                }
+            }
             else if(op == "call")
-                (*it)->dump_code(stream, invoke_class_tac->get_rhs());
+            {
+                listing_params = false;
+                std::string target_class = invoke_class_tac->get_rhs();
+                if(target_class == "THIS")
+                {
+                    
+                    (*it)->dump_code(stream, name.substr(0, name.find("_")));
+                }
+                else
+                {
+                    TAC* tac = find_tac(invoke_class_tac->get_rhs());
+                    (*it)->dump_code(stream, tac->get_rhs());
+                }
+            }
             else if(res == "IF")
                 (*it)->dump_code(stream, trueExit->name, falseExit->name);
             else if(res == "WHILE")
@@ -494,9 +501,19 @@ stack_tacs(Block* blk)
     TAC* a = blk->tacs.back(); blk->tacs.pop_back();
     TAC* b = blk->tacs.back(); blk->tacs.pop_back();
 
-    a->stack_with(b);
-    blk->add_tac(a);
-    blk->last_local_id--;
+    if(b->get_op() == "call")
+    {
+        b->stack_with(a);
+        blk->add_tac(b);
+        blk->last_local_id--;
+    }
+    else 
+    {
+        a->stack_with(b);
+        blk->add_tac(a);
+        blk->last_local_id--;
+    }
+
 }
 
 void
@@ -543,9 +560,13 @@ create_assign_IR(Node* node, Block* blk)
 {
     string typ = node->children.back()->type;
 
-    if(typ == "Int" || typ == "Identifier" || typ == "Bool")
+    if(typ == "Int")
     {
         blk->add_tac(new AssignTAC(node->children.front()->value, "", "$" + node->children.back()->value, ""));
+    }
+    else if(typ == "Identifier" || typ == "Bool")
+    {
+        blk->add_tac(new AssignTAC(node->children.front()->value, "", node->children.back()->value, ""));
     } 
     else 
     {

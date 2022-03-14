@@ -41,6 +41,17 @@ int main(int argc, char **argv)
     list<IR::Block*> entry_points;
     IR::traverse_ast(root, &entry_points);
 
+    std::cout << "Generating IR flow chart\n";
+
+    std::ofstream dot_stream ("IR.dot");
+    if (dot_stream.is_open()){
+      IR::dump_cfg(&entry_points, dot_stream);
+      dot_stream.close();
+    } else {
+      std::cout << "Cannot open dot stream\n";
+    }
+
+    std::cout << "Generating code...\n";
     std::ofstream code_stream ("our_code.fuckingjava");
     if(code_stream.is_open())
     {
@@ -50,14 +61,6 @@ int main(int argc, char **argv)
     else
     {
       std::cout << "Cannot open code stream\n";
-    }
-
-    std::ofstream dot_stream ("IR.dot");
-    if (dot_stream.is_open()){
-      IR::dump_cfg(&entry_points, dot_stream);
-      dot_stream.close();
-    } else {
-      std::cout << "Cannot open dot stream\n";
     }
   }
 

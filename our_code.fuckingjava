@@ -1,41 +1,27 @@
-Sum_Main:
-	iconst 100
-	iconst 1
-	iadd
-	iconst 1
-	invokevirtual Test_Sum
+Bar_Main:
+	iload Bar1
+	
+	invokevirtual Bar1_foo
 	print
 	ireturn
 	stop
 
-Test_Sum:
-	iconst 0
-	istore sum
-block_1:
-	iconst 0
-	iload num
-	ilt
-	iffalse goto 
-		block_3
-block_2:
-	iload sum
-	iload num
+Element_sum:
+	iload a
+	iload b
 	iadd
-	istore sum
-block_4:
-	iconst 0
-	iload num
-	ilt
-	iffalse goto 
-		block_6
-block_5:
-	iload sum
-	iload num
-	isub
-	istore sum
-block_6:
-	goto block_1
-block_3:
-	iload sum
+	ireturn
+
+Bar1_foo:
+	iconst 1
+	iconst 2
+	invokevirtual Bar1_sum
+	iload aux
+	ireturn
+
+Bar1_sum:
+	iload a
+	iload b
+	iadd
 	ireturn
 

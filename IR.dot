@@ -1,20 +1,8 @@
 digraph {
   graph [splines=ortho]
   node [shape=box]
-  Sum_Main [label="Sum_Main\n_+1 :=  NEW Test\nparam _+1  \n_+2 := $100 ADD $1\nparam _+2  \nparam $1  \n_+3 := call Sum 3\nPRINT _+3  \nRETURN \n"];
-  Test_Sum [label="Test_Sum\nsum := $0  \n"];
-  Test_Sum -> block_1[xlabel="True"];
-  block_1 [label="block_1\nWHILE $0 LT num\n"];
-  block_1 -> block_2[xlabel="True"];
-  block_2 [label="block_2\nsum := sum ADD num\n"];
-  block_2 -> block_4[xlabel="True"];
-  block_4 [label="block_4\nWHILE $0 LT num\n"];
-  block_4 -> block_5[xlabel="True"];
-  block_5 [label="block_5\nsum := sum SUB num\n"];
-  block_5 -> block_4[xlabel="True"];
-  block_4 -> block_6[xlabel="False"];
-  block_6 [label="block_6\n"];
-  block_6 -> block_1[xlabel="True"];
-  block_1 -> block_3[xlabel="False"];
-  block_3 [label="block_3\nRETURN sum\n"];
+  Bar_Main [label="Bar_Main\n_+1 := NEW  Bar1\n  param _+1\n_+2 := call foo 1\nPRINT _+2  \nRETURN \n"];
+  Element_sum [label="Element_sum\n_+1 := ADD a b\nRETURN _+1\n"];
+  Bar1_foo [label="Bar1_foo\n  param THIS\n  param $1\n  param $2\naux := call sum 3\nRETURN aux\n"];
+  Bar1_sum [label="Bar1_sum\n_+1 := ADD a b\nRETURN _+1\n"];
 }
