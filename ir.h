@@ -24,6 +24,25 @@ map<std::string, std::string> opmap = {
     { "Function Call", "call"},
     { "THIS", "THIS" }
 };
+
+map<std::string, std::string> op_byte_code = {
+    { "ADD" , "iadd" },
+    { "SUB", "isub" },
+    { "DIV"  , "idiv" },
+    { "MUL" , "imul" },
+    { "AND"  , "iand" },
+    { "OR"   , "ior" },
+    { "NOT"  , "inot" },
+    { "GT"  , "igt" },
+    { "LT"  , "ilt" },
+    { "EQ"  , "ieq" }
+};
+
+map<std::string, int> bool_map = {
+    { "false" , 0 },
+    { "true"  , 1 }
+};
+
 static int blk_count;
 
 string 
@@ -48,7 +67,9 @@ protected:
     std::string result, op, lhs, rhs;
 
 public:
-    TAC(std::string res, std::string o, std::string l, std::string r) : op(o), lhs(l), rhs(r), result(res){}
+    TAC(std::string res, std::string o, std::string l, std::string r) : op(o), lhs(l), rhs(r), result(res){
+        std::cout << "Generated tac " << result << op << lhs << rhs << "\n";
+    }
     virtual void dump(std::ofstream& stream){}
 
     string get_result()
@@ -73,8 +94,65 @@ public:
         return op;
     }
 
-    virtual void stack_with(TAC* tac) {
-    };
+    void dump_lhs(std::ofstream& stream)
+    {
+        if(lhs.find("_+") != -1 || lhs.size() == 0)
+            return;
+
+        if(bool_map.count(lhs) != 0)
+        {
+            stream << "\ticonst " << bool_map[lhs] << "\n";
+            return;
+        }
+
+        if(lhs.find("$") == -1)
+        {
+            stream << "\tiload " << lhs << "\n";
+            return;
+        }
+
+        stream << "\ticonst " << lhs.substr(1, lhs.size() - 1) << "\n";
+    }
+    
+    void dump_rhs(std::ofstream& stream)
+    {
+        if(rhs.find("_+") != -1 || rhs.size() == 0)
+            return;
+
+        if(bool_map.count(rhs) != 0)
+        {
+            stream << "\ticonst " << bool_map[rhs] << "\n";
+            return;
+        }
+
+        if(rhs.find("$") == -1)
+        {
+            stream << "\tiload " << rhs << "\n";
+            return;
+        }
+
+        stream << "\ticonst " << rhs.substr(1, rhs.size() - 1) << "\n";
+        
+    }
+
+    void dump_op(std::ofstream& stream)
+    {
+        if(op.size() == 0)
+            return;
+        string op_bc = op_byte_code[op];
+        stream << "\t" << op_bc << "\n";
+    }
+
+    void dump_result(std::ofstream& stream)
+    {
+        if(result.find("_+") == -1)
+        {
+            stream << "\tistore " << result << "\n";
+        }
+    }
+
+    virtual void stack_with(TAC* tac) {};
+    virtual void dump_code(std::ofstream& stream){};
 };
 
 class AssignTAC : public TAC {
@@ -95,6 +173,14 @@ public:
         lhs = tac->get_lhs();
         rhs = tac->get_rhs();
         op = tac->get_op();
+    }
+
+    void dump_code(std::ofstream& stream)
+    {
+        dump_lhs(stream);
+        dump_rhs(stream);
+        dump_op(stream);
+        dump_result(stream);
     }
 };
 
@@ -135,6 +221,13 @@ public:
         lhs = tac->get_lhs();
         rhs = tac->get_rhs();
         op = tac->get_op();
+    }
+
+    void dump_code(std::ofstream& stream)
+    {
+        if(lhs.find("$") != -1)
+            stream << "\ticonst " << lhs.substr(1, lhs.size() - 1) << "\n";
+        stream << "\tprint\n";
     }
 };
 
@@ -199,13 +292,16 @@ class Block {
 
 private:
     TAC* condition;
+    bool code_dumped;
 
 public:
     Block *trueExit, *falseExit;
     list<TAC*> tacs;
     string name;
     int last_local_id;
-    Block(string n) : name(n), trueExit(NULL), falseExit(NULL) {}
+    Block(string n) : name(n), trueExit(NULL), falseExit(NULL) {
+        code_dumped = false;
+    }
 
     void add_tac(TAC* tac)
     {
@@ -263,6 +359,29 @@ public:
             stream << "  " << name << " -> " << falseExit->name << "[xlabel=\"False\"];" << std::endl;
             falseExit->dump_rec(stream, dump_map);
         }
+    }
+
+    void dump_code(std::ofstream& stream)
+    {
+        // Check if this block has already been code dumped
+        if(code_dumped)
+            return;
+        code_dumped = true;
+
+        // Create start of block
+        stream << name << ":\n";
+        for(auto it = tacs.begin(); it != tacs.end(); it++)
+        {
+            (*it)->dump_code(stream);
+        }
+
+        // Continue
+        if(trueExit != nullptr)
+            trueExit->dump_code(stream);
+
+        // If this is our "Main" block, put a stop at the very end
+        if(name.compare(name.size() - 4, 4, "Main") == 0)
+            stream << "\tstop\n";
     }
 };
 
@@ -353,7 +472,7 @@ create_assign_IR(Node* node, Block* blk)
 
     if(typ == "Int" || typ == "Identifier" || typ == "Bool")
     {
-        blk->add_tac(new AssignTAC(node->children.front()->value, "", node->children.back()->value, ""));
+        blk->add_tac(new AssignTAC(node->children.front()->value, "", "$" + node->children.back()->value, ""));
     } 
     else 
     {

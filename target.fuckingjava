@@ -1,0 +1,22 @@
+Sum_Main:
+
+iconst 5
+iconst 2
+imul
+
+iload 3
+imul
+
+print
+
+iconst 0
+iconst 1
+iand
+print
+stop
+
+
+
+Test_Sum:
+block_1:
+block_2:

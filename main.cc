@@ -3,6 +3,7 @@
 #include "ST.h"
 #include "semantic.h"
 #include "ir.h"
+#include "codegen.h"
 #include "parser.tab.hh"
 #include<list>
 
@@ -40,12 +41,23 @@ int main(int argc, char **argv)
     list<IR::Block*> entry_points;
     IR::traverse_ast(root, &entry_points);
 
-    std::ofstream o ("IR.dot");
-    if (o.is_open()){
-      IR::dump_cfg(&entry_points, o);
-      o.close();
+    std::ofstream code_stream ("our_code.fuckingjava");
+    if(code_stream.is_open())
+    {
+      IR::generate_code(&entry_points, code_stream);
+      code_stream.close();
+    }
+    else
+    {
+      std::cout << "Cannot open code stream\n";
+    }
+
+    std::ofstream dot_stream ("IR.dot");
+    if (dot_stream.is_open()){
+      IR::dump_cfg(&entry_points, dot_stream);
+      dot_stream.close();
     } else {
-      std::cout << "Cannot open file\n";
+      std::cout << "Cannot open dot stream\n";
     }
   }
 
