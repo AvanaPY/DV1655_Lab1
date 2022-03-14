@@ -1,22 +1,26 @@
 Sum_Main:
-
-iconst 5
-iconst 2
-imul
-
-iload 3
-imul
-
-print
-
-iconst 0
-iconst 1
-iand
-print
-stop
-
+	iconst 1
+    invokevirtual Test_Sum
+	print
+	ireturn
+	stop
 
 
 Test_Sum:
+	iconst 0
+	istore sum
 block_1:
 block_2:
+	iload sum
+	iload num
+	iadd
+	istore sum
+	iload num
+	iconst 1
+	isub
+	istore num
+block_3:
+	iload sum
+	ireturn
+
+

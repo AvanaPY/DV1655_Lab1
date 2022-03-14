@@ -1,20 +1,18 @@
 class Sum {
    public static void main(String [] a)
    {
-      System.out.println(5);
-      System.out.println(5 * 2 * 3);
-      System.out.println(false && true);
+      System.out.println(new Test().Sum(100, 1));
    }
 } 
 
 class Test {
-public int Sum(int num) {
+public int Sum(int a, int num) {
    int sum;
    sum = 0;
    while(0 < num) {
       sum = sum + num;
       num = num - 1;
    } 
-   return sum + 1 + 1 + 1;
+   return sum;
    }
 }

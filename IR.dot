@@ -1,7 +1,7 @@
 digraph {
   graph [splines=ortho]
   node [shape=box]
-  Sum_Main [label="Sum_Main\nPRINT $5  \n_+1 := $5 MUL $2\n_+2 := _+1 MUL $3\nPRINT _+2  \n_+3 := false AND true\nPRINT _+3  \nRETURN \n"];
+  Sum_Main [label="Sum_Main\n_+1 :=  NEW Test\nparam _+1  \nparam $100  \nparam $1  \n_+2 := call Sum 3\nPRINT _+2  \nRETURN \n"];
   Test_Sum [label="Test_Sum\nsum := $0  \n"];
   Test_Sum -> block_1[xlabel="True"];
   block_1 [label="block_1\nWHILE $0 LT num\n"];
@@ -9,5 +9,5 @@ digraph {
   block_2 [label="block_2\nsum := sum ADD num\nnum := num SUB $1\n"];
   block_2 -> block_1[xlabel="True"];
   block_1 -> block_3[xlabel="False"];
-  block_3 [label="block_3\n_+1 := sum ADD $1\n_+2 := _+1 ADD $1\n_+3 := _+2 ADD $1\nRETURN _+3\n"];
+  block_3 [label="block_3\nRETURN sum\n"];
 }

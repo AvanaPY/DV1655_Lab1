@@ -146,7 +146,7 @@ public:
     {
         if(result.size() == 0)
             return;
-            
+
         if(result.find("_+") == -1)
         {
             stream << "\tistore " << result << "\n";
@@ -155,6 +155,7 @@ public:
 
     virtual void stack_with(TAC* tac) {};
     virtual void dump_code(std::ofstream& stream){};
+    virtual void dump_code(std::ofstream& stream, std::string argument){};
 };
 
 class AssignTAC : public TAC {
@@ -251,6 +252,12 @@ public:
         rhs = tac->get_rhs();
         op = tac->get_op();
     }
+
+    void dump_code(std::ofstream& stream)
+    {
+        if(lhs.find("$") == 0)
+            stream << "\ticonst " << lhs.substr(1, lhs.size() - 1) << "\n";
+    }
 };
 
 class CallTAC : public TAC {
@@ -270,6 +277,11 @@ public:
         lhs = tac->get_lhs();
         rhs = tac->get_rhs();
         op = tac->get_op();
+    }
+
+    void dump_code(std::ofstream& stream, std::string class_name)
+    {
+        stream << "\tinvokevirtual " << class_name << "_" << lhs << "\n";
     }
 };
 
@@ -381,9 +393,24 @@ public:
 
         // Create start of block
         stream << name << ":\n";
+
+        // This is such a horrible solution to calls, but it works
+        // "It is not horrible if it works" - Sun Tzu
+        TAC* invoke_class_tac = nullptr;
         for(auto it = tacs.begin(); it != tacs.end(); it++)
         {
-            (*it)->dump_code(stream);
+            if((*it)->get_op() == "NEW")
+            {
+                invoke_class_tac = *it;
+            }
+            else if((*it)->get_op() == "call")
+            {
+                (*it)->dump_code(stream, invoke_class_tac->get_rhs());
+            }
+            else
+            {
+                (*it)->dump_code(stream);
+            }
         }
         // If this is our "Main" block, put a stop at the very end
         if(name.compare(name.size() - 4, 4, "Main") == 0)

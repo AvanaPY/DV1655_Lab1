@@ -1,15 +1,7 @@
 Sum_Main:
-	iconst 5
-	print
-	iconst 5
-	iconst 2
-	imul
-	iconst 3
-	imul
-	print
-	iconst 0
+	iconst 100
 	iconst 1
-	iand
+	invokevirtual Test_Sum
 	print
 	ireturn
 	stop
@@ -30,12 +22,6 @@ block_2:
 	istore num
 block_3:
 	iload sum
-	iconst 1
-	iadd
-	iconst 1
-	iadd
-	iconst 1
-	iadd
 	ireturn
 
 
