@@ -14,7 +14,7 @@ generate_code(list<IR::Block*>* entry_points, std::ofstream& stream)
 {
     for(auto it = entry_points->begin(); it != entry_points->end(); it++)
     {
-        (*it)->dump_code(stream);
+        (*it)->dump_code(stream, (*it));
         stream << "\n";
     }
 }

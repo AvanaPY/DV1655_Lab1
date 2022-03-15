@@ -1,27 +1,13 @@
 class Bar {
 	public static void main(String[] a) {
-		System.out.println(new Bar1().foo());
+		System.out.println(new Bar1().foo(1, 2));
 	}
 }
 
-class Element 
-{
-   public int sum(int a, int b){
-      return a + b;
-   }
-}
-
 class Bar1 {
-	public int foo() {
-		int aux;
-      aux = this.sum(1, 2);
-      while(aux < 4)
-      {
-         aux = aux + 1;
-      }
-		return aux;
-   }
-   public int sum(int a, int b){
-      return a + b;
+   public int foo(int a, int b){
+      int sum;
+      sum = a + b;
+      return sum;
    }
 }

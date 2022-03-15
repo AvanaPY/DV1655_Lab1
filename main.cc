@@ -12,6 +12,9 @@ extern FILE* yyin;
 extern char* yytext;
 int lineno=1;
 
+std::string dot_file_name = "IR.dot";
+std::string code_file_name = "code.mjbc";
+
 void yy::parser::error(std::string const&err)
 {
   std::cout << "Cannot generate a syntax tree for this input: " << err << "\n   Line no: " << lineno << "\n   YYtext: " << yytext << "\n" << std::endl;
@@ -41,9 +44,7 @@ int main(int argc, char **argv)
     list<IR::Block*> entry_points;
     IR::traverse_ast(root, &entry_points);
 
-    std::cout << "Generating IR flow chart\n";
-
-    std::ofstream dot_stream ("IR.dot");
+    std::ofstream dot_stream (dot_file_name);
     if (dot_stream.is_open()){
       IR::dump_cfg(&entry_points, dot_stream);
       dot_stream.close();
@@ -51,8 +52,7 @@ int main(int argc, char **argv)
       std::cout << "Cannot open dot stream\n";
     }
 
-    std::cout << "Generating code...\n";
-    std::ofstream code_stream ("our_code.fuckingjava");
+    std::ofstream code_stream (code_file_name);
     if(code_stream.is_open())
     {
       IR::generate_code(&entry_points, code_stream);

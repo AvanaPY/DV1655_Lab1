@@ -39,11 +39,6 @@ map<std::string, std::string> op_byte_code = {
     { "EQ"  , "ieq" }
 };
 
-map<std::string, int> bool_map = {
-    { "false" , 0 },
-    { "true"  , 1 }
-};
-
 class Block
 {
 private:
@@ -66,7 +61,7 @@ public:
     void set_condition(TAC* tac);
     void dump(std::ofstream& stream); 
     void dump_rec(std::ofstream& stream, map<std::string, int>* dump_map);
-    void dump_code(std::ofstream& stream);
+    void dump_code(std::ofstream& stream, Block* starting_block);
 };
 
 static int blk_count;
@@ -170,7 +165,7 @@ Block::dump_rec(std::ofstream& stream, map<std::string, int>* dump_map)
 }
 
 void 
-Block::dump_code(std::ofstream& stream)
+Block::dump_code(std::ofstream& stream, Block* starting_block)
 {
     // Check if this block has already been code dumped
     if(code_dumped)
@@ -209,12 +204,12 @@ Block::dump_code(std::ofstream& stream)
             std::string target_class = invoke_class_tac->get_rhs();
             if(target_class == "THIS")
             {
-                
-                (*it)->dump_code(stream, name.substr(0, name.find("_")));
+                int uid = starting_block->name.find("_");
+                (*it)->dump_code(stream, starting_block->name.substr(0, uid));
             }
             else
             {
-                TAC* tac = find_tac(invoke_class_tac->get_rhs());
+                TAC* tac = find_tac(target_class);
                 (*it)->dump_code(stream, tac->get_rhs());
             }
         }
@@ -236,14 +231,14 @@ Block::dump_code(std::ofstream& stream)
     // Continue
     if(trueExit != nullptr)
     {
-        trueExit->dump_code(stream);
+        trueExit->dump_code(stream, starting_block);
         if(dump_true_exit_goto)
             stream << "\tgoto " << name << "\n";
     }
         
     if(falseExit != nullptr)
     {
-        falseExit->dump_code(stream);
+        falseExit->dump_code(stream, starting_block);
         if(falseExit->trueExit != nullptr)
             stream << "\tgoto " << falseExit->trueExit->name << "\n";
     }
@@ -319,6 +314,14 @@ traverse_ast(Node* node, list<Block*>* entry_points)
         {
             std::string local_var_name = convert_expression(ret->children.front(), currblk);
             currblk->add_tac(new ReturnTAC(local_var_name));
+        }
+    }
+    else if(node->type == "Parameter List")
+    {
+        for(auto it = node->children.rbegin(); it != node->children.rend(); it++)
+        {
+            Node* id_node = (*it)->children.back();
+            currblk->add_tac(new ArgTAC(id_node->value));
         }
     }
     else if(node->type == "Statement List")

@@ -1,0 +1,17 @@
+Bar_Main:
+	iconst 1
+	iconst 2
+	invokevirtual Bar1_foo
+	print
+	stop
+
+Bar1_foo:
+	istore b
+	istore a
+	iload a
+	iload b
+	iadd
+	istore sum
+	iload sum
+	ireturn
+

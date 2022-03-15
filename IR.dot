@@ -1,15 +1,6 @@
 digraph {
   graph [splines=ortho]
   node [shape=box]
-  Bar_Main [label="Bar_Main\n_+1 := NEW  Bar1\n  param _+1\n_+2 := call foo 1\nPRINT _+2  \n"];
-  Element_sum [label="Element_sum\n_+1 := ADD a b\nRETURN _+1\n"];
-  Bar1_foo [label="Bar1_foo\n  param THIS\n  param $1\n  param $2\naux := call sum 3\n"];
-  Bar1_foo -> block_1[xlabel="True"];
-  block_1 [label="block_1\nWHILE aux LT $4\n"];
-  block_1 -> block_2[xlabel="True"];
-  block_2 [label="block_2\naux := ADD aux $1\n"];
-  block_2 -> block_1[xlabel="True"];
-  block_1 -> block_3[xlabel="False"];
-  block_3 [label="block_3\nRETURN aux\n"];
-  Bar1_sum [label="Bar1_sum\n_+1 := ADD a b\nRETURN _+1\n"];
+  Bar_Main [label="Bar_Main\n_+1 := NEW  Bar1\n  param _+1\n  param $1\n  param $2\n_+2 := call foo 3\nPRINT _+2  \n"];
+  Bar1_foo [label="Bar1_foo\n  arg b\n  arg a\nsum := ADD a b\nRETURN sum\n"];
 }

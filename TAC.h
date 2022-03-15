@@ -9,8 +9,12 @@
 namespace IR
 {
 extern map<std::string, std::string> opmap;
-extern map<std::string, int> bool_map;
 extern map<std::string, std::string> op_byte_code;
+
+map<std::string, int> bool_map = {
+    { "false" , 0 },
+    { "true"  , 1 }
+};
 
 class TAC {
 protected:
@@ -86,7 +90,7 @@ public:
         std::string res;
         if(bool_map.count(v) != 0)
         {
-            res = "\ticonst " + bool_map[v];
+            res = "\ticonst " + std::to_string(bool_map[v]);
         }
         else if(v.find("$") == -1)
         {
@@ -118,6 +122,8 @@ public:
 
     void dump_code(std::ofstream& stream)
     {
+        if(op == "NEW")
+            return;
         dump_lhs(stream);
         dump_rhs(stream);
         dump_op(stream);
@@ -182,8 +188,7 @@ public:
 
     void dump_code(std::ofstream& stream)
     {
-        if(lhs.find("$") != -1)
-            stream << "\ticonst " << lhs.substr(1, lhs.size() - 1) << "\n";
+        stream << value_to_instruction(lhs);
         stream << "\tprint\n";
     }
 };
@@ -211,6 +216,32 @@ public:
     {
         stream << value_to_instruction(rhs);
     }
+};
+
+class ArgTAC : public TAC
+{
+public:
+    ArgTAC(std::string name) : TAC("", "arg", "", name){}
+
+    void dump(std::ofstream& stream)
+    {
+        stream  << result << " "
+                << lhs << " "
+                << op  << " "
+                << rhs;
+    }
+
+    void stack_with(TAC* tac)
+    {
+        lhs = tac->get_lhs();
+        rhs = tac->get_rhs();
+        op = tac->get_op();
+    }
+
+    void dump_code(std::ofstream& stream)
+    {
+        stream << "\tistore " << rhs << "\n";
+    } 
 };
 
 class CallTAC : public TAC {
