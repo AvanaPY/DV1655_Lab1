@@ -15,6 +15,10 @@ class Bar1 {
 	public int foo() {
 		int aux;
       aux = this.sum(1, 2);
+      while(aux < 4)
+      {
+         aux = aux + 1;
+      }
 		return aux;
    }
    public int sum(int a, int b){

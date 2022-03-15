@@ -1,95 +1,39 @@
-FacFib_Main:
-	iload FacFib2
+Bar_Main:
+	iload Bar1
 	
-	iconst 5
-	iconst 10
-	invokevirtual FacFib2_Compute
+	invokevirtual Bar1_foo
 	print
-	ireturn
 	stop
 
-FacFib2_Compute:
+Element_sum:
+	iload a
+	iload b
+	iadd
+	ireturn
+
+Bar1_foo:
+	iconst 1
+	iconst 2
+	invokevirtual Bar1_sum
 block_1:
-	iload first
-	iconst 1
+	iload aux
+	iconst 4
 	ilt
-	inot
-	iload second
-	iconst 1
-	ilt
-	inot
-	iand
 	iffalse goto 
 		block_3
 block_2:
-	iload first
-	invokevirtual block_ComputeFac
-	print
-	iload second
-	invokevirtual block_ComputeFib
-	print
+	iload aux
 	iconst 1
-	istore returnValue
-block_4:
-	iload returnValue
-	ireturn
+	iadd
+	istore aux
+	goto block_1
 block_3:
-	iconst 0
-	istore returnValue
-	goto block_4
-
-FacFib2_ComputeFac:
-block_5:
-	iload num
-	iconst 1
-	ilt
-	iffalse goto 
-		block_7
-block_6:
-	iconst 1
-	istore fac
-block_8:
-	iload fac
+	iload aux
 	ireturn
-block_7:
-	iload num
-	iconst 1
-	isub
-	invokevirtual block_ComputeFac
-	iload num
-	imul
-	istore fac
-	goto block_8
 
-FacFib2_ComputeFib:
-	iconst 0
-	istore f0
-	iconst 1
-	istore f1
-	iload num
-	istore fib
-	iconst 1
-	istore i
-block_9:
-	iload i
-	iload num
-	ilt
-	iffalse goto 
-		block_11
-block_10:
-	iload f1
-	iload f0
+Bar1_sum:
+	iload a
+	iload b
 	iadd
-	istore fib
-	iload f1
-	istore f0
-	iload fib
-	istore f1
-	iload i
-	iconst 1
-	iadd
-	istore i
-block_11:
-	iload fib
 	ireturn
 

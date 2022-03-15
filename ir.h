@@ -452,7 +452,7 @@ public:
         if(trueExit != nullptr)
         {
             trueExit->dump_code(stream);
-            if(dump_true_exit_goto && !code_dumped)
+            if(dump_true_exit_goto)
                 stream << "\tgoto " << name << "\n";
         }
             
@@ -541,8 +541,6 @@ traverse_ast(Node* node, list<Block*>* entry_points)
             std::string local_var_name = convert_expression(ret->children.front(), currblk);
             currblk->add_tac(new ReturnTAC(local_var_name));
         }
-        else
-            currblk->add_tac(new ReturnTAC(""));
     }
     else if(node->type == "Statement List")
     {
