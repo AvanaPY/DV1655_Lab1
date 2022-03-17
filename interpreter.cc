@@ -8,7 +8,27 @@
 #include <map>
 #include <stack>
 
-#define STACK_SIZE 2048
+#define DEBUG false
+
+class StackFrame
+{
+private:
+    std::map<std::string, int> variables;
+
+public:
+
+    void set_variable(std::string name, int value)
+    {
+        variables[name] = value;
+    }
+
+    int get_variable(std::string name)
+    {
+        if(variables.count(name) == 0)
+            set_variable(name, 0);
+        return variables[name];
+    }
+};
 
 void
 read_program(std::string file_name, 
@@ -64,7 +84,8 @@ execute(std::vector<std::pair<std::string, std::string>>* program,
 {
     std::stack<int> data_stack;
     std::stack<int> acti_stack;
-    std::map<std::string, int> variables;
+    std::stack<StackFrame*> stackFrames;
+    stackFrames.push(new StackFrame());
     
     bool executing = true;
 
@@ -78,16 +99,23 @@ execute(std::vector<std::pair<std::string, std::string>>* program,
 
         if(op == "iload")
         {
-            data_stack.push(variables[arg]);
+            data_stack.push(stackFrames.top()->get_variable(arg));
+            if(DEBUG)
+                std::cout << "iload " << arg<< " (" << stackFrames.top()->get_variable(arg) << ")\n";
+
         }
         else if(op == "iconst")
         {
             data_stack.push(stoi(arg));
+            if(DEBUG)
+                std::cout << "iconst " << arg << "\n";
         }
         else if(op == "istore")
         {
             int num = data_stack.top(); data_stack.pop();
-            variables.insert(std::pair<std::string, int>(arg, num));
+            stackFrames.top()->set_variable(arg, num);
+            if(DEBUG)
+                std::cout << "istore " << arg << " (" << num << ")\n";
         }
         else if(op == "iadd")
         {
@@ -148,16 +176,37 @@ execute(std::vector<std::pair<std::string, std::string>>* program,
             int num1 = data_stack.top(); data_stack.pop();
             data_stack.push(num1 == 1 ? 0 : 1);
         }
+        else if(op == "goto")
+        {
+            int new_instruction_counter = (*label_map)[arg];
+            instruction_counter = new_instruction_counter - 1;
+        }
+        else if(op == "iffalse goto")
+        {
+            int num = data_stack.top(); data_stack.pop();
+            if(num == 0)
+            {
+                int new_instruction_counter = (*label_map)[arg];
+                instruction_counter = new_instruction_counter - 1;
+            }
+        }
         else if(op == "invokevirtual")
         {
             acti_stack.push(instruction_counter + 1);
             int new_instruction_counter = (*label_map)[arg];
             instruction_counter = new_instruction_counter - 1;
+            stackFrames.push(new StackFrame());
+            
+            if(DEBUG)
+                std::cout << "invokevirtual " << arg << " (" << new_instruction_counter << ")\n";
         }
         else if(op == "ireturn")
         {
             int new_instruction_counter = acti_stack.top(); acti_stack.pop();
             instruction_counter = new_instruction_counter - 1;
+            delete stackFrames.top(); stackFrames.pop();
+            if(DEBUG)
+                std::cout << "ireturn " << new_instruction_counter << " (" << stackFrames.size() << ") Stack top value: " << data_stack.top() << "\n";
         }
         else if(op == "print")
         {

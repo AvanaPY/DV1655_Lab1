@@ -1,6 +1,15 @@
 digraph {
   graph [splines=ortho]
   node [shape=box]
-  Bar_Main [label="Bar_Main\n_+1 := NEW  Bar1\n  param _+1\n  param $1\n  param $2\n_+2 := call foo 3\nPRINT _+2  \n"];
-  Bar1_foo [label="Bar1_foo\n  arg b\n  arg a\nsum := ADD a b\nRETURN sum\n"];
+  RecursiveSum_Main [label="RecursiveSum_Main\n_+1 := NEW  Test\n  param _+1\n  param $10000\n_+2 := call Sum 2\nPRINT _+2  \n"];
+  Test_Sum [label="Test_Sum\n  arg num\n"];
+  Test_Sum -> block_1[xlabel="True"];
+  block_1 [label="block_1\nIF num LT $2\n"];
+  block_1 -> block_2[xlabel="True"];
+  block_2 [label="block_2\nsum :=  $1 \n"];
+  block_2 -> block_4[xlabel="True"];
+  block_4 [label="block_4\nRETURN sum\n"];
+  block_1 -> block_3[xlabel="False"];
+  block_3 [label="block_3\n  param THIS\n_+1 := SUB num $1\n  param _+1\n_+2 := call Sum 2\nsum := ADD num _+2\n"];
+  block_3 -> block_4[xlabel="True"];
 }

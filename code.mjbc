@@ -1,17 +1,29 @@
-Bar_Main:
-	iconst 1
-	iconst 2
-	invokevirtual Bar1_foo
+RecursiveSum_Main:
+	iconst 10000
+	invokevirtual Test_Sum
 	print
 	stop
 
-Bar1_foo:
-	istore b
-	istore a
-	iload a
-	iload b
-	iadd
+Test_Sum:
+	istore num
+block_1:
+	iload num
+	iconst 2
+	ilt
+	iffalse goto block_3
+block_2:
+	iconst 1
 	istore sum
+block_4:
 	iload sum
 	ireturn
+block_3:
+	iload num
+	iconst 1
+	isub
+	invokevirtual Test_Sum
+	iload num
+	iadd
+	istore sum
+	goto block_4
 

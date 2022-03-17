@@ -179,7 +179,6 @@ Block::dump_code(std::ofstream& stream, Block* starting_block)
     // "It is not horrible if it works" - Sun Tzu
     TAC* invoke_class_tac = nullptr;
     bool listing_params = false;
-    bool dump_true_exit_goto = false;
 
     std::string op, res;
     for(auto it = tacs.begin(); it != tacs.end(); it++)
@@ -218,7 +217,6 @@ Block::dump_code(std::ofstream& stream, Block* starting_block)
         else if(res == "WHILE")
         {
             (*it)->dump_code(stream, trueExit->name, falseExit->name);
-            dump_true_exit_goto = true;
         }
         else
             (*it)->dump_code(stream);
@@ -231,16 +229,14 @@ Block::dump_code(std::ofstream& stream, Block* starting_block)
     // Continue
     if(trueExit != nullptr)
     {
+        if(trueExit->code_dumped)
+            stream << "\tgoto " << trueExit->name << "\n";
         trueExit->dump_code(stream, starting_block);
-        if(dump_true_exit_goto)
-            stream << "\tgoto " << name << "\n";
     }
         
     if(falseExit != nullptr)
     {
         falseExit->dump_code(stream, starting_block);
-        if(falseExit->trueExit != nullptr)
-            stream << "\tgoto " << falseExit->trueExit->name << "\n";
     }
 }
 

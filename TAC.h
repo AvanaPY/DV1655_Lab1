@@ -155,7 +155,7 @@ public:
         dump_lhs(stream);
         dump_rhs(stream);
         dump_op(stream);
-        stream << "\tiffalse goto \n\t\t" << false_exit << "\n";
+        stream << "\tiffalse goto " << false_exit << "\n";
     }
     
     void dump_code(std::ofstream& stream, std::string true_exit, std::string false_exit, std::string org_exit)
@@ -163,7 +163,7 @@ public:
         dump_lhs(stream);
         dump_rhs(stream);
         dump_op(stream);
-        stream << "\tiffalse goto \n\t\t" << false_exit << "\n";
+        stream << "\tiffalse goto " << false_exit << "\n";
     }
 };
 
@@ -256,6 +256,8 @@ public:
     void dump_code(std::ofstream& stream, std::string class_name)
     {
         stream << "\tinvokevirtual " << class_name << "_" << lhs << "\n";
+        if(result.find("_+") == -1)
+            stream << "\tistore " << result << "\n";
     }
 };
 

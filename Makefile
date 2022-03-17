@@ -11,7 +11,6 @@ tree:
 		dot -Tpdf tree.dot -otree.pdf
 		dot -Tpdf IR.dot -oIR.pdf
 clean:
-		rm -f parser.tab.* lex.yy.c* compiler stack.hh tree.dot tree.pdf
+		rm -f parser.tab.* parser.output lex.yy.c* stack.hh compiler interpreter
 		rm -fR compiler.dSYM
-		rm -fR *.dot
-		rm -fR IR.pdf
+		rm -fR *.dot IR.pdf tree.dot tree.pdf code.mjbc
