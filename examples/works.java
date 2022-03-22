@@ -18,10 +18,14 @@ class Bar1 {
    }
    public int sum(int s){
       int sum;
-      if(s == 1)
-         sum = 1;
-      else
-         sum = s + this.sum(s - 1);
+      while(sum < 100)
+      {
+         if(s == 1)
+            sum = 1;
+         else
+            sum = s + this.sum(s - 1);
+
+      }
       return sum;
    }
    public int fac(int s)
