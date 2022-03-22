@@ -1,29 +1,36 @@
-RecursiveSum_Main:
-	iconst 10000
-	invokevirtual Test_Sum
-	print
-	stop
-
-Test_Sum:
-	istore num
-block_1:
-	iload num
+Minimal_Main:
+	iconst 4
 	iconst 2
-	ilt
-	iffalse goto block_3
-block_2:
-	iconst 1
-	istore sum
-block_4:
-	iload sum
-	ireturn
-block_3:
-	iload num
+	imul
+	iconst 10
+	iadd
+	iconst 2
+	iconst 6
+	imul
+	isub
+	iconst 4
 	iconst 1
 	isub
-	invokevirtual Test_Sum
-	iload num
+	iconst 2
+	imul
+	iconst 2
+	idiv
 	iadd
-	istore sum
-	goto block_4
+	print
+	iconst 1
+	inot
+	iconst 0
+	iand
+	iconst 1
+	ieq
+	iconst 10
+	iconst 1
+	igt
+	ior
+	iconst 1
+	iconst 10
+	ilt
+	iand
+	print
+	stop
 

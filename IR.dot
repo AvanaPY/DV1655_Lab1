@@ -1,15 +1,5 @@
 digraph {
   graph [splines=ortho]
   node [shape=box]
-  RecursiveSum_Main [label="RecursiveSum_Main\n_+1 := NEW  Test\n  param _+1\n  param $10000\n_+2 := call Sum 2\nPRINT _+2  \n"];
-  Test_Sum [label="Test_Sum\n  arg num\n"];
-  Test_Sum -> block_1[xlabel="True"];
-  block_1 [label="block_1\nIF num LT $2\n"];
-  block_1 -> block_2[xlabel="True"];
-  block_2 [label="block_2\nsum :=  $1 \n"];
-  block_2 -> block_4[xlabel="True"];
-  block_4 [label="block_4\nRETURN sum\n"];
-  block_1 -> block_3[xlabel="False"];
-  block_3 [label="block_3\n  param THIS\n_+1 := SUB num $1\n  param _+1\n_+2 := call Sum 2\nsum := ADD num _+2\n"];
-  block_3 -> block_4[xlabel="True"];
+  Minimal_Main [label="Minimal_Main\n_+1 := MUL $4 $2\n_+2 := ADD _+1 $10\n_+3 := MUL $2 $6\n_+4 := SUB _+2 _+3\n_+5 := SUB $4 $1\n_+6 := MUL _+5 $2\n_+7 := DIV _+6 $2\n_+8 := ADD _+4 _+7\nPRINT _+8  \n_+9 := NOT  true\n_+10 := AND _+9 false\n_+11 := EQ true _+10\n_+12 := GT $10 $1\n_+13 := OR _+11 _+12\n_+14 := LT $1 $10\n_+15 := AND _+13 _+14\nPRINT _+15  \n"];
 }
